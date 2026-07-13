@@ -45,6 +45,9 @@ body::after {
   min-height: 100vh;
   min-height: 100svh;
   overflow: hidden;
+  /* obra táctil: el arrastre no debe seleccionar texto */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 img,
@@ -122,8 +125,10 @@ button {
   mix-blend-mode: luminosity;
 }
 
-.scene--light ~ * .chrome-restart {
+#app.on-dark .chrome-restart,
+#app.on-dark .chrome-sound {
   color: var(--paper);
+  mix-blend-mode: normal;
 }
 
 .chrome-restart:hover,

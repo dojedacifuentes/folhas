@@ -34,11 +34,11 @@ export class AppController {
       <main id="stage" class="stage" aria-label="${content.cover.title}"></main>
       <div class="sr-live" aria-live="polite"></div>
       <div class="chrome" hidden>
-        <button class="chrome-sound" type="button" aria-pressed="${this.state.audioEnabled}"
-          aria-label="${content.chrome.soundLabel}">${soundIconSVG()}</button>
         <button class="chrome-restart" type="button" aria-label="${content.chrome.restartLabel}">
           ${content.chrome.restart}
         </button>
+        <button class="chrome-sound" type="button" aria-pressed="${this.state.audioEnabled}"
+          aria-label="${content.chrome.soundLabel}">${soundIconSVG()}</button>
       </div>
     `;
     const stage = this.root.querySelector<HTMLElement>("#stage")!;
@@ -78,6 +78,7 @@ export class AppController {
     // reanudar donde se quedó
     const initial: SceneId = this.state.currentScene ?? "cover";
     if (initial !== "cover") this.showChrome();
+    this.root.classList.toggle("on-dark", initial === "light" || initial === "final");
     this.manager.show(initial);
   }
 
@@ -99,6 +100,7 @@ export class AppController {
   private goTo(id: SceneId): void {
     this.state.currentScene = id;
     this.save();
+    this.root.classList.toggle("on-dark", id === "light" || id === "final");
     this.manager.show(id);
   }
 

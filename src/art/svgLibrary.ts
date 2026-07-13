@@ -35,7 +35,7 @@ export function akitaSVG(extraClass = ""): string {
   return `
 <svg class="fig fig-akita ${extraClass}" viewBox="0 0 160 138" role="img" aria-label="Criatura akita turquesa, sentada con seriedad concentrada" xmlns="http://www.w3.org/2000/svg">
   <ellipse class="fig-shadow" cx="80" cy="128" rx="50" ry="7.5" fill="var(--shadow)"/>
-  <path class="akita-tail" d="M116 96 C138 92 142 70 128 64 C119 60 111 68 116 76"
+  <path class="akita-tail" d="M112 82 C134 74 140 50 120 46 C106 43 102 58 112 62"
     fill="none" stroke="var(--turquoise-dark)" stroke-width="11" stroke-linecap="round"/>
   <path class="akita-body" d="M44 124 C38 96 46 70 80 66 C112 62 126 82 122 104 C119 120 102 126 78 126 C64 126 50 128 44 124 Z"
     fill="var(--turquoise)"/>
@@ -44,8 +44,8 @@ export function akitaSVG(extraClass = ""): string {
   <rect class="akita-leg" x="58" y="100" width="9" height="26" rx="4.5" fill="var(--turquoise-dark)"/>
   <rect class="akita-leg" x="88" y="100" width="9" height="26" rx="4.5" fill="var(--turquoise-dark)"/>
   <g class="akita-head">
-    <path class="akita-ear akita-ear--left" d="M46 30 L42 6 L62 20 Z" fill="var(--turquoise-dark)"/>
-    <path class="akita-ear akita-ear--right" d="M84 18 L102 4 L100 28 Z" fill="var(--turquoise-dark)"/>
+    <path class="akita-ear akita-ear--left" d="M50 29 L49 9 L66 22 Z" fill="var(--turquoise-dark)"/>
+    <path class="akita-ear akita-ear--right" d="M82 20 L94 6 L96 25 Z" fill="var(--turquoise-dark)"/>
     <path d="M40 48 C36 26 54 14 74 16 C94 18 102 36 94 54 C86 70 46 68 40 48 Z" fill="var(--turquoise)"/>
     <path class="akita-muzzle" d="M58 46 C58 38 66 34 74 36 C82 38 84 46 80 52 C76 58 60 56 58 46 Z"
       fill="var(--paper-light)" opacity="0.9"/>

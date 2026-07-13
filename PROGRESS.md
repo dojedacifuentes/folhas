@@ -2,7 +2,8 @@
 
 ## Fase actual
 
-Fase 6 — QA y optimización (verificación en navegador en curso).
+Completado. QA documentado en `QA_CHECKLIST.md`; queda la revisión
+humana en un teléfono real (tacto y sonido).
 
 ## Tareas realizadas
 
@@ -37,8 +38,21 @@ Ver estructura en `README.md`. Sin dependencias de runtime.
 - El cálculo de progreso usa `getImageData` con stride 41 y throttle de
   260 ms: nunca en cada `pointermove`.
 
+## Correcciones de la fase de QA
+
+- `user-select: none` en el escenario: el raspado seleccionaba texto.
+- Padding inferior de escena ampliado: la instrucción chocaba con los
+  controles fijos.
+- Reinicio a la izquierda y sonido a la derecha; en escenas oscuras los
+  controles pasan a color papel (clase `on-dark`).
+- La luz de la escena III ahora nace descentrada (cerca del gato) para
+  invitar al gesto.
+- Cola del akita enroscada sobre el lomo y orejas más pequeñas (leía
+  como un segundo gato).
+- El pie oculto usa `visibility: hidden` para salir del árbol de
+  accesibilidad.
+
 ## Tareas restantes
 
-- [ ] QA final documentado en `QA_CHECKLIST.md` (en curso).
-- [ ] Revisión humana: tono de los textos y sensación de las interacciones
-      en un teléfono real.
+- [ ] Revisión humana: tono de los textos, tacto del raspado y volumen
+      de los sonidos en un teléfono real.

@@ -19,8 +19,8 @@ export class LightAligner {
     Pick<LightAlignerOptions, "targetX" | "targetY" | "radius">
   > &
     LightAlignerOptions;
-  private x = 0.5;
-  private y = 0.72;
+  private x = 0.28;
+  private y = 0.74;
   private aligned = false;
   private activeId: number | null = null;
 

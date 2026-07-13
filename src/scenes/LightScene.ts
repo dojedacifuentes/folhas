@@ -77,8 +77,8 @@ export class LightScene implements Scene {
       onUpdate: (a, x, y) => this.update(a, x, y),
       onAligned: () => this.aligned(),
     });
-    // posición inicial
-    this.update(0, 0.5, 0.72);
+    // posición inicial: descentrada, cerca del gato, para invitar al gesto
+    this.update(0, 0.28, 0.74);
 
     el.querySelector<HTMLButtonElement>(".link-alt")!.addEventListener("click", () => {
       this.aligner?.align();
