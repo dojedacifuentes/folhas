@@ -1,0 +1,137 @@
+/* ============ escritorio: composición editorial ============ */
+@media (min-width: 900px) {
+  .scene {
+    grid-template-columns: minmax(280px, 36ch) 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "head body"
+      ".    body"
+      "foot body";
+    column-gap: 3rem;
+    padding: calc(2.2rem + var(--safe-top)) clamp(2rem, 6vw, 5rem)
+      calc(2.2rem + var(--safe-bottom));
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .scene-head {
+    grid-area: head;
+    align-self: start;
+    padding-top: 1.5rem;
+  }
+
+  .scene-body {
+    grid-area: body;
+    min-height: 0;
+  }
+
+  .scene-foot {
+    grid-area: foot;
+    align-self: end;
+  }
+
+  .scene--cover {
+    grid-template-columns: 1fr;
+    grid-template-areas: none;
+    grid-template-rows: 1fr auto auto;
+    align-content: end;
+  }
+
+  .cover-titles {
+    padding-left: 6%;
+    padding-bottom: 2rem;
+  }
+
+  .cover-leaf-area {
+    position: absolute;
+    right: 12%;
+    top: 16%;
+  }
+
+  .scene--cover .scene-instruction {
+    padding-right: 12%;
+    padding-bottom: 1rem;
+  }
+
+  .cover-cube {
+    left: 12%;
+    bottom: 18%;
+  }
+
+  .scene--final {
+    grid-template-areas:
+      "head body"
+      "text body"
+      "foot body";
+  }
+
+  .scene--final .scene-body {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .scene--final .final-stage {
+    flex: 1.4;
+  }
+
+  .scene--final .final-text {
+    flex: 1;
+    align-self: end;
+    padding: 0 0 2rem 2.4rem;
+  }
+}
+
+/* móvil bajo: comprimir espacios verticales */
+@media (max-height: 700px) and (max-width: 899px) {
+  .scene {
+    gap: 0.3rem;
+    padding-top: calc(0.7rem + var(--safe-top));
+  }
+
+  .scene-number {
+    display: none;
+  }
+
+  .scene-lede {
+    margin-top: 0.3em;
+  }
+}
+
+/* horizontal en móvil */
+@media (max-height: 500px) and (orientation: landscape) {
+  .scene {
+    grid-template-columns: minmax(200px, 30ch) 1fr;
+    grid-template-areas:
+      "head body"
+      "foot body";
+    grid-template-rows: 1fr auto;
+    column-gap: 1.5rem;
+  }
+
+  .scene-head {
+    grid-area: head;
+  }
+
+  .scene-body {
+    grid-area: body;
+  }
+
+  .scene-foot {
+    grid-area: foot;
+  }
+
+  .scene-number {
+    display: none;
+  }
+}
+
+/* pantallas muy angostas */
+@media (max-width: 360px) {
+  .scene {
+    padding-inline: 0.9rem;
+  }
+
+  .after-main {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,316 @@
+/* ============ escena III: buscar la luz ============ */
+.scene--light {
+  background: var(--night);
+  color: var(--paper);
+}
+
+.scene--light .scene-instruction,
+.scene--light .scene-lede {
+  color: var(--paper);
+}
+
+.light-stage {
+  --lx: 50%;
+  --ly: 72%;
+  --align: 0;
+  --cat-skew: 0deg;
+  --akita-skew: 0deg;
+  --shadow-len: 1;
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+  border-radius: 10px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at var(--lx) var(--ly),
+      rgba(229, 199, 105, 0.34),
+      rgba(229, 199, 105, 0.1) 32%,
+      transparent 58%
+    ),
+    linear-gradient(180deg, #18232a 0%, var(--night) 60%, #24333c 100%);
+}
+
+.light-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--lx) var(--ly),
+    rgba(251, 245, 233, 0.22),
+    transparent 26%
+  );
+}
+
+.lamp {
+  position: absolute;
+  left: var(--lx);
+  top: var(--ly);
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+  cursor: grab;
+  z-index: 10;
+}
+
+.lamp.is-held {
+  cursor: grabbing;
+}
+
+.lamp-core {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, var(--paper-light), var(--yellow-soft) 65%, var(--yellow));
+  box-shadow:
+    0 0 18px 6px rgba(229, 199, 105, 0.45),
+    0 0 46px 18px rgba(229, 199, 105, 0.18);
+  transition: box-shadow 500ms ease;
+}
+
+.is-aligned .lamp {
+  cursor: default;
+}
+
+.is-aligned .lamp-core {
+  box-shadow:
+    0 0 22px 8px rgba(229, 199, 105, 0.55),
+    0 0 70px 26px rgba(229, 199, 105, 0.22);
+}
+
+/* personajes y planta en el teatro nocturno */
+.light-cat {
+  position: absolute;
+  bottom: 7%;
+  left: 9%;
+  width: clamp(90px, 20vw, 150px);
+  z-index: 4;
+}
+
+.light-akita {
+  position: absolute;
+  bottom: 6%;
+  right: 9%;
+  width: clamp(100px, 22vw, 160px);
+  z-index: 4;
+}
+
+.light-plant {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(115px, 25vw, 175px);
+  z-index: 3;
+}
+
+/* sombras proyectadas: huella, no amenaza */
+.cast-shadow {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 62%;
+  height: calc(70px * var(--shadow-len));
+  background: linear-gradient(to top, var(--shadow-deep), transparent 92%);
+  border-radius: 46% 54% 20% 20%;
+  transform-origin: bottom center;
+  transform: translateX(-50%) skewX(var(--cat-skew));
+  transition: height 200ms linear;
+  z-index: -1;
+}
+
+.cast-shadow--akita {
+  transform: translateX(-50%) skewX(var(--akita-skew));
+}
+
+/* refugio: las sombras se unen como una copa de árbol */
+.shelter-union {
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  width: clamp(200px, 52vw, 360px);
+  transform: translateX(-50%) scale(calc(0.82 + var(--align) * 0.18));
+  opacity: calc(var(--align) * var(--align) * 0.9);
+  transition: opacity 300ms ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ramas que bajan formando techo */
+.light-branches {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.light-branch {
+  position: absolute;
+  width: 64%;
+  opacity: calc(0.35 + var(--align) * 0.5);
+  transition: transform 700ms var(--ease-page);
+}
+
+.light-branch--l {
+  top: -14%;
+  left: -16%;
+  transform: rotate(calc(var(--align) * 10deg));
+  transform-origin: top left;
+}
+
+.light-branch--r {
+  top: -10%;
+  right: -14%;
+  transform: rotate(calc(var(--align) * -12deg)) scaleX(-1);
+  transform-origin: top right;
+}
+
+.scene--light .link-alt {
+  color: var(--paper);
+}
+
+/* aparición progresiva de hojas en la planta nocturna */
+.light-plant .plant-leaf--yellow,
+.light-plant .plant-leaf--turquoise {
+  transition-delay: 100ms;
+}
+
+/* ============ controles compartidos ============ */
+.btn-leaf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 4px 10px 4px 2px;
+  font-family: var(--font-interface);
+  font-size: 0.92rem;
+  letter-spacing: 0.1em;
+  margin-top: 0.9rem;
+}
+
+.btn-leaf svg {
+  width: 30px;
+  height: 30px;
+  transition: transform var(--dur-micro) ease;
+}
+
+.btn-leaf:hover svg,
+.btn-leaf:focus-visible svg {
+  transform: rotate(-14deg);
+}
+
+.btn-leaf span {
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+}
+
+.link-alt {
+  font-family: var(--font-interface);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+  min-height: 44px;
+  padding: 0 8px;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  transition: opacity var(--dur-micro) ease;
+}
+
+.link-alt:hover,
+.link-alt:focus-visible {
+  opacity: 0.95;
+}
+
+/* pensamientos */
+.thought {
+  position: absolute;
+  top: -2.1em;
+  left: 50%;
+  transform: translate(-50%, 6px);
+  white-space: nowrap;
+  transition: opacity 700ms ease, transform 700ms ease;
+  pointer-events: none;
+}
+
+.thought.is-visible {
+  opacity: 0.78;
+  transform: translate(-50%, 0);
+}
+
+/* partículas de hoja */
+.leaf-particle {
+  position: absolute;
+  width: 30px;
+  pointer-events: none;
+  animation: particleFall 1.35s ease-in forwards;
+}
+
+@keyframes particleFall {
+  0% {
+    opacity: 0.95;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--pdx, 40px), var(--pdy, 120px)) rotate(var(--pspin, 120deg));
+  }
+}
+
+/* ============ planta: estados de crecimiento ============ */
+.plant-wrap .plant-leaf,
+.plant-wrap .plant-sprout,
+.plant-wrap .plant-stem {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  transition:
+    transform 1100ms cubic-bezier(0.2, 0.7, 0.25, 1.05),
+    opacity 900ms ease;
+}
+
+.plant--dormant .plant-leaf,
+.plant--dormant .plant-sprout,
+.plant--dormant .plant-stem,
+.plant--sprout .plant-leaf,
+.plant--sprout .plant-stem {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.plant--sprout .plant-sprout {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.plant--sprout.show-yellow .plant-leaf--yellow,
+.plant--sprout.show-turquoise .plant-leaf--turquoise {
+  transform: scale(0.9);
+  opacity: 1;
+}
+
+.plant--full .plant-leaf,
+.plant--full .plant-stem {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.plant--full .plant-sprout {
+  transform: scale(0);
+  opacity: 0;
+}
+
+/* escalonar la aparición: amarilla, turquesa, verde al centro */
+.plant--full .plant-leaf--yellow {
+  transition-delay: 0ms;
+}
+
+.plant--full .plant-leaf--turquoise {
+  transition-delay: 220ms;
+}
+
+.plant--full .plant-leaf--green {
+  transition-delay: 480ms;
+}

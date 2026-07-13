@@ -1,0 +1,539 @@
+/* ============ estructura común de escena ============ */
+.scene {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.6rem;
+  padding: calc(1.1rem + var(--safe-top)) calc(1.2rem + var(--safe-right))
+    calc(1.4rem + var(--safe-bottom)) calc(1.2rem + var(--safe-left));
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity var(--dur-page) var(--ease-page),
+    transform var(--dur-page) var(--ease-page),
+    background-color var(--dur-page) var(--ease-page);
+  overflow: hidden;
+}
+
+.scene-enter {
+  opacity: 0;
+  transform: translateX(3.5%);
+}
+
+.scene-leave {
+  opacity: 0;
+  transform: translateX(-4%);
+  pointer-events: none;
+}
+
+.scene-head {
+  position: relative;
+  z-index: 3;
+}
+
+.scene-body {
+  position: relative;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.scene-foot {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  transition: opacity 600ms ease;
+}
+
+.scene-foot.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene-after {
+  position: relative;
+  z-index: 4;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 800ms var(--ease-page),
+    transform 800ms var(--ease-page);
+  padding: 0.6rem 0 0;
+}
+
+.scene-after.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* capa de sombras botánicas ambientales */
+.shadow-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.shadow-drift {
+  position: absolute;
+  width: 120%;
+  transition: transform 1200ms var(--ease-page);
+}
+
+.shadow-drift--a {
+  top: -6%;
+  left: -12%;
+  animation: driftA 16s ease-in-out infinite alternate;
+}
+
+.shadow-drift--b {
+  bottom: -14%;
+  right: -18%;
+  width: 90%;
+  animation: driftB 13s ease-in-out infinite alternate;
+}
+
+@keyframes driftA {
+  from {
+    transform: translateX(0) rotate(0deg);
+  }
+  to {
+    transform: translateX(2.5%) rotate(0.8deg);
+  }
+}
+
+@keyframes driftB {
+  from {
+    transform: translateY(0) rotate(0deg);
+  }
+  to {
+    transform: translateY(-2%) rotate(-1deg);
+  }
+}
+
+/* ============ escena 0: cubierta ============ */
+.scene--cover {
+  grid-template-rows: 1fr auto auto;
+  align-content: end;
+}
+
+.cover-titles {
+  z-index: 3;
+  align-self: end;
+  padding-bottom: 0.5rem;
+}
+
+.cover-cube {
+  position: absolute;
+  left: 8%;
+  bottom: 12%;
+  width: 30px;
+  opacity: 0.55;
+  z-index: 2;
+  transform: rotate(-8deg);
+}
+
+.cover-leaf-area {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  padding-right: 4%;
+}
+
+.cover-leaf {
+  width: clamp(120px, 26vw, 210px);
+  touch-action: none;
+  cursor: grab;
+  transition: none;
+  filter: drop-shadow(6px 10px 6px var(--shadow));
+}
+
+.cover-leaf:active {
+  cursor: grabbing;
+}
+
+.cover-leaf.is-returning {
+  transition: transform 550ms var(--ease-page);
+}
+
+.cover-leaf.is-flying {
+  transition:
+    transform 900ms cubic-bezier(0.2, 0.6, 0.3, 1),
+    opacity 900ms ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cover-whisper {
+  padding-right: 8%;
+}
+
+.scene--cover .scene-instruction {
+  text-align: right;
+  padding-right: 5%;
+}
+
+/* la cubierta se abre: las sombras cambian de dirección */
+.cover--open .shadow-drift--a {
+  transform: translateX(-6%) rotate(-3deg) !important;
+}
+
+.cover--open .shadow-drift--b {
+  transform: translateY(4%) rotate(2.5deg) !important;
+}
+
+.cover--open .cover-titles {
+  transition: opacity 700ms ease, transform 700ms var(--ease-page);
+  opacity: 0;
+  transform: translateY(-14px);
+}
+
+/* ============ escena I: hacer lugar ============ */
+.scratch-stage {
+  position: relative;
+  flex: 1;
+  min-height: 240px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(36, 35, 31, 0.08) inset;
+}
+
+.tableau {
+  position: absolute;
+  inset: 0;
+  background: var(--paper-light);
+}
+
+.tableau-plant {
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(110px, 24%, 170px);
+}
+
+.tableau-cat {
+  position: absolute;
+  bottom: 5%;
+  left: 6%;
+  width: clamp(90px, 20%, 150px);
+}
+
+.tableau-akita {
+  position: absolute;
+  bottom: 4%;
+  right: 6%;
+  width: clamp(100px, 22%, 160px);
+}
+
+.tableau-thimble {
+  position: absolute;
+  bottom: 6%;
+  left: 26%;
+  width: clamp(30px, 6%, 44px);
+}
+
+.tableau-cube {
+  position: absolute;
+  bottom: 5%;
+  right: 27%;
+  width: clamp(32px, 7%, 48px);
+}
+
+.scratch-canvas {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: grab;
+  transition: opacity 900ms ease;
+}
+
+.scratch-canvas.scratch-done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.particle-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* reacciones tras la revelación */
+.is-revealed .tableau-cat .fig-cat {
+  animation: pawShake 900ms ease 300ms 1;
+}
+
+.is-revealed .tableau-akita .fig-akita {
+  animation: solemnNod 1100ms ease 600ms 1;
+}
+
+.is-revealed .tableau-cube {
+  animation: cubeRecover 1100ms var(--ease-page) 700ms 1;
+}
+
+@keyframes pawShake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(2.4deg);
+  }
+  75% {
+    transform: rotate(-1.6deg);
+  }
+}
+
+@keyframes solemnNod {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(4px);
+  }
+  60% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes cubeRecover {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-7px) rotate(-10deg);
+  }
+}
+
+/* ============ escena II: traer lo que tenemos ============ */
+.offer-stage {
+  position: relative;
+  flex: 1;
+  min-height: 250px;
+  z-index: 2;
+}
+
+.offer-plant {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(120px, 26vw, 180px);
+}
+
+.offer-cat {
+  position: absolute;
+  bottom: 8%;
+  left: 4%;
+  width: clamp(95px, 22vw, 155px);
+}
+
+.offer-akita {
+  position: absolute;
+  bottom: 7%;
+  right: 4%;
+  width: clamp(105px, 24vw, 165px);
+}
+
+.offering {
+  position: absolute;
+  touch-action: none;
+  cursor: grab;
+  z-index: 6;
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+}
+
+.offering--water {
+  bottom: 34%;
+  left: 16%;
+  width: clamp(44px, 11vw, 62px);
+}
+
+.offering--seed {
+  bottom: 33%;
+  right: 16%;
+  width: clamp(46px, 12vw, 66px);
+}
+
+.offering.is-dragging {
+  cursor: grabbing;
+  z-index: 8;
+}
+
+.offering.is-returning {
+  transition: transform 600ms var(--ease-page);
+}
+
+.offering.is-placing {
+  transition: transform var(--dur-object) cubic-bezier(0.2, 0.7, 0.3, 1.05);
+}
+
+.offering.is-placed {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* la maceta invita cuando algo se acerca */
+.drop-halo {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  width: 120%;
+  aspect-ratio: 1.6;
+  transform: translateX(-50%) scale(0.85);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(125, 139, 114, 0.28), transparent);
+  opacity: 0;
+  transition: opacity 350ms ease, transform 350ms ease;
+  pointer-events: none;
+}
+
+.offer-plant.is-inviting .drop-halo {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.offer-plant.is-inviting .fig-plant {
+  transform: rotate(-1.4deg);
+}
+
+.offer-plant .fig-plant {
+  transition: transform 400ms ease;
+}
+
+/* gota que cae */
+.water-drop {
+  position: absolute;
+  top: 18%;
+  left: 46%;
+  width: 9px;
+  height: 13px;
+  border-radius: 50% 50% 60% 60%;
+  background: var(--turquoise);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 7;
+}
+
+.water-done .water-drop {
+  animation: dropFall 750ms ease-in 1;
+}
+
+@keyframes dropFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-26px) scale(0.7);
+  }
+  25% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(48px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(54px) scaleY(0.4);
+  }
+}
+
+/* la tierra cambia levemente de color */
+.water-done .offer-plant .plant-soil {
+  fill: #4c372b;
+}
+
+.plant-soil {
+  transition: fill 900ms ease;
+}
+
+/* el cubo gira un cuarto de vuelta al hundirse */
+.offering .cube-solid {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 700ms var(--ease-page) 300ms;
+}
+
+.offering--seed.is-placed .cube-solid {
+  transform: rotate(90deg) scale(0.82) translateY(6px);
+}
+
+.offering--water.is-placed {
+  transition: opacity 500ms ease 600ms;
+  opacity: 0;
+}
+
+/* reacciones de personajes */
+.water-done .offer-cat .cat-tail-group {
+  animation: tailFlick 900ms ease 400ms 1;
+}
+
+.seed-done .offer-akita .akita-head {
+  animation: solemnNod 1000ms ease 300ms 1;
+}
+
+/* la tierra respira y las sombras se acercan apenas */
+.sprout-born .offer-plant .fig-plant {
+  animation: soilBreath 1600ms ease 1;
+}
+
+.sprout-born .shadow-drift--a {
+  transform: translateX(1.5%) translateY(2%) !important;
+}
+
+.sprout-born .shadow-drift--b {
+  transform: translateY(-3%) translateX(-1.5%) !important;
+}
+
+@keyframes soilBreath {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.025);
+  }
+}
+
+/* el brote, único adulto responsable, se mueve */
+.sprout-born .plant-sprout {
+  animation: sproutSway 5s ease-in-out 2s infinite alternate;
+}
+
+@keyframes sproutSway {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(3.5deg);
+  }
+}
+
+.shadow-layer--edges .shadow-drift--a {
+  top: -10%;
+  left: -30%;
+  opacity: 0.75;
+}
+
+.shadow-layer--edges .shadow-drift--b {
+  bottom: -18%;
+  right: -26%;
+  opacity: 0.75;
+}

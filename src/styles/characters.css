@@ -1,0 +1,322 @@
+/* ============ figuras ============ */
+.fig {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.cat-tail-group,
+.akita-head,
+.cat-head,
+.akita-ear,
+.plant-sprout,
+.cube-solid {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.cat-tail-group {
+  transform-origin: left bottom;
+}
+
+.akita-head {
+  transform-origin: center bottom;
+}
+
+@keyframes tailFlick {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(9deg);
+  }
+  60% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes earTwitch {
+  0%,
+  92%,
+  100% {
+    transform: rotate(0deg);
+  }
+  94% {
+    transform: rotate(-9deg);
+  }
+  97% {
+    transform: rotate(4deg);
+  }
+}
+
+/* ============ escena final: ilustración viva ============ */
+.scene--final {
+  background: linear-gradient(180deg, #1a252c 0%, var(--night) 55%, #26363f 100%);
+  color: var(--paper-light);
+}
+
+.final-stage {
+  position: relative;
+  flex: 1;
+  min-height: 250px;
+  z-index: 2;
+}
+
+.final-glow {
+  position: absolute;
+  left: 55%;
+  top: 12%;
+  width: 130px;
+  height: 130px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(229, 199, 105, 0.34), transparent 70%);
+  pointer-events: none;
+  animation: glowBreath 11s ease-in-out infinite alternate;
+}
+
+@keyframes glowBreath {
+  from {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.12);
+  }
+}
+
+.final-branch {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.final-branch--a {
+  top: -8%;
+  left: -14%;
+  width: 80%;
+  animation: driftA 18s ease-in-out infinite alternate;
+}
+
+.final-branch--b {
+  bottom: -16%;
+  right: -18%;
+  width: 66%;
+  animation: driftB 15s ease-in-out infinite alternate;
+}
+
+.final-plant {
+  position: absolute;
+  bottom: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(120px, 26vw, 185px);
+  z-index: 4;
+  cursor: pointer;
+}
+
+.final-plant .fig-plant {
+  animation: plantBreath 9s ease-in-out infinite alternate;
+}
+
+@keyframes plantBreath {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.014);
+  }
+}
+
+/* hojas que se inclinan hacia el punto de contacto */
+.final-plant .plant-leaf {
+  transition: transform 800ms var(--ease-page);
+}
+
+.final-plant.lean-left .plant-leaf {
+  transform: rotate(-7deg);
+}
+
+.final-plant.lean-right .plant-leaf {
+  transform: rotate(7deg);
+}
+
+.final-cat {
+  position: absolute;
+  bottom: 6%;
+  left: 10%;
+  width: clamp(90px, 20vw, 145px);
+  z-index: 3;
+}
+
+/* gato dormido: acurrucado, ojos entrecerrados */
+.cat--sleeping {
+  transform: scaleY(0.94);
+  transform-origin: bottom;
+}
+
+.cat--sleeping .cat-head {
+  transform: rotate(7deg) translateY(3px);
+}
+
+.cat--sleeping .cat-eye {
+  transform: scaleY(0.2);
+}
+
+.cat-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.final-cat .cat-tail-group {
+  animation: sleepyTail 14s ease-in-out infinite;
+}
+
+@keyframes sleepyTail {
+  0%,
+  90%,
+  100% {
+    transform: rotate(0deg);
+  }
+  93% {
+    transform: rotate(6deg);
+  }
+  96% {
+    transform: rotate(-3deg);
+  }
+}
+
+.final-akita {
+  position: absolute;
+  bottom: 5%;
+  right: 9%;
+  width: clamp(100px, 22vw, 158px);
+  z-index: 3;
+}
+
+.akita--guard .akita-ear--right {
+  animation: earTwitch 17s ease-in-out infinite;
+}
+
+.final-akita.is-fixing .fig-akita {
+  animation: solemnNod 900ms ease 1;
+}
+
+.final-cube {
+  position: absolute;
+  bottom: 11%;
+  left: 56%;
+  width: 34px;
+  z-index: 5;
+  clip-path: inset(0 0 34% 0); /* parcialmente hundido en la tierra */
+}
+
+.final-cube .cube-solid {
+  transition: transform 700ms var(--ease-page);
+}
+
+.final-cube.is-spinning .cube-solid {
+  transform: rotate(90deg);
+}
+
+.final-thimble {
+  position: absolute;
+  bottom: 6%;
+  left: 33%;
+  width: 26px;
+  opacity: 0.85;
+  z-index: 3;
+}
+
+/* una hoja seca cruza de vez en cuando */
+.final-drifting-leaf {
+  position: absolute;
+  top: 24%;
+  left: -8%;
+  width: 30px;
+  opacity: 0;
+  pointer-events: none;
+  animation: leafCross 26s linear 6s infinite;
+}
+
+@keyframes leafCross {
+  0% {
+    opacity: 0;
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  4% {
+    opacity: 0.5;
+  }
+  30% {
+    opacity: 0.5;
+    transform: translateX(60vw) translateY(9vh) rotate(140deg);
+  }
+  38% {
+    opacity: 0;
+    transform: translateX(78vw) translateY(13vh) rotate(190deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(78vw) translateY(13vh) rotate(190deg);
+  }
+}
+
+/* texto final progresivo */
+.final-text {
+  position: relative;
+  z-index: 6;
+  padding: 0.8rem 0 0.4rem;
+}
+
+.final-line {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 1200ms ease,
+    transform 1200ms var(--ease-page);
+  transition-delay: calc(var(--i, 0) * 1.15s + 0.3s);
+  margin: 0.4em 0;
+  font-size: clamp(0.98rem, 2.7vw, 1.18rem);
+  line-height: 1.45;
+  max-width: 44ch;
+}
+
+.text-shown .final-line {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.final-dedication {
+  margin-top: 1.1em;
+}
+
+.final-line--dedication {
+  font-style: italic;
+}
+
+.final-line--dedication:first-child {
+  font-style: normal;
+  font-size: clamp(1.1rem, 3vw, 1.35rem);
+}
+
+.final-line--pt {
+  font-size: 0.85rem;
+  opacity: 0;
+  margin-top: 1.3em;
+  letter-spacing: 0.03em;
+}
+
+.text-shown .final-line--pt {
+  opacity: 0.62;
+}
+
+.final-line--signature {
+  font-size: 1rem;
+  margin-top: 0.7em;
+}
+
+.scene--final .thought {
+  color: var(--paper-light);
+}
