@@ -35,6 +35,20 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* fibras largas, separadas del grano para que la textura conserve dirección */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 89;
+  opacity: 0.055;
+  background:
+    repeating-linear-gradient(8deg, transparent 0 31px, var(--ink) 32px, transparent 33px 79px),
+    repeating-linear-gradient(92deg, transparent 0 113px, var(--paper-shadow) 114px, transparent 115px 181px);
+  mix-blend-mode: multiply;
+}
+
 #app {
   min-height: 100vh;
   min-height: 100svh;
@@ -175,4 +189,23 @@ html.reduced-motion *::after {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
   transition-duration: 120ms !important;
+}
+
+/* Los títulos reciben foco al cambiar de sala para lectores de pantalla. */
+.cover-title[tabindex="-1"]:focus,
+.scene-heading[tabindex="-1"]:focus {
+  outline: none;
+}
+
+html.reduced-motion .scene-enter,
+html.reduced-motion .scene-leave,
+html.reduced-motion .cover-leaf,
+html.reduced-motion .final-drifting-leaf {
+  transform: none !important;
+}
+
+html.page-hidden *,
+html.page-hidden *::before,
+html.page-hidden *::after {
+  animation-play-state: paused !important;
 }

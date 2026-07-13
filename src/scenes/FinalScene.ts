@@ -8,6 +8,7 @@ import {
   plantSVG,
   seedCubeSVG,
   thimbleSVG,
+  umbrellaSVG,
 } from "../art/svgLibrary";
 
 export class FinalScene implements Scene {
@@ -34,20 +35,21 @@ export class FinalScene implements Scene {
           <div class="final-branch final-branch--b" aria-hidden="true">${branchShadowSVG(2)}</div>
           <div class="final-drifting-leaf" aria-hidden="true">${leafSVG(3)}</div>
           <div class="final-cat" aria-hidden="true">
-            ${catSVG("cat--sleeping")}
+            ${catSVG("dani--sleeping")}
             <p class="thought thought--cat">${c.catThought}</p>
           </div>
           <button class="final-plant plant-wrap plant--full" type="button" aria-label="${c.plantLabel}">
             ${plantSVG()}
           </button>
           <div class="final-akita" aria-hidden="true">
-            ${akitaSVG("akita--guard")}
+            ${akitaSVG("diego--protecting")}
             <p class="thought thought--akita">${c.akitaThought}</p>
           </div>
           <button class="final-cube" type="button" aria-label="${c.cubeLabel}">
             ${seedCubeSVG()}
           </button>
           <div class="final-thimble" aria-hidden="true">${thimbleSVG()}</div>
+          <div class="final-umbrella" aria-hidden="true">${umbrellaSVG("umbrella--stored")}</div>
         </div>
         <div class="final-text">
           ${c.lines.map((l, i) => `<p class="final-line" style="--i:${i}">${l}</p>`).join("")}

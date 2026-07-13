@@ -18,6 +18,7 @@ export class OfferingsScene implements Scene {
   private water: DraggableOffering | null = null;
   private seed: DraggableOffering | null = null;
   private timers: number[] = [];
+  private completionScheduled = false;
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
@@ -33,7 +34,7 @@ export class OfferingsScene implements Scene {
       </header>
       <div class="scene-body">
         <div class="offer-stage">
-          <div class="offer-cat" aria-hidden="true">${catSVG()}
+          <div class="offer-cat" aria-hidden="true">${catSVG("dani--curious")}
             <p class="thought thought--cat">${c.catThought}</p>
           </div>
           <div class="offer-plant plant-wrap plant--dormant">
@@ -41,7 +42,7 @@ export class OfferingsScene implements Scene {
             <div class="water-drop" aria-hidden="true"></div>
             ${plantSVG()}
           </div>
-          <div class="offer-akita" aria-hidden="true">${akitaSVG()}
+          <div class="offer-akita" aria-hidden="true">${akitaSVG("diego--serious")}
             <p class="thought thought--akita">${c.akitaThought}</p>
           </div>
           <button class="offering offering--water" type="button" aria-label="${c.waterLabel}">
@@ -83,7 +84,7 @@ export class OfferingsScene implements Scene {
     });
 
     el.querySelector<HTMLButtonElement>(".btn-leaf")!.addEventListener("click", () => {
-      ctx.goTo("light");
+      ctx.goTo("care");
     });
 
     // reanudación: si ya estaban colocados, restaurar
@@ -130,7 +131,13 @@ export class OfferingsScene implements Scene {
   }
 
   private checkBoth(): void {
-    if (!this.el || !this.ctx.state.waterPlaced || !this.ctx.state.seedPlaced) return;
+    if (
+      !this.el ||
+      this.completionScheduled ||
+      !this.ctx.state.waterPlaced ||
+      !this.ctx.state.seedPlaced
+    ) return;
+    this.completionScheduled = true;
     const c = content.offerings;
     const plant = this.el.querySelector<HTMLElement>(".offer-plant")!;
     const delay = this.ctx.reducedMotion() ? 200 : 1100;
@@ -149,8 +156,11 @@ export class OfferingsScene implements Scene {
           window.setTimeout(
             () => {
               foot.classList.add("is-hidden");
+              foot.inert = true;
+              foot.setAttribute("aria-hidden", "true");
               after.hidden = false;
               after.classList.add("is-visible");
+              after.querySelector<HTMLButtonElement>(".btn-leaf")?.focus({ preventScroll: true });
             },
             this.ctx.reducedMotion() ? 150 : 1300
           )

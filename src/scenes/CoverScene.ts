@@ -12,6 +12,7 @@ export class CoverScene implements Scene {
   private startX = 0;
   private startY = 0;
   private whisperShown = false;
+  private timers: number[] = [];
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
@@ -108,10 +109,12 @@ export class CoverScene implements Scene {
     this.ctx.state.coverOpened = true;
     this.ctx.save();
     const delay = this.ctx.reducedMotion() ? 150 : 780;
-    window.setTimeout(() => this.ctx.goTo("clear-space"), delay);
+    this.timers.push(window.setTimeout(() => this.ctx.goTo("clear-space"), delay));
   }
 
   destroy(): void {
+    this.timers.forEach((timer) => window.clearTimeout(timer));
+    this.timers = [];
     this.el = null;
   }
 }

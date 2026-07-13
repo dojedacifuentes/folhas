@@ -39,9 +39,9 @@ export const content = {
     akitaThought: "geometría aplicada",
     afterMain: "Algo puede empezar incluso cuando cada uno llega con una cosa distinta.",
     afterNotes: [
-      "El gato mira el brote.",
-      "El akita mira al gato.",
-      "El brote se mueve porque aparentemente es el único adulto responsable de la escena.",
+      "Dani mira el brote.",
+      "Diego comprueba que el cubo siga cuadrado.",
+      "El brote asume la coordinación general.",
     ],
     next: "seguir",
     waterAnnouncement: "El agua llegó a la tierra.",
@@ -49,8 +49,42 @@ export const content = {
     sproutAnnouncement: "Apareció un brote pequeño con una hoja verde nueva.",
   },
 
-  light: {
+  care: {
     number: "III",
+    heading: "Encontrar la medida",
+    lede: "Cuidar también es no exagerar.",
+    rain: {
+      instruction: "deja pasar un poco de lluvia",
+      controlLabel:
+        "Paraguas. Muévelo para dejar pasar una cantidad moderada de lluvia.",
+      alternative: "medir la lluvia",
+      hint: "un poquito",
+      failure: "eso ya era un océano",
+      announcement: "La tierra quedó húmeda y apareció una hoja nueva.",
+    },
+    wind: {
+      instruction: "sopla con cuidado",
+      controlLabel:
+        "Corriente de aire. Mantén pulsado y suelta cuando el viento sea suficiente.",
+      alternative: "dar aire justo",
+      hint: "suavecito",
+      failure: "eso fue meteorología hostil",
+      announcement: "Las hojas se apartaron y el tallo recuperó el equilibrio.",
+    },
+    sun: {
+      instruction: "acerca el sol",
+      controlLabel: "Sol. Regula su cercanía para calentar la planta sin quemarla.",
+      alternative: "templar la luz",
+      hint: "un poco de sol",
+      failure: "el concepto de poco era importante",
+      announcement: "La planta se orientó hacia una luz tibia.",
+    },
+    complete: "La planta aprendió tres maneras de respirar.",
+    next: "encontrar la luz",
+  },
+
+  light: {
+    number: "IV",
     heading: "Buscar la luz",
     lede: "La sombra también puede cuidar.",
     instruction: "mueve la luz",
@@ -67,15 +101,15 @@ export const content = {
   },
 
   final: {
-    number: "IV",
-    heading: "Volver",
+    number: "V",
+    heading: "Quedarse",
     lines: [
       "No sé si las plantas entienden de promesas.",
-      "Esta aprendió nuestros gestos: hacer lugar, traer lo que tenemos, buscar la luz y volver.",
+      "Esta aprendió nuestros gestos: hacer lugar, encontrar la medida, buscar la luz y quedarse.",
     ],
     dedication: ["Para Dani.", "Quiero seguir aprendiendo contigo las formas pequeñas de cuidar."],
     portuguese: "a gente cuida do que quer ver crescer.",
-    signature: "👾💛",
+    signature: "D + D",
     catThought: "nanai para a plantinha.",
     akitaThought: "turno de guardia innecesariamente serio.",
     plantLabel: "La planta: una hoja amarilla, una turquesa y una verde nueva. Tócala si quieres.",
@@ -91,7 +125,7 @@ export const content = {
   },
 
   speakers: {
-    cat: "gato",
-    akita: "akita",
+    cat: "Dani",
+    akita: "Diego",
   },
 } as const;

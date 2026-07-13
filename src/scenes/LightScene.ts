@@ -17,6 +17,7 @@ export class LightScene implements Scene {
   private aligner: LightAligner | null = null;
   private timers: number[] = [];
   private leafStep = 0;
+  private completed = false;
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
@@ -39,14 +40,14 @@ export class LightScene implements Scene {
           </div>
           <div class="light-cat" aria-hidden="true">
             <div class="cast-shadow cast-shadow--cat"></div>
-            ${catSVG()}
+            ${catSVG("dani--worried")}
           </div>
           <div class="light-plant plant-wrap plant--sprout" aria-hidden="true">
             ${plantSVG()}
           </div>
           <div class="light-akita" aria-hidden="true">
             <div class="cast-shadow cast-shadow--akita"></div>
-            ${akitaSVG()}
+            ${akitaSVG("diego--protecting")}
           </div>
           <div class="shelter-union" aria-hidden="true">${shadowShelterSVG()}</div>
           <button class="lamp" type="button" aria-label="${c.lampLabel}">
@@ -86,6 +87,9 @@ export class LightScene implements Scene {
     el.querySelector<HTMLButtonElement>(".btn-leaf")!.addEventListener("click", () => {
       ctx.goTo("final");
     });
+    if (ctx.state.lightAligned) {
+      this.timers.push(window.setTimeout(() => this.aligner?.align(), 80));
+    }
     return el;
   }
 
@@ -117,7 +121,8 @@ export class LightScene implements Scene {
   }
 
   private aligned(): void {
-    if (!this.el) return;
+    if (!this.el || this.completed) return;
+    this.completed = true;
     const c = content.light;
     this.el.classList.add("is-aligned");
     const plant = this.el.querySelector<HTMLElement>(".light-plant")!;
@@ -135,8 +140,11 @@ export class LightScene implements Scene {
       window.setTimeout(
         () => {
           foot.classList.add("is-hidden");
+          foot.inert = true;
+          foot.setAttribute("aria-hidden", "true");
           after.hidden = false;
           after.classList.add("is-visible");
+          after.querySelector<HTMLButtonElement>(".btn-leaf")?.focus({ preventScroll: true });
         },
         this.ctx.reducedMotion() ? 150 : 1400
       )

@@ -33,9 +33,9 @@ export class ClearSpaceScene implements Scene {
       <div class="scene-body">
         <div class="scratch-stage">
           <div class="tableau plant-wrap plant--dormant" aria-hidden="true">
-            <div class="tableau-cat">${catSVG()}</div>
+            <div class="tableau-cat">${catSVG("dani--surprised")}</div>
             <div class="tableau-plant">${plantSVG()}</div>
-            <div class="tableau-akita">${akitaSVG()}</div>
+            <div class="tableau-akita">${akitaSVG("diego--serious")}</div>
             <div class="tableau-thimble">${thimbleSVG()}</div>
             <div class="tableau-cube">${seedCubeSVG()}</div>
           </div>
@@ -72,6 +72,9 @@ export class ClearSpaceScene implements Scene {
     });
     // esperar a que la transición asiente el layout antes de medir
     this.timers.push(window.setTimeout(() => this.scratch?.init(), 80));
+    if (ctx.state.leavesCleared) {
+      this.timers.push(window.setTimeout(() => this.scratch?.reveal(), 120));
+    }
 
     el.querySelector<HTMLButtonElement>(".link-alt")!.addEventListener("click", () => {
       this.scratch?.reveal();
@@ -98,8 +101,11 @@ export class ClearSpaceScene implements Scene {
     this.timers.push(
       window.setTimeout(() => {
         foot.classList.add("is-hidden");
+        foot.inert = true;
+        foot.setAttribute("aria-hidden", "true");
         after.hidden = false;
         after.classList.add("is-visible");
+        after.querySelector<HTMLButtonElement>(".btn-leaf")?.focus({ preventScroll: true });
       }, delay)
     );
   }

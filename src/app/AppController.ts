@@ -1,5 +1,11 @@
 import { content } from "./content";
-import { defaultState, type ExperienceState, type SceneId } from "./state";
+import {
+  canAdvanceTo,
+  defaultState,
+  sanitizeState,
+  type ExperienceState,
+  type SceneId,
+} from "./state";
 import { SceneManager, type Scene, type SceneContext } from "./SceneManager";
 import { StorageManager } from "../storage/StorageManager";
 import { Soundscape } from "../audio/Soundscape";
@@ -8,6 +14,7 @@ import { soundIconSVG } from "../art/svgLibrary";
 import { CoverScene } from "../scenes/CoverScene";
 import { ClearSpaceScene } from "../scenes/ClearSpaceScene";
 import { OfferingsScene } from "../scenes/OfferingsScene";
+import { CareScene } from "../scenes/CareScene";
 import { LightScene } from "../scenes/LightScene";
 import { FinalScene } from "../scenes/FinalScene";
 
@@ -22,6 +29,7 @@ export class AppController {
   private chrome!: HTMLElement;
   private soundBtn!: HTMLButtonElement;
   private chromeShown = false;
+  private announceTimer: number | null = null;
 
   constructor(root: HTMLElement) {
     this.root = root;
@@ -69,16 +77,16 @@ export class AppController {
       goTo: (id) => this.goTo(id),
       audio: this.audio,
       reducedMotion: () => this.motion.reduced,
-      announce: (m) => this.announce(m),
+      announce: (message) => this.announce(message),
       onFirstInteraction: () => this.showChrome(),
     };
 
     this.manager = new SceneManager(stage, (id) => this.makeScene(id), ctx);
 
-    // reanudar donde se quedó
-    const initial: SceneId = this.state.currentScene ?? "cover";
+    // StorageManager ya valido la escena reanudada y todos sus hitos.
+    const initial: SceneId = this.state.currentScene;
     if (initial !== "cover") this.showChrome();
-    this.root.classList.toggle("on-dark", initial === "light" || initial === "final");
+    this.applySceneAppearance(initial);
     this.manager.show(initial);
   }
 
@@ -90,6 +98,8 @@ export class AppController {
         return new ClearSpaceScene();
       case "offerings":
         return new OfferingsScene();
+      case "care":
+        return new CareScene();
       case "light":
         return new LightScene();
       case "final":
@@ -97,11 +107,18 @@ export class AppController {
     }
   }
 
-  private goTo(id: SceneId): void {
+  private goTo(id: SceneId): boolean {
+    if (!canAdvanceTo(this.state, id)) return false;
+
+    const accepted = this.manager.show(id);
+    if (!accepted) return false;
+
+    // Persistir solo despues de que SceneManager acepte la transicion evita
+    // que el estado avance mientras la interfaz permanece en otra sala.
     this.state.currentScene = id;
     this.save();
-    this.root.classList.toggle("on-dark", id === "light" || id === "final");
-    this.manager.show(id);
+    this.applySceneAppearance(id);
+    return true;
   }
 
   private showChrome(): void {
@@ -112,22 +129,43 @@ export class AppController {
 
   private restart(): void {
     const audio = this.state.audioEnabled;
+    const accepted = this.manager.show("cover", { force: true });
+    if (!accepted) return;
+
     this.storage.clear();
     Object.assign(this.state, defaultState());
     this.state.audioEnabled = audio; // la preferencia de sonido se respeta
     this.save();
     this.audio.stopBreath();
-    this.manager.show("cover");
+    this.applySceneAppearance("cover");
+
+    this.chromeShown = false;
+    this.chrome.hidden = true;
+    if (this.announceTimer !== null) {
+      window.clearTimeout(this.announceTimer);
+      this.announceTimer = null;
+    }
+    this.liveRegion.textContent = "";
   }
 
   private save(): void {
+    Object.assign(this.state, sanitizeState(this.state));
     this.storage.save(this.state);
   }
 
+  private applySceneAppearance(id: SceneId): void {
+    // Cuidados conserva el papel claro; solo luz y final usan cromo nocturno.
+    this.root.classList.toggle("on-dark", id === "light" || id === "final");
+  }
+
   private announce(message: string): void {
+    if (this.announceTimer !== null) {
+      window.clearTimeout(this.announceTimer);
+    }
     this.liveRegion.textContent = "";
-    window.setTimeout(() => {
+    this.announceTimer = window.setTimeout(() => {
       this.liveRegion.textContent = message;
+      this.announceTimer = null;
     }, 60);
   }
 }

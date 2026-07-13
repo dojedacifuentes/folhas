@@ -86,6 +86,14 @@
   .scene {
     gap: 0.3rem;
     padding-top: calc(0.7rem + var(--safe-top));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    overflow-x: hidden;
+  }
+
+  .scene::-webkit-scrollbar {
+    display: none;
   }
 
   .scene-number {
@@ -94,6 +102,32 @@
 
   .scene-lede {
     margin-top: 0.3em;
+  }
+}
+
+@media (max-width: 899px) {
+  .final-stage {
+    overflow: clip;
+  }
+
+  .scene--final .thought {
+    max-width: 16ch;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-height: 650px) and (max-width: 899px) {
+  .scene-body {
+    min-height: 430px;
+  }
+
+  .scene--final .scene-body {
+    min-height: 690px;
+  }
+
+  .scene-after {
+    padding-bottom: 1.4rem;
   }
 }
 

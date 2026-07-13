@@ -1,4 +1,8 @@
-import { defaultState, type ExperienceState } from "../app/state";
+import {
+  defaultState,
+  sanitizeState,
+  type ExperienceState,
+} from "../app/state";
 
 const KEY = "herbario-dani:v1";
 
@@ -7,8 +11,7 @@ export class StorageManager {
     try {
       const raw = localStorage.getItem(KEY);
       if (!raw) return defaultState();
-      const parsed = JSON.parse(raw) as Partial<ExperienceState>;
-      return { ...defaultState(), ...parsed };
+      return sanitizeState(JSON.parse(raw));
     } catch {
       return defaultState();
     }
@@ -16,9 +19,9 @@ export class StorageManager {
 
   save(state: ExperienceState): void {
     try {
-      localStorage.setItem(KEY, JSON.stringify(state));
+      localStorage.setItem(KEY, JSON.stringify(sanitizeState(state)));
     } catch {
-      // el herbario también funciona sin memoria
+      // el herbario tambien funciona sin memoria
     }
   }
 

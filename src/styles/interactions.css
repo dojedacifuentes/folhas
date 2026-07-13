@@ -1,6 +1,6 @@
 /* ============ escena III: buscar la luz ============ */
 .scene--light {
-  background: var(--night);
+  background: var(--night-deep);
   color: var(--paper);
 }
 
@@ -28,7 +28,7 @@
       rgba(229, 199, 105, 0.1) 32%,
       transparent 58%
     ),
-    linear-gradient(180deg, #18232a 0%, var(--night) 60%, #24333c 100%);
+    linear-gradient(180deg, var(--night-deep) 0%, var(--night) 62%, color-mix(in srgb, var(--night) 78%, var(--rain)) 100%);
 }
 
 .light-glow {
@@ -115,7 +115,7 @@
   left: 50%;
   width: 62%;
   height: calc(70px * var(--shadow-len));
-  background: linear-gradient(to top, var(--shadow-deep), transparent 92%);
+  background: linear-gradient(to top, var(--shadow-deep), color-mix(in srgb, var(--shadow-medium) 42%, transparent) 58%, transparent 94%);
   border-radius: 46% 54% 20% 20%;
   transform-origin: bottom center;
   transform: translateX(-50%) skewX(var(--cat-skew));
