@@ -5,10 +5,28 @@
   overflow: visible;
 }
 
+/* Dani y Diego comparten una gramática de tinta, pero no una silueta. */
+.fig-dani,
+.fig-diego {
+  overflow: visible;
+}
+
 .cat-tail-group,
 .akita-head,
 .cat-head,
 .akita-ear,
+.dani-body-group,
+.dani-head,
+.dani-ear,
+.dani-glasses,
+.dani-eyes,
+.dani-paw,
+.diego-body-group,
+.diego-head,
+.diego-ear,
+.diego-glasses,
+.diego-eyes,
+.diego-paw,
 .plant-sprout,
 .cube-solid {
   transform-box: fill-box;
@@ -21,6 +39,233 @@
 
 .akita-head {
   transform-origin: center bottom;
+}
+
+.dani-head,
+.diego-head,
+.dani-body-group,
+.diego-body-group,
+.dani-glasses,
+.diego-glasses,
+.dani-ear,
+.diego-ear,
+.dani-paw,
+.diego-paw,
+.dani-eye,
+.diego-eye {
+  transition: transform var(--dur-object) var(--ease-page), opacity var(--dur-micro) ease;
+}
+
+.dani-head {
+  transform-origin: 62% 80%;
+}
+
+.dani-ear--left,
+.diego-ear--left {
+  transform-origin: right bottom;
+}
+
+.dani-ear--right,
+.diego-ear--right {
+  transform-origin: left bottom;
+}
+
+.dani-paw--front,
+.diego-paw--left {
+  transform-origin: center right;
+}
+
+.diego-glasses,
+.dani-glasses {
+  transform-origin: center;
+}
+
+/* Vista de inventario: la pose lateral conserva la misma anatomía. */
+.dani--profile .dani-head {
+  transform: translate(-5px, 1px) rotate(-7deg);
+}
+
+.dani--profile .dani-lens--far,
+.dani--profile .dani-eye--right,
+.dani--profile .dani-glasses-arm--right {
+  opacity: 0.32;
+}
+
+.diego--profile .diego-head {
+  transform: translateX(-4px) rotate(-3deg);
+}
+
+.diego--profile .diego-lens--right,
+.diego--profile .diego-eye--right,
+.diego--profile .diego-glasses-arm--right {
+  opacity: 0.3;
+}
+
+/* Estados de Dani: la expresividad vive en postura, orejas, cola y lentes. */
+.dani--curious .dani-head {
+  transform: translate(-3px, -5px) rotate(-8deg);
+}
+
+.dani--curious .dani-paw--front {
+  transform: translate(-3px, -8px) rotate(-10deg);
+}
+
+.dani--curious .dani-tail-group {
+  transform: rotate(7deg);
+}
+
+.dani--surprised .dani-head {
+  transform: translateY(-7px) rotate(2deg);
+}
+
+.dani--surprised .dani-ear--left {
+  transform: rotate(-13deg);
+}
+
+.dani--surprised .dani-ear--right {
+  transform: rotate(12deg);
+}
+
+.dani--surprised .dani-eye {
+  transform: scale(1.45);
+}
+
+.dani--surprised .dani-glasses {
+  transform: translateY(-1px) scale(1.035);
+}
+
+.dani--hiding .dani-body-group {
+  transform: translateY(11px) scaleY(0.9);
+}
+
+.dani--hiding .dani-head {
+  transform: translate(8px, 17px) rotate(-4deg);
+}
+
+.dani--hiding .dani-tail-group {
+  transform: translateY(8px) rotate(-9deg);
+}
+
+.dani--hiding .dani-ground-shadow {
+  transform: scaleX(0.82);
+  transform-origin: center;
+}
+
+.dani--worried .dani-head {
+  transform: translateY(5px) rotate(7deg);
+}
+
+.dani--worried .dani-ear--left {
+  transform: rotate(17deg);
+}
+
+.dani--worried .dani-ear--right {
+  transform: rotate(-14deg);
+}
+
+.dani--worried .dani-glasses {
+  transform: translateY(2px) rotate(2deg);
+}
+
+.dani--sleeping,
+.cat--sleeping {
+  transform: scaleY(0.94);
+  transform-origin: bottom;
+}
+
+.dani--sleeping .dani-head,
+.cat--sleeping .dani-head {
+  transform: translate(8px, 12px) rotate(10deg);
+}
+
+.dani--sleeping .dani-eye,
+.cat--sleeping .dani-eye {
+  transform: scaleY(0.18);
+}
+
+.dani--sleeping .dani-tail-group,
+.cat--sleeping .dani-tail-group {
+  transform: translate(-5px, 8px) rotate(-12deg);
+}
+
+/* Estados de Diego: geometría estable, con accidentes mínimos en los lentes. */
+.diego--serious .diego-head {
+  transform: translateY(-2px);
+}
+
+.diego--serious .diego-brow--left {
+  transform: rotate(3deg);
+}
+
+.diego--serious .diego-brow--right {
+  transform: rotate(-3deg);
+}
+
+.diego--concerned .diego-head {
+  transform: translateY(3px) rotate(-3deg);
+}
+
+.diego--concerned .diego-ear--left {
+  transform: rotate(-17deg);
+}
+
+.diego--concerned .diego-ear--right {
+  transform: rotate(16deg);
+}
+
+.diego--concerned .diego-glasses {
+  transform: translateY(2px);
+}
+
+.diego--protecting .diego-body-group,
+.akita--guard .diego-body-group {
+  transform: scaleX(1.055);
+}
+
+.diego--protecting .diego-head,
+.akita--guard .diego-head {
+  transform: translateY(-4px) scale(1.015);
+}
+
+.diego--protecting .diego-paw--left,
+.akita--guard .diego-paw--left {
+  transform: translateX(-4px);
+}
+
+.diego--protecting .diego-paw--right,
+.akita--guard .diego-paw--right {
+  transform: translateX(4px);
+}
+
+.diego--embarrassed .diego-head {
+  transform: translateY(5px) rotate(6deg);
+}
+
+.diego--embarrassed .diego-ear--left {
+  transform: rotate(14deg);
+}
+
+.diego--embarrassed .diego-ear--right {
+  transform: rotate(-19deg);
+}
+
+.diego--embarrassed .diego-glasses {
+  transform: translateY(4px) rotate(3deg);
+}
+
+.diego--recoveringGlasses .diego-glasses,
+.diego--recovering-glasses .diego-glasses {
+  transform: translate(-8px, 8px) rotate(-11deg);
+}
+
+.diego--recoveringGlasses .diego-paw--left,
+.diego--recovering-glasses .diego-paw--left {
+  transform: translate(12px, -20px) rotate(-21deg);
+}
+
+.diego--recoveringGlasses .diego-head,
+.diego--recovering-glasses .diego-head {
+  transform: rotate(-4deg);
 }
 
 @keyframes tailFlick {
@@ -52,7 +297,9 @@
 
 /* ============ escena final: ilustración viva ============ */
 .scene--final {
-  background: linear-gradient(180deg, #1a252c 0%, var(--night) 55%, #26363f 100%);
+  background:
+    radial-gradient(circle at 48% 58%, rgba(229, 199, 105, 0.09), transparent 32%),
+    linear-gradient(164deg, var(--night-deep, #172329) 0%, var(--night) 58%, #26363f 100%);
   color: var(--paper-light);
 }
 
@@ -61,17 +308,33 @@
   flex: 1;
   min-height: 250px;
   z-index: 2;
+  isolation: isolate;
+}
+
+/* Suelo de tinta: sostiene la escena sin convertirla en una tarjeta. */
+.final-stage::after {
+  content: "";
+  position: absolute;
+  left: 7%;
+  right: 4%;
+  bottom: 1.5%;
+  height: 19%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, var(--shadow-deep) 0%, transparent 72%);
+  opacity: 0.68;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .final-glow {
   position: absolute;
-  left: 55%;
-  top: 12%;
-  width: 130px;
-  height: 130px;
+  left: 48%;
+  top: 16%;
+  width: clamp(112px, 25vw, 158px);
+  height: clamp(112px, 25vw, 158px);
   transform: translateX(-50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(229, 199, 105, 0.34), transparent 70%);
+  background: radial-gradient(circle, rgba(229, 199, 105, 0.38), rgba(229, 199, 105, 0.08) 42%, transparent 72%);
   pointer-events: none;
   animation: glowBreath 11s ease-in-out infinite alternate;
 }
@@ -90,29 +353,40 @@
 .final-branch {
   position: absolute;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.42;
+  color: var(--shadow-deep);
+  mix-blend-mode: multiply;
+  z-index: 0;
 }
 
 .final-branch--a {
-  top: -8%;
-  left: -14%;
-  width: 80%;
+  top: -10%;
+  left: -21%;
+  width: 86%;
+  transform-origin: top left;
   animation: driftA 18s ease-in-out infinite alternate;
 }
 
 .final-branch--b {
-  bottom: -16%;
-  right: -18%;
-  width: 66%;
+  top: -7%;
+  right: -24%;
+  bottom: auto;
+  width: 79%;
+  transform-origin: top right;
   animation: driftB 15s ease-in-out infinite alternate;
+}
+
+.final-branch--b .branch-shadow {
+  transform: scaleX(-1) rotate(-8deg);
+  transform-origin: center;
 }
 
 .final-plant {
   position: absolute;
   bottom: 7%;
-  left: 50%;
+  left: 48%;
   transform: translateX(-50%);
-  width: clamp(120px, 26vw, 185px);
+  width: clamp(124px, 27vw, 190px);
   z-index: 4;
   cursor: pointer;
 }
@@ -145,24 +419,10 @@
 
 .final-cat {
   position: absolute;
-  bottom: 6%;
-  left: 10%;
-  width: clamp(90px, 20vw, 145px);
+  bottom: 4%;
+  left: 6%;
+  width: clamp(96px, 21vw, 150px);
   z-index: 3;
-}
-
-/* gato dormido: acurrucado, ojos entrecerrados */
-.cat--sleeping {
-  transform: scaleY(0.94);
-  transform-origin: bottom;
-}
-
-.cat--sleeping .cat-head {
-  transform: rotate(7deg) translateY(3px);
-}
-
-.cat--sleeping .cat-eye {
-  transform: scaleY(0.2);
 }
 
 .cat-eye {
@@ -170,29 +430,81 @@
   transform-origin: center;
 }
 
+/* Las dos sombras avanzan hacia la planta y terminan como refugio. */
+.final-cat::before,
+.final-akita::before {
+  content: "";
+  position: absolute;
+  bottom: 5%;
+  height: 64%;
+  background: var(--shadow-deep);
+  opacity: 0.48;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.final-cat::before {
+  left: 50%;
+  width: 178%;
+  border-radius: 72% 34% 28% 20%;
+  transform: skewX(-19deg) rotate(-7deg);
+  transform-origin: left bottom;
+  clip-path: polygon(0 86%, 18% 48%, 47% 22%, 76% 6%, 100% 0, 85% 34%, 66% 56%, 46% 75%, 22% 94%);
+}
+
+.final-akita::before {
+  right: 48%;
+  width: 164%;
+  border-radius: 30% 70% 20% 28%;
+  transform: skewX(16deg) rotate(6deg);
+  transform-origin: right bottom;
+  clip-path: polygon(0 0, 27% 8%, 52% 26%, 78% 50%, 100% 88%, 79% 95%, 55% 76%, 34% 58%, 12% 35%);
+}
+
 .final-cat .cat-tail-group {
   animation: sleepyTail 14s ease-in-out infinite;
+}
+
+.final-cat .dani-lens-glint,
+.final-akita .diego-lens-glint {
+  animation: lensGlint 16s ease-in-out infinite;
+}
+
+.final-akita .diego-lens-glint {
+  animation-delay: 5s;
 }
 
 @keyframes sleepyTail {
   0%,
   90%,
   100% {
-    transform: rotate(0deg);
+    transform: translate(-5px, 8px) rotate(-12deg);
   }
   93% {
-    transform: rotate(6deg);
+    transform: translate(-5px, 8px) rotate(-6deg);
   }
   96% {
-    transform: rotate(-3deg);
+    transform: translate(-5px, 8px) rotate(-15deg);
+  }
+}
+
+@keyframes lensGlint {
+  0%,
+  88%,
+  100% {
+    opacity: 0.2;
+  }
+  91%,
+  94% {
+    opacity: 0.92;
   }
 }
 
 .final-akita {
   position: absolute;
-  bottom: 5%;
-  right: 9%;
-  width: clamp(100px, 22vw, 158px);
+  bottom: 7%;
+  right: 4%;
+  width: clamp(110px, 24vw, 170px);
   z-index: 3;
 }
 
@@ -207,9 +519,16 @@
 .final-cube {
   position: absolute;
   bottom: 11%;
-  left: 56%;
-  width: 34px;
+  left: 54%;
+  width: 44px;
+  height: 44px;
   z-index: 5;
+  display: grid;
+  place-items: center;
+}
+
+.final-cube .fig-cube {
+  width: 34px;
   clip-path: inset(0 0 34% 0); /* parcialmente hundido en la tierra */
 }
 
@@ -224,10 +543,28 @@
 .final-thimble {
   position: absolute;
   bottom: 6%;
-  left: 33%;
+  left: 32%;
   width: 26px;
   opacity: 0.85;
   z-index: 3;
+}
+
+/* El paraguas reaparece como una copa tenue: objeto y sombra a la vez. */
+.final-umbrella {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  width: clamp(220px, 46vw, 370px);
+  transform: translateX(-50%);
+  opacity: 0.42;
+  filter: saturate(0.62) brightness(0.8);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.final-umbrella .umbrella-ground-shadow {
+  display: none;
 }
 
 /* una hoja seca cruza de vez en cuando */

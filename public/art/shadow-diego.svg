@@ -1,0 +1,10 @@
+<svg class="character-shadow character-shadow--diego " viewBox="0 0 220 170" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <g fill="rgba(16, 22, 24, 0.36)" opacity="0.92">
+    <path d="M31 158 L34 102 C35 76 51 61 76 56 L145 56 C171 63 185 82 186 108 L190 158 Z"/>
+    <path d="M52 66 L51 25 L84 52 Z M137 49 L174 21 L171 70 Z"/>
+    <path d="M42 98 L16 128 L25 139 L55 111 Z M177 99 L207 126 L197 139 L164 111 Z"/>
+    <path d="M157 87 C187 83 204 63 197 43 C192 30 177 27 167 36 L158 27 C177 8 210 18 217 42 C227 76 202 108 166 113 Z"/>
+  </g>
+  <path d="M23 141 C72 119 151 119 201 141" stroke="rgba(16, 22, 24, 0.36)" stroke-width="9"
+    stroke-linecap="square" fill="none" opacity="0.92"/>
+</svg>

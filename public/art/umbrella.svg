@@ -1,0 +1,19 @@
+<svg class="fig fig-umbrella " viewBox="0 0 180 160" role="img" aria-label="Paraguas de papel con mango curvo y una hoja atrapada" xmlns="http://www.w3.org/2000/svg">
+  <ellipse class="fig-shadow umbrella-ground-shadow" cx="91" cy="151" rx="43" ry="5" fill="rgba(25, 31, 31, 0.22)"/>
+  <g class="umbrella-body">
+    <path class="umbrella-canopy" d="M18 69 C24 31 55 11 91 12 C127 12 158 32 164 69 C151 61 139 61 127 70 C115 60 103 60 91 70 C79 60 67 60 55 70 C43 61 31 61 18 69 Z"
+      fill="#708a99"/>
+    <path class="umbrella-canopy-light" d="M27 58 C42 30 65 20 89 18 C77 30 70 46 69 63 C55 56 41 55 27 58 Z"
+      fill="#fbf5e9" opacity="0.28"/>
+    <path class="umbrella-rib" d="M91 16 L91 70 M91 17 C73 31 61 48 55 69 M91 17 C110 31 121 48 127 69"
+      stroke="#1f2b33" stroke-width="1.5" fill="none" opacity="0.52"/>
+    <path class="umbrella-stem" d="M91 68 L91 129 C91 144 111 146 116 134" stroke="#1f2b33"
+      stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path class="umbrella-stem-glint" d="M89 76 L89 117" stroke="#fbf5e9" stroke-width="1.2"
+      stroke-linecap="round" opacity="0.45"/>
+  </g>
+  <g class="umbrella-caught-leaf" transform="translate(124 47) rotate(18)">
+    <path d="M0 17 C1 7 8 1 19 0 C19 11 12 18 1 19 Z" fill="#d3a83c"/>
+    <path d="M3 16 C7 11 11 7 16 3" stroke="#63483a" stroke-width="1" fill="none" opacity="0.56"/>
+  </g>
+</svg>

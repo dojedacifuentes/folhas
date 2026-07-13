@@ -4,56 +4,111 @@
  * Todos los dibujos son originales y locales.
  */
 
-/** Gato amarillo: intuición, curiosidad, cola como signo de interrogación. */
+/** Dani: gata amarilla, curiosa y caligráfica, con lentes integrados. */
 export function catSVG(extraClass = ""): string {
   return `
-<svg class="fig fig-cat ${extraClass}" viewBox="0 0 150 122" role="img" aria-label="Gatito amarillo con la cola curvada como un signo de interrogación" xmlns="http://www.w3.org/2000/svg">
-  <ellipse class="fig-shadow" cx="72" cy="112" rx="46" ry="7" fill="var(--shadow)"/>
-  <g class="cat-tail-group">
-    <path class="cat-tail" d="M108 82 C130 76 137 52 121 43 C111 37 100 44 104 53"
-      fill="none" stroke="var(--yellow)" stroke-width="8.5" stroke-linecap="round"/>
-    <circle cx="103" cy="64" r="4.4" fill="var(--yellow)"/>
+<svg class="fig fig-cat fig-dani ${extraClass}" viewBox="0 0 180 150" role="img" aria-label="Dani, gata amarilla estilizada con lentes irregulares y cola en forma de interrogación" xmlns="http://www.w3.org/2000/svg">
+  <ellipse class="fig-shadow dani-ground-shadow" cx="88" cy="140" rx="55" ry="6.5" fill="var(--shadow)"/>
+  <g class="cat-tail-group dani-tail-group">
+    <path class="cat-tail dani-tail" d="M126 119 C155 119 169 95 160 75 C154 61 139 57 130 66 C123 73 126 84 136 84"
+      fill="none" stroke="var(--dani-shadow, #9d7333)" stroke-width="11" stroke-linecap="round"/>
+    <path d="M137 84 C143 83 146 87 143 92" fill="none" stroke="var(--dani-light, #e6c96e)"
+      stroke-width="3" stroke-linecap="round" opacity="0.72"/>
   </g>
-  <path class="cat-body" d="M40 108 C30 88 39 63 66 58 C93 53 109 68 105 88 C102 102 85 109 62 109 C53 109 44 111 40 108 Z"
-    fill="var(--yellow)"/>
-  <ellipse class="cat-paw" cx="52" cy="106" rx="10" ry="5" fill="var(--yellow-soft)"/>
-  <g class="cat-head">
-    <path class="cat-ear cat-ear--left" d="M30 34 L25 13 L45 25 Z" fill="var(--yellow)"/>
-    <path class="cat-ear cat-ear--right" d="M56 24 L70 9 L72 30 Z" fill="var(--yellow)" transform="rotate(13 64 20)"/>
-    <path d="M26 52 C21 33 36 20 52 22 C68 24 75 40 68 55 C61 68 32 68 26 52 Z" fill="var(--yellow-soft)"/>
-    <path class="cat-eye" d="M39 44 q3.4 3.2 6.6 0" stroke="var(--ink)" fill="none" stroke-width="1.7" stroke-linecap="round"/>
-    <circle class="cat-eye" cx="57" cy="43" r="1.8" fill="var(--ink)"/>
-    <path d="M47 51 l3 2.4 -3.2 2.2" stroke="var(--ink)" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M24 50 l-9 -1.4 M25 55 l-8 2.2" stroke="var(--ink)" fill="none" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
-    <path d="M69 49 l9 -1.8 M68 54 l8 2.6" stroke="var(--ink)" fill="none" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <g class="dani-body-group">
+    <path class="cat-body dani-body" d="M45 132 C35 118 36 98 43 84 C51 68 68 61 88 62 C108 62 127 72 134 89 C141 105 135 124 121 133 C106 141 56 141 45 132 Z"
+      fill="var(--dani-yellow, #d3a83c)"/>
+    <path class="dani-body-light" d="M56 126 C50 108 56 83 75 72 C88 65 105 68 116 77 C98 76 82 84 75 99 C69 112 70 126 76 137 C65 137 59 134 56 126 Z"
+      fill="var(--dani-light, #e6c96e)" opacity="0.78"/>
+    <path class="dani-back-mark" d="M106 69 C120 75 130 85 134 98" fill="none"
+      stroke="var(--dani-shadow, #9d7333)" stroke-width="2.4" stroke-linecap="round" opacity="0.52"/>
+    <path class="dani-leg dani-leg--rear" d="M105 111 C110 121 109 132 105 137" fill="none"
+      stroke="var(--dani-shadow, #9d7333)" stroke-width="7" stroke-linecap="round"/>
+    <path class="dani-leg dani-leg--front" d="M66 101 C62 113 62 128 65 137" fill="none"
+      stroke="var(--dani-yellow, #d3a83c)" stroke-width="7" stroke-linecap="round"/>
+    <path class="cat-paw dani-paw dani-paw--front" d="M57 137 C62 133 70 133 75 137 C71 141 61 142 57 137 Z"
+      fill="var(--dani-light, #e6c96e)"/>
+  </g>
+  <g class="cat-head dani-head">
+    <path class="cat-ear cat-ear--left dani-ear dani-ear--left" d="M34 35 L30 8 L50 25 Z"
+      fill="var(--dani-shadow, #9d7333)"/>
+    <path class="cat-ear cat-ear--right dani-ear dani-ear--right" d="M65 22 L84 5 L84 32 Z"
+      fill="var(--dani-yellow, #d3a83c)" transform="rotate(8 75 20)"/>
+    <path class="dani-face" d="M30 59 C24 43 30 26 46 19 C63 11 82 18 89 34 C96 49 87 65 68 70 C50 75 35 69 30 59 Z"
+      fill="var(--dani-light, #e6c96e)"/>
+    <path class="dani-cheek" d="M31 55 C37 66 50 70 65 67" fill="none"
+      stroke="var(--dani-yellow, #d3a83c)" stroke-width="3" stroke-linecap="round" opacity="0.68"/>
+    <g class="dani-eyes">
+      <circle class="cat-eye dani-eye dani-eye--left" cx="45" cy="43" r="2" fill="var(--ink)"/>
+      <circle class="cat-eye dani-eye dani-eye--right" cx="69" cy="41" r="2" fill="var(--ink)"/>
+    </g>
+    <g class="dani-glasses" fill="var(--paper-light)" fill-opacity="0.13" stroke="var(--ink)"
+      stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path class="dani-lens dani-lens--near" d="M34 34 C40 31 51 31 57 35 L56 49 C50 53 40 52 34 47 Z"/>
+      <path class="dani-lens dani-lens--far" d="M59 34 C66 30 77 30 83 34 L82 47 C76 51 66 51 60 47 Z"/>
+      <path class="dani-glasses-bridge" d="M57 38 C58 36 59 36 61 37" fill="none"/>
+      <path class="dani-glasses-arm dani-glasses-arm--left" d="M34 37 L27 34" fill="none"/>
+      <path class="dani-glasses-arm dani-glasses-arm--right" d="M83 36 L88 34" fill="none"/>
+      <path class="dani-lens-glint" d="M39 36 L44 34 M66 34 L70 33" fill="none"
+        stroke="var(--paper-light)" stroke-width="1.2" opacity="0.78"/>
+    </g>
+    <path class="dani-nose" d="M56 52 L59 54 L56 56" stroke="var(--ink)" fill="none"
+      stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path class="dani-whiskers" d="M34 54 L19 51 M34 59 L20 62 M76 53 L89 49 M75 58 L88 62"
+      stroke="var(--ink)" fill="none" stroke-width="1" stroke-linecap="round" opacity="0.62"/>
   </g>
 </svg>`;
 }
 
-/** Akita turquesa: constancia, estructura, seriedad levemente absurda. */
+/** Diego: akita turquesa, geométrico y protector, con lentes bajos. */
 export function akitaSVG(extraClass = ""): string {
   return `
-<svg class="fig fig-akita ${extraClass}" viewBox="0 0 160 138" role="img" aria-label="Criatura akita turquesa, sentada con seriedad concentrada" xmlns="http://www.w3.org/2000/svg">
-  <ellipse class="fig-shadow" cx="80" cy="128" rx="50" ry="7.5" fill="var(--shadow)"/>
-  <path class="akita-tail" d="M112 82 C134 74 140 50 120 46 C106 43 102 58 112 62"
-    fill="none" stroke="var(--turquoise-dark)" stroke-width="11" stroke-linecap="round"/>
-  <path class="akita-body" d="M44 124 C38 96 46 70 80 66 C112 62 126 82 122 104 C119 120 102 126 78 126 C64 126 50 128 44 124 Z"
-    fill="var(--turquoise)"/>
-  <path class="akita-chest" d="M62 124 C58 104 64 88 80 86 C94 84 100 96 98 110 C96 121 84 125 74 125 Z"
-    fill="var(--paper-light)" opacity="0.85"/>
-  <rect class="akita-leg" x="58" y="100" width="9" height="26" rx="4.5" fill="var(--turquoise-dark)"/>
-  <rect class="akita-leg" x="88" y="100" width="9" height="26" rx="4.5" fill="var(--turquoise-dark)"/>
-  <g class="akita-head">
-    <path class="akita-ear akita-ear--left" d="M50 29 L49 9 L66 22 Z" fill="var(--turquoise-dark)"/>
-    <path class="akita-ear akita-ear--right" d="M82 20 L94 6 L96 25 Z" fill="var(--turquoise-dark)"/>
-    <path d="M40 48 C36 26 54 14 74 16 C94 18 102 36 94 54 C86 70 46 68 40 48 Z" fill="var(--turquoise)"/>
-    <path class="akita-muzzle" d="M58 46 C58 38 66 34 74 36 C82 38 84 46 80 52 C76 58 60 56 58 46 Z"
-      fill="var(--paper-light)" opacity="0.9"/>
-    <path d="M67 42 l6 0 M67 46 l0 0" stroke="none"/>
-    <circle cx="70" cy="43" r="2.2" fill="var(--ink)"/>
-    <path d="M52 36 l8 0" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M82 34 l8 0" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M50 30 l7 -2 M84 28 l7 2" stroke="var(--ink)" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+<svg class="fig fig-akita fig-diego ${extraClass}" viewBox="0 0 180 158" role="img" aria-label="Diego, akita turquesa geométrico con lentes rectangulares bajos y postura protectora" xmlns="http://www.w3.org/2000/svg">
+  <ellipse class="fig-shadow diego-ground-shadow" cx="91" cy="149" rx="58" ry="7" fill="var(--shadow)"/>
+  <path class="akita-tail diego-tail" d="M128 101 C154 95 162 69 145 57 C132 48 117 57 121 70 C123 78 135 80 141 73"
+    fill="none" stroke="var(--diego-shadow, #316a68)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  <g class="diego-body-group">
+    <path class="akita-body diego-body" d="M43 143 L40 107 C39 87 50 75 69 69 L111 69 C131 75 141 90 140 111 L135 143 Z"
+      fill="var(--diego-turquoise, #4d918b)"/>
+    <path class="diego-shoulder" d="M42 105 C51 89 66 82 85 82 C108 82 127 93 139 110"
+      fill="none" stroke="var(--diego-light, #79aaa4)" stroke-width="8" stroke-linecap="square" opacity="0.72"/>
+    <path class="akita-chest diego-chest" d="M67 143 L65 91 L91 84 L111 96 L108 143 Z"
+      fill="var(--paper-light)" opacity="0.86"/>
+    <path class="akita-leg diego-leg diego-leg--left" d="M52 112 L68 112 L67 145 L50 145 Z"
+      fill="var(--diego-shadow, #316a68)"/>
+    <path class="akita-leg diego-leg diego-leg--right" d="M112 110 L128 112 L130 145 L112 145 Z"
+      fill="var(--diego-shadow, #316a68)"/>
+    <path class="diego-paw diego-paw--left" d="M47 145 L70 145 L69 149 L46 149 Z" fill="var(--diego-shadow, #316a68)"/>
+    <path class="diego-paw diego-paw--right" d="M109 145 L133 145 L134 149 L110 149 Z" fill="var(--diego-shadow, #316a68)"/>
+  </g>
+  <g class="akita-head diego-head">
+    <path class="akita-ear akita-ear--left diego-ear diego-ear--left" d="M45 31 L44 5 L68 23 Z"
+      fill="var(--diego-shadow, #316a68)"/>
+    <path class="akita-ear akita-ear--right diego-ear diego-ear--right" d="M103 22 L126 4 L124 35 Z"
+      fill="var(--diego-shadow, #316a68)"/>
+    <path class="diego-face" d="M42 57 L46 29 C55 17 72 13 91 15 C108 16 121 25 126 40 L121 64 C107 74 87 77 65 72 C53 70 46 65 42 57 Z"
+      fill="var(--diego-turquoise, #4d918b)"/>
+    <path class="akita-muzzle diego-muzzle" d="M65 48 C69 41 78 38 88 39 C99 40 106 46 105 55 C102 65 90 68 78 64 C69 62 64 56 65 48 Z"
+      fill="var(--paper-light)" opacity="0.92"/>
+    <g class="diego-eyes">
+      <circle class="diego-eye diego-eye--left" cx="68" cy="42" r="2" fill="var(--ink)"/>
+      <circle class="diego-eye diego-eye--right" cx="99" cy="42" r="2" fill="var(--ink)"/>
+    </g>
+    <g class="diego-glasses" fill="var(--paper-light)" fill-opacity="0.1" stroke="var(--ink)"
+      stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path class="diego-lens diego-lens--left" d="M54 34 L77 34 L78 49 L55 50 Z"/>
+      <path class="diego-lens diego-lens--right" d="M84 34 L109 35 L108 50 L84 49 Z"/>
+      <path class="diego-glasses-bridge" d="M78 39 L84 39" fill="none"/>
+      <path class="diego-glasses-arm diego-glasses-arm--left" d="M54 38 L46 35" fill="none"/>
+      <path class="diego-glasses-arm diego-glasses-arm--right" d="M109 39 L121 37" fill="none"/>
+      <path class="diego-lens-glint" d="M58 37 L65 36 M88 37 L95 37" fill="none"
+        stroke="var(--paper-light)" stroke-width="1.2" opacity="0.72"/>
+    </g>
+    <path class="diego-brow diego-brow--left" d="M58 29 L73 28" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="square"/>
+    <path class="diego-brow diego-brow--right" d="M91 28 L107 30" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="square"/>
+    <path class="diego-nose" d="M80 50 L89 50 L85 55 Z" fill="var(--ink)"/>
+    <path class="diego-mouth" d="M85 55 L85 59 M85 59 L79 61 M85 59 L91 61" stroke="var(--ink)"
+      stroke-width="1.3" stroke-linecap="round" fill="none"/>
   </g>
 </svg>`;
 }
@@ -117,6 +172,61 @@ export function thimbleSVG(extraClass = ""): string {
   <circle cx="26" cy="15" r="1.3" fill="var(--ink)" opacity="0.4"/>
   <circle cx="32" cy="13" r="1.3" fill="var(--ink)" opacity="0.4"/>
   <circle cx="29" cy="19" r="1.3" fill="var(--ink)" opacity="0.4"/>
+</svg>`;
+}
+
+/** Paraguas editorial: refugio móvil y, en sombra, pequeña copa de árbol. */
+export function umbrellaSVG(extraClass = ""): string {
+  return `
+<svg class="fig fig-umbrella ${extraClass}" viewBox="0 0 180 160" role="img" aria-label="Paraguas de papel con mango curvo y una hoja atrapada" xmlns="http://www.w3.org/2000/svg">
+  <ellipse class="fig-shadow umbrella-ground-shadow" cx="91" cy="151" rx="43" ry="5" fill="var(--shadow)"/>
+  <g class="umbrella-body">
+    <path class="umbrella-canopy" d="M18 69 C24 31 55 11 91 12 C127 12 158 32 164 69 C151 61 139 61 127 70 C115 60 103 60 91 70 C79 60 67 60 55 70 C43 61 31 61 18 69 Z"
+      fill="var(--rain, #708a99)"/>
+    <path class="umbrella-canopy-light" d="M27 58 C42 30 65 20 89 18 C77 30 70 46 69 63 C55 56 41 55 27 58 Z"
+      fill="var(--paper-light)" opacity="0.28"/>
+    <path class="umbrella-rib" d="M91 16 L91 70 M91 17 C73 31 61 48 55 69 M91 17 C110 31 121 48 127 69"
+      stroke="var(--night)" stroke-width="1.5" fill="none" opacity="0.52"/>
+    <path class="umbrella-stem" d="M91 68 L91 129 C91 144 111 146 116 134" stroke="var(--night)"
+      stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path class="umbrella-stem-glint" d="M89 76 L89 117" stroke="var(--paper-light)" stroke-width="1.2"
+      stroke-linecap="round" opacity="0.45"/>
+  </g>
+  <g class="umbrella-caught-leaf" transform="translate(124 47) rotate(18)">
+    <path d="M0 17 C1 7 8 1 19 0 C19 11 12 18 1 19 Z" fill="var(--dani-yellow, #d3a83c)"/>
+    <path d="M3 16 C7 11 11 7 16 3" stroke="var(--leaf-dark)" stroke-width="1" fill="none" opacity="0.56"/>
+  </g>
+</svg>`;
+}
+
+/**
+ * Sombras narrativas de los personajes. No son copias literales: la de Dani
+ * se vuelve rama curiosa; la de Diego, una estructura estable de refugio.
+ */
+export function characterShadowSVG(kind: "dani" | "diego", extraClass = ""): string {
+  if (kind === "dani") {
+    return `
+<svg class="character-shadow character-shadow--dani ${extraClass}" viewBox="0 0 220 170" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <g fill="var(--shadow-deep)" opacity="0.9">
+    <path d="M27 154 C28 119 49 89 82 78 C112 68 143 80 153 103 C160 120 153 141 137 153 Z"/>
+    <path d="M50 92 C40 72 48 48 69 38 C89 29 111 38 118 57 C124 75 111 91 91 95 Z"/>
+    <path d="M47 56 L42 26 L66 45 Z M88 41 L110 18 L110 51 Z"/>
+    <path d="M139 109 C176 109 199 86 193 59 C188 38 164 31 151 45 C141 56 147 69 160 69 L160 78 C137 78 126 55 139 36 C158 10 199 21 207 53 C217 92 186 126 145 128 Z"/>
+    <path d="M187 51 C193 35 207 25 219 26 C216 41 203 52 187 57 Z"/>
+    <path d="M198 82 C210 73 222 72 232 78 C223 89 210 92 198 88 Z"/>
+  </g>
+</svg>`;
+  }
+  return `
+<svg class="character-shadow character-shadow--diego ${extraClass}" viewBox="0 0 220 170" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <g fill="var(--shadow-deep)" opacity="0.92">
+    <path d="M31 158 L34 102 C35 76 51 61 76 56 L145 56 C171 63 185 82 186 108 L190 158 Z"/>
+    <path d="M52 66 L51 25 L84 52 Z M137 49 L174 21 L171 70 Z"/>
+    <path d="M42 98 L16 128 L25 139 L55 111 Z M177 99 L207 126 L197 139 L164 111 Z"/>
+    <path d="M157 87 C187 83 204 63 197 43 C192 30 177 27 167 36 L158 27 C177 8 210 18 217 42 C227 76 202 108 166 113 Z"/>
+  </g>
+  <path d="M23 141 C72 119 151 119 201 141" stroke="var(--shadow-deep)" stroke-width="9"
+    stroke-linecap="square" fill="none" opacity="0.92"/>
 </svg>`;
 }
 

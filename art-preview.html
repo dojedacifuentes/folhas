@@ -3,44 +3,164 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inventario visual — solo desarrollo</title>
+  <title>Inventario visual de Dani y Diego — solo desarrollo</title>
+  <link rel="stylesheet" href="/src/styles/tokens.css" />
+  <link rel="stylesheet" href="/src/styles/characters.css" />
   <style>
     :root { color-scheme: light; }
+    * { box-sizing: border-box; }
     body {
-      margin: 0; padding: 2rem; background: #f1e8d8; color: #24231f;
-      font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+      margin: 0;
+      padding: clamp(1rem, 4vw, 3rem);
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-interface);
     }
-    h1 { font-family: Palatino, Georgia, serif; font-weight: 500; }
-    p.note { opacity: .6; font-size: .85rem; max-width: 60ch; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.4rem; margin-top: 2rem; }
-    figure { margin: 0; padding: 1rem; background: #fbf5e9; border-radius: 8px; }
-    figure.dark { background: #1f2b33; color: #f1e8d8; }
-    figcaption { font-size: .75rem; letter-spacing: .08em; margin-top: .6rem; opacity: .7; }
-    img { width: 100%; height: 130px; object-fit: contain; }
-    .small img { height: 70px; }
+    header { max-width: 72ch; margin-bottom: 2.5rem; }
+    h1, h2 { font-family: var(--font-display); font-weight: 500; }
+    h1 { margin: 0 0 .45rem; font-size: clamp(2rem, 5vw, 3.5rem); }
+    h2 { margin: 2.4rem 0 .8rem; font-size: clamp(1.3rem, 3vw, 2rem); }
+    .note { opacity: .65; font-size: .88rem; line-height: 1.55; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1rem;
+    }
+    figure {
+      margin: 0;
+      min-width: 0;
+      padding: 1rem;
+      background: var(--paper-light);
+      border: 1px solid rgba(36, 35, 31, .08);
+      border-radius: 7px 11px 8px 10px;
+    }
+    figure.dark { background: var(--night); color: var(--paper); }
+    .art-frame {
+      height: 180px;
+      display: grid;
+      place-items: end center;
+      overflow: hidden;
+    }
+    .art-frame > svg { width: min(100%, 190px); max-height: 172px; }
+    .shadow-card .art-frame > svg { width: 100%; }
+    figcaption {
+      margin-top: .75rem;
+      font-size: .72rem;
+      letter-spacing: .09em;
+      text-transform: lowercase;
+      opacity: .7;
+    }
+    .small-test .art-frame { display: flex; align-items: end; justify-content: center; gap: 1.25rem; }
+    .small-test svg:nth-child(1) { width: 64px; }
+    .small-test svg:nth-child(2) { width: 42px; }
+    .lens-study .art-frame { height: 150px; align-items: start; }
+    .lens-study .art-frame > svg { width: 390px; max-width: none; max-height: none; }
+    .lens-study--dani .art-frame > svg { transform: translate(-22%, -7%); }
+    .lens-study--diego .art-frame > svg { transform: translate(-18%, -8%); }
+    .asset-row img { width: 100%; height: 150px; object-fit: contain; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem 1rem;
+      margin-top: 1rem;
+      font-size: .75rem;
+      opacity: .62;
+    }
+    .legend span::before { content: "— "; }
   </style>
 </head>
 <body>
-  <h1>Inventario visual</h1>
-  <p class="note">
-    Página temporal de revisión: coherencia de siluetas, tamaños, tonos y expresiones.
-    No está enlazada desde la aplicación y no forma parte del build de producción.
-  </p>
-  <div class="grid">
-    <figure><img src="/art/cat-yellow.svg" alt="gato amarillo" /><figcaption>gato amarillo</figcaption></figure>
-    <figure><img src="/art/akita-turquoise.svg" alt="akita turquesa" /><figcaption>akita turquesa</figcaption></figure>
-    <figure><img src="/art/plant.svg" alt="planta completa" /><figcaption>planta (tres hojas)</figcaption></figure>
-    <figure class="small"><img src="/art/seed-cube.svg" alt="semilla cuadrada" /><figcaption>semilla cuadrada</figcaption></figure>
-    <figure class="small"><img src="/art/thimble.svg" alt="dedal" /><figcaption>dedal de agua</figcaption></figure>
-    <figure><img src="/art/branch-shadow-01.svg" alt="sombra de rama 1" /><figcaption>sombra botánica 01</figcaption></figure>
-    <figure><img src="/art/branch-shadow-02.svg" alt="sombra de rama 2" /><figcaption>sombra botánica 02</figcaption></figure>
-    <figure class="dark"><img src="/art/shadow-shelter.svg" alt="refugio de sombras" /><figcaption>refugio de sombras</figcaption></figure>
-    <figure class="small"><img src="/art/leaves/leaf-01.svg" alt="hoja 1" /><figcaption>hoja seca 01</figcaption></figure>
-    <figure class="small"><img src="/art/leaves/leaf-02.svg" alt="hoja 2" /><figcaption>hoja seca 02</figcaption></figure>
-    <figure class="small"><img src="/art/leaves/leaf-03.svg" alt="hoja 3" /><figcaption>hoja seca 03</figcaption></figure>
-    <figure class="small"><img src="/art/leaves/leaf-04.svg" alt="hoja 4" /><figcaption>hoja seca 04</figcaption></figure>
-    <figure class="small"><img src="/art/leaves/leaf-05.svg" alt="hoja 5" /><figcaption>hoja seca 05</figcaption></figure>
-    <figure class="small"><img src="/art/leaves/leaf-06.svg" alt="hoja 6" /><figcaption>hoja seca 06</figcaption></figure>
-  </div>
+  <header>
+    <h1>Inventario visual</h1>
+    <p class="note">
+      Hoja de modelo interna de Dani y Diego. Revisa silueta, contraste, integración de lentes,
+      legibilidad entre 42 y 64 px y diferencias de postura. No está enlazada desde la experiencia.
+    </p>
+    <div class="legend" aria-label="Gramática visual">
+      <span>Dani: curva, pregunta, observación</span>
+      <span>Diego: bloque, refugio, concentración</span>
+      <span>máximo tres tonos por figura</span>
+    </div>
+  </header>
+
+  <main>
+    <section aria-labelledby="views-title">
+      <h2 id="views-title">Vistas y siluetas</h2>
+      <div class="grid" id="views-grid"></div>
+    </section>
+
+    <section aria-labelledby="dani-title">
+      <h2 id="dani-title">Dani · estados</h2>
+      <div class="grid" id="dani-states"></div>
+    </section>
+
+    <section aria-labelledby="diego-title">
+      <h2 id="diego-title">Diego · estados</h2>
+      <div class="grid" id="diego-states"></div>
+    </section>
+
+    <section aria-labelledby="detail-title">
+      <h2 id="detail-title">Escala, lentes y objetos</h2>
+      <div class="grid" id="detail-grid"></div>
+    </section>
+
+    <section aria-labelledby="exports-title">
+      <h2 id="exports-title">Assets exportados</h2>
+      <div class="grid asset-row">
+        <figure><img src="/art/umbrella.svg" alt="Paraguas editorial" /><figcaption>paraguas</figcaption></figure>
+        <figure class="dark"><img src="/art/shadow-dani.svg" alt="Sombra vegetal de Dani" /><figcaption>sombra de Dani</figcaption></figure>
+        <figure class="dark"><img src="/art/shadow-diego.svg" alt="Sombra protectora de Diego" /><figcaption>sombra de Diego</figcaption></figure>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import {
+      akitaSVG,
+      catSVG,
+      characterShadowSVG,
+      umbrellaSVG,
+    } from "/src/art/svgLibrary.ts";
+
+    const card = (art, label, className = "") => `
+      <figure class="${className}">
+        <div class="art-frame">${art}</div>
+        <figcaption>${label}</figcaption>
+      </figure>`;
+
+    document.querySelector("#views-grid").innerHTML = [
+      card(catSVG("dani--idle dani--front"), "Dani · frontal"),
+      card(catSVG("dani--profile"), "Dani · lateral"),
+      card(characterShadowSVG("dani"), "Dani · silueta vegetal", "dark shadow-card"),
+      card(akitaSVG("diego--idle diego--front"), "Diego · frontal"),
+      card(akitaSVG("diego--profile"), "Diego · lateral"),
+      card(characterShadowSVG("diego"), "Diego · silueta refugio", "dark shadow-card"),
+    ].join("");
+
+    const daniStates = ["idle", "curious", "surprised", "hiding", "worried", "sleeping"];
+    document.querySelector("#dani-states").innerHTML = daniStates
+      .map((state) => card(catSVG(`dani--${state}`), state))
+      .join("");
+
+    const diegoStates = [
+      ["idle", "idle"],
+      ["serious", "serious"],
+      ["concerned", "concerned"],
+      ["protecting", "protecting"],
+      ["embarrassed", "embarrassed"],
+      ["recoveringGlasses", "recovering glasses"],
+    ];
+    document.querySelector("#diego-states").innerHTML = diegoStates
+      .map(([state, label]) => card(akitaSVG(`diego--${state}`), label))
+      .join("");
+
+    document.querySelector("#detail-grid").innerHTML = [
+      card(`${catSVG("dani--curious")}${catSVG("dani--idle")}`, "Dani · 64 / 42 px", "small-test"),
+      card(`${akitaSVG("diego--serious")}${akitaSVG("diego--idle")}`, "Diego · 64 / 42 px", "small-test"),
+      card(catSVG("dani--curious"), "lentes de Dani", "lens-study lens-study--dani"),
+      card(akitaSVG("diego--serious"), "lentes de Diego", "lens-study lens-study--diego"),
+      card(umbrellaSVG(), "paraguas · copa / refugio"),
+    ].join("");
+  </script>
 </body>
 </html>
