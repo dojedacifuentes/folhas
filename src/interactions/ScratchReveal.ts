@@ -34,6 +34,9 @@ export class ScratchReveal {
   private w = 0;
   private h = 0;
   private dpr = 1;
+  private initialTabIndex: string | null;
+  private initialAriaHidden: string | null;
+  private initiallyInert: boolean;
 
   private onDown = (e: PointerEvent) => this.pointerDown(e);
   private onMove = (e: PointerEvent) => this.pointerMove(e);
@@ -47,6 +50,9 @@ export class ScratchReveal {
 
   constructor(options: ScratchRevealOptions) {
     this.opts = { threshold: 0.58, brushSize: 34, ...options };
+    this.initialTabIndex = options.canvas.getAttribute("tabindex");
+    this.initialAriaHidden = options.canvas.getAttribute("aria-hidden");
+    this.initiallyInert = options.canvas.hasAttribute("inert");
     const ctx = options.canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas 2D no disponible");
     this.ctx = ctx;
@@ -190,14 +196,38 @@ export class ScratchReveal {
   reveal(): void {
     if (this.revealed) return;
     this.revealed = true;
-    this.opts.canvas.classList.add("scratch-done");
+    const canvas = this.opts.canvas;
+    if (this.activeId !== null) {
+      try {
+        if (canvas.hasPointerCapture(this.activeId)) {
+          canvas.releasePointerCapture(this.activeId);
+        }
+      } catch {
+        // La captura puede haberse liberado al terminar el gesto.
+      }
+    }
+    this.activeId = null;
+    this.last = null;
+    if (document.activeElement === canvas) canvas.blur();
+    canvas.tabIndex = -1;
+    canvas.setAttribute("aria-hidden", "true");
+    canvas.setAttribute("inert", "");
+    canvas.classList.add("scratch-done");
     this.opts.onReveal?.();
   }
 
   reset(): void {
     this.revealed = false;
     this.strokes = [];
-    this.opts.canvas.classList.remove("scratch-done");
+    this.activeId = null;
+    this.last = null;
+    const canvas = this.opts.canvas;
+    canvas.classList.remove("scratch-done");
+    if (this.initialTabIndex === null) canvas.removeAttribute("tabindex");
+    else canvas.setAttribute("tabindex", this.initialTabIndex);
+    if (this.initialAriaHidden === null) canvas.removeAttribute("aria-hidden");
+    else canvas.setAttribute("aria-hidden", this.initialAriaHidden);
+    if (!this.initiallyInert) canvas.removeAttribute("inert");
     this.repaint();
   }
 

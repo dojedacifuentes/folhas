@@ -23,6 +23,8 @@ export class LightAligner {
   private y = 0.74;
   private aligned = false;
   private activeId: number | null = null;
+  private rafId: number | null = null;
+  private destroyed = false;
 
   private onDown = (e: PointerEvent) => this.pointerDown(e);
   private onMove = (e: PointerEvent) => this.pointerMove(e);
@@ -41,14 +43,14 @@ export class LightAligner {
   }
 
   private pointerDown(e: PointerEvent): void {
-    if (this.aligned || this.activeId !== null) return;
+    if (this.destroyed || this.aligned || this.activeId !== null) return;
     this.activeId = e.pointerId;
     this.opts.lamp.setPointerCapture(e.pointerId);
     this.opts.lamp.classList.add("is-held");
   }
 
   private pointerMove(e: PointerEvent): void {
-    if (this.aligned || e.pointerId !== this.activeId) return;
+    if (this.destroyed || this.aligned || e.pointerId !== this.activeId) return;
     const r = this.opts.stage.getBoundingClientRect();
     this.x = Math.min(0.96, Math.max(0.04, (e.clientX - r.left) / r.width));
     this.y = Math.min(0.9, Math.max(0.06, (e.clientY - r.top) / r.height));
@@ -56,14 +58,14 @@ export class LightAligner {
   }
 
   private pointerUp(e: PointerEvent): void {
-    if (e.pointerId !== this.activeId) return;
+    if (this.destroyed || e.pointerId !== this.activeId) return;
     this.activeId = null;
     this.opts.lamp.classList.remove("is-held");
     if (!this.aligned && this.alignment() >= 0.86) this.settle();
   }
 
   private keyMove(e: KeyboardEvent): void {
-    if (this.aligned) return;
+    if (this.destroyed || this.aligned) return;
     const step = 0.035;
     let handled = true;
     switch (e.key) {
@@ -102,6 +104,7 @@ export class LightAligner {
   }
 
   private apply(): void {
+    if (this.destroyed) return;
     this.opts.onUpdate(this.alignment(), this.x, this.y);
     if (!this.aligned && this.activeId !== null && this.alignment() >= 0.94) {
       this.settle();
@@ -110,11 +113,22 @@ export class LightAligner {
 
   /** La luz se estabiliza en la zona objetivo. */
   private settle(): void {
-    if (this.aligned) return;
+    if (this.destroyed || this.aligned) return;
     this.aligned = true;
     if (this.activeId !== null) {
       this.activeId = null;
       this.opts.lamp.classList.remove("is-held");
+    }
+    const reducedMotion =
+      (typeof window.matchMedia === "function" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches) ||
+      document.documentElement.classList.contains("reduced-motion");
+    if (reducedMotion) {
+      this.x = this.opts.targetX;
+      this.y = this.opts.targetY;
+      this.opts.onUpdate(this.alignment(), this.x, this.y);
+      if (!this.destroyed) this.opts.onAligned();
+      return;
     }
     // deslizamiento suave hasta el objetivo
     const steps = 18;
@@ -122,16 +136,19 @@ export class LightAligner {
     const x0 = this.x;
     const y0 = this.y;
     const animate = () => {
+      this.rafId = null;
+      if (this.destroyed) return;
       i++;
       const t = i / steps;
       const ease = 1 - Math.pow(1 - t, 3);
       this.x = x0 + (this.opts.targetX - x0) * ease;
       this.y = y0 + (this.opts.targetY - y0) * ease;
       this.opts.onUpdate(this.alignment(), this.x, this.y);
-      if (i < steps) requestAnimationFrame(animate);
+      if (this.destroyed) return;
+      if (i < steps) this.rafId = requestAnimationFrame(animate);
       else this.opts.onAligned();
     };
-    requestAnimationFrame(animate);
+    this.rafId = requestAnimationFrame(animate);
   }
 
   /** Alternativa accesible: encontrar la luz directamente. */
@@ -140,7 +157,23 @@ export class LightAligner {
   }
 
   destroy(): void {
+    this.destroyed = true;
+    if (this.rafId !== null) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
     const lamp = this.opts.lamp;
+    if (this.activeId !== null) {
+      try {
+        if (lamp.hasPointerCapture(this.activeId)) {
+          lamp.releasePointerCapture(this.activeId);
+        }
+      } catch {
+        // La captura puede haberse liberado al desmontar la escena.
+      }
+    }
+    this.activeId = null;
+    lamp.classList.remove("is-held");
     lamp.removeEventListener("pointerdown", this.onDown);
     lamp.removeEventListener("pointermove", this.onMove);
     lamp.removeEventListener("pointerup", this.onUp);

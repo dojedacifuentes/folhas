@@ -29,13 +29,17 @@ export function spawnLeafParticle(
   el.style.setProperty("--pspin", `${spin}deg`);
   container.appendChild(el);
 
+  let finished = false;
+  let fallbackTimer: number | null = null;
   const done = () => {
+    if (finished) return;
+    finished = true;
+    if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
+    el.removeEventListener("animationend", done);
     el.remove();
-    alive--;
+    alive = Math.max(0, alive - 1);
   };
   el.addEventListener("animationend", done, { once: true });
-  // red de seguridad por si la animación no dispara
-  window.setTimeout(() => {
-    if (el.isConnected) done();
-  }, 1600);
+  // red de seguridad por si la animación no dispara o desmontan el contenedor
+  fallbackTimer = window.setTimeout(done, 1600);
 }
