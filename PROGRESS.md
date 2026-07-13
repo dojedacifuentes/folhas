@@ -2,8 +2,8 @@
 
 ## Fase actual
 
-Completado. QA documentado en `QA_CHECKLIST.md`; queda la revisión
-humana en un teléfono real (tacto y sonido).
+Segunda edición implementada. QA documentado en `QA_CHECKLIST.md`; queda la
+revisión humana en un teléfono real (tacto, sonido y tono emocional).
 
 ## Tareas realizadas
 
@@ -16,12 +16,14 @@ humana en un teléfono real (tacto y sonido).
 - [x] Fase 3: `ScratchReveal` con Pointer Events, captura, interpolación,
       pincel suave, DPR ≤ 2, ResizeObserver con preservación de trazos,
       muestreo parcial de alfa con throttle, umbral 58 %, callback único.
-- [x] Fase 4: cinco escenas conectadas (cubierta, hacer lugar, traer lo
-      que tenemos, buscar la luz, volver) con máquina de estados y
+- [x] Fase 4: seis escenas conectadas (cubierta, hacer lugar, traer lo
+      que tenemos, cuidados, buscar la luz, quedarse) con estado secuencial y
       persistencia versionada `herbario-dani:v1`.
 - [x] Fase 5: reacciones de personajes, pensamientos, sonidos Web Audio
       opcionales, easter eggs (cubo que gira, hojas que se inclinan),
       transiciones de página.
+- [x] Fase 6: rediseño de Dani y Diego con lentes/estados, tokens ampliados,
+      sombras narrativas, lluvia, viento, sol y fallos locales amables.
 
 ## Archivos creados
 

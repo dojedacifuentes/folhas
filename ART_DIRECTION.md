@@ -10,8 +10,8 @@ es un pequeño libro de artista digital, no una landing ni un juego.
 
 | Símbolo | Significado |
 | --- | --- |
-| Gatito amarillo | Danielle: intuición, curiosidad, calidez, humor, independencia. Cola en forma de signo de interrogación, una oreja inclinada, ojos mínimos. |
-| Akita turquesa | Diego: constancia, estructura, protección, seriedad levemente absurda. Geometría sólida, orejas triangulares, postura concentrada. |
+| Dani, gata amarilla con lentes | Intuición, curiosidad, calidez y observación. Cola caligráfica en forma de interrogación, orejas asimétricas y lentes irregulares. |
+| Diego, akita turquesa con lentes | Constancia, estructura y protección seria de manera levemente absurda. Geometría sólida, orejas triangulares y lentes rectangulares bajos. |
 | Planta | El vínculo: lo que se crea entre dos y no pertenece del todo a ninguno. Termina con una hoja amarilla, una turquesa y una verde nueva en el centro. |
 | Semilla cuadrada | Una forma poco convencional de empezar. Un cubo turquesa tratado como semilla perfectamente normal. |
 | Hojas secas | Ruido, estaciones anteriores, capas. Se apartan con cuidado, no se destruyen. |
@@ -25,13 +25,13 @@ distinto de sus partes.
 
 Definida en `src/styles/tokens.css`:
 
-- papel `#f1e8d8` / papel claro `#fbf5e9`
-- tinta `#24231f` / noche `#1f2b33`
-- amarillo `#d8ad38` / amarillo suave `#e5c769`
-- turquesa `#4d9691` / turquesa oscuro `#34736f`
-- salvia `#7d8b72` / hoja seca `#986a4c` / hoja oscura `#63483a`
-- verde nuevo `#718f5a`
-- sombras `rgba(25,31,31,.22)` y `rgba(16,22,24,.36)`
+- papel `#eee4d3` / papel claro `#f8f1e5` / sombra `#d9cbb8`
+- tinta `#252521` / tinta suave `#44433d`
+- noche `#233039` / noche profunda `#172329`
+- Dani `#d3a83c` / luz `#e6c96e` / sombra `#9d7333`
+- Diego `#4d918b` / luz `#79aaa4` / sombra `#316a68`
+- salvia `#77866e` / hoja seca `#9a694d` / verde nuevo `#6f8f59`
+- lluvia `#708a99` / sol `#e4b957` / quemado `#3a342f`
 
 ## Tipografía
 

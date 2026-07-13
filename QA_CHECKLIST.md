@@ -1,77 +1,71 @@
-# QA — Herbario de lo que cuidamos
+# QA — Herbario de lo que cuidamos · segunda edición
 
-Fecha: 2026-07-13. Verificación realizada sobre Chrome (panel integrado),
-viewports 1280×720, 734×694 y 375×812, más build de producción.
+Fecha: 2026-07-13. Recorrido completo realizado en el navegador integrado
+sobre el servidor local de Vite; build de producción ejecutado por separado.
 
 ## Técnica
 
-- [x] `npm run build` termina sin errores de TypeScript ni de Vite.
-- [x] Sin errores en consola durante el recorrido completo (verificado).
-- [x] Sin peticiones externas: cero fuentes remotas, cero imágenes remotas,
-      cero APIs. Todo el arte es SVG/Canvas local.
-- [x] Sin dependencias de runtime (solo vite y typescript en dev).
-- [x] `dist/` no incluye `art-preview.html` ni la enlaza.
-- [x] Peso total: ~52 KB JS + ~22 KB CSS (14 + 6 KB gzip).
-- [x] Canvas con DPR limitado a 2; `getImageData` con stride 41 y
-      throttle 260 ms (nunca por movimiento).
-- [x] Partículas limitadas a 12 simultáneas con red de seguridad.
-- [x] Timers y listeners se limpian en `destroy()` de cada escena.
-- [x] Audio se suspende al ocultar la pestaña (`visibilitychange`).
-- [x] Persistencia versionada `herbario-dani:v1`; reanuda escena y
-      preferencia de sonido; «empezar de nuevo» funciona (verificado).
-- [x] Sin overflow horizontal en 375×812 (scrollWidth === innerWidth,
-      medido en vivo).
+- [x] `npm install` sin vulnerabilidades y `npm run build` correcto (TypeScript
+      + Vite, sin dependencias de runtime).
+- [x] `git diff --check` sin errores de whitespace.
+- [x] Sin errores ni advertencias de consola durante el recorrido completo.
+- [x] Arte local: 19 SVG exportados y válidos; sin peticiones de assets remotos.
+- [x] `/art-preview.html` funciona en desarrollo y no se incluye en `dist/`.
+- [x] Canvas con DPR máximo 2; partículas y RAF se cancelan al desmontar.
+- [x] Animaciones CSS se pausan con la pestaña oculta.
+
+## Progresión y persistencia
+
+- [x] Orden único: cubierta → hojas → ofrendas → cuidados → luz → final.
+- [x] El estado persistido se sanea por tipo y por prerrequisitos; una sala solo
+      puede pedir la inmediatamente siguiente.
+- [x] Solo hay una escena interactiva; la saliente se vuelve `inert`, se oculta
+      del árbol accesible y destruye listeners antes del fundido.
+- [x] Recarga en el momento de sol reanudó exactamente ese momento sin mostrar
+      lluvia, viento ni sala futura.
+- [x] Reinicio durante el vuelo de la hoja permaneció en cubierta después de
+      drenar los temporizadores; no hubo salto tardío.
+- [x] Las instrucciones y alternativas completadas quedan inertes y con
+      `aria-hidden`; el control siguiente recibe foco.
 
 ## Interacción
 
-- [x] Cubierta: arrastre de hoja abre el libro (verificado con drag);
-      Enter también (verificado); el susurro aparece al mover.
-- [x] Escena I: raspado con trazos interpolados y pincel suave
-      (verificado con varios trazos); umbral 58 %; alternativa
-      «dejar pasar la luz» revela y dispara la secuencia (verificado);
-      diálogos y «seguir» aparecen; el pie se oculta.
-- [x] Escena II: arrastre del dedal y la semilla con imán suave
-      (verificado); sin estado de fracaso (soltar lejos devuelve el
-      objeto); gota + tierra más oscura; cubo gira al hundirse; brote
-      con hoja verde; textos posteriores.
-- [x] Escena III: luz arrastrable; sombras cambian de dirección y
-      longitud; refugio de sombras al alinear; hojas amarilla, turquesa
-      y verde aparecen escalonadas (verificado); alternativa
-      «encontrar la luz» presente.
-- [x] Escena IV: texto progresivo, dedicatoria, línea en portugués,
-      firma; pensamientos tardíos (verificado el del akita); cubo gira
-      una vez al tocarlo; hojas se inclinan al tocar la planta.
-- [x] Sonido: apagado por defecto, toggle persiste en localStorage
-      (verificado en ambos sentidos), nunca hay autoplay.
+- [x] Recorrido completo con Enter/clic y alternativas accesibles.
+- [x] Ofrendas: ambos botones colocan objetos, el brote aparece una sola vez y
+      el siguiente paso no se ofrece antes de completar ambos.
+- [x] Lluvia: paraguas regulable, pista por falta de agua, éxito moderado y
+      reinicio local por inundación.
+- [x] Viento: pulsación sostenida o teclado, éxito al soltar en medida y fallo
+      local con lentes de Diego.
+- [x] Sol: regulación, éxito moderado y fallo local con planta quemada/manual.
+- [x] Luz: arrastre, flechas y alternativa directa; refugio y tres hojas.
+- [x] Final: planta y semilla siguen siendo objetivos táctiles; no hay premio,
+      puntuación, confeti ni llamada a compartir.
 
-## Accesibilidad
+## Accesibilidad y movimiento
 
-- [x] Todo interactivo es `<button>` con etiqueta descriptiva en español.
-- [x] Navegación por teclado: Enter abre la cubierta (verificado);
-      Enter coloca ofrendas; flechas mueven la luz; Enter/Espacio
-      revela el raspado.
-- [x] Foco visible (contorno discontinuo, color adaptado a escenas oscuras).
-- [x] Anuncios `aria-live` en cada hito narrativo.
-- [x] Alternativas para cada gesto (raspado, arrastre, alineación).
-- [x] `prefers-reduced-motion`: animaciones ambientales desactivadas,
-      transiciones reducidas a opacidad corta, sin pérdida de contenido.
-- [x] Controles ≥ 44×44 px; hablantes marcados con texto (GATO/AKITA),
-      no solo con color.
-- [x] El pie oculto sale del árbol de accesibilidad (`visibility: hidden`).
+- [x] Foco visible en controles; foco programático discreto en encabezados.
+- [x] Controles táctiles de al menos 44×44 px, incluidos planta y semilla final.
+- [x] `aria-live` anuncia hitos y reacciones; Dani/Diego tienen nombres y los
+      SVG de contenido tienen etiquetas descriptivas.
+- [x] Toda interacción de arrastre/raspado/regulación tiene alternativa.
+- [x] `prefers-reduced-motion` elimina desplazamientos amplios, acorta fallos,
+      asienta la luz sin 18 RAF y conserva las consecuencias narrativas.
 
-## Visual
+## Responsive
 
-- [x] Composición editorial en escritorio (columna de texto + escenario).
-- [x] Vertical y táctil en 375×812; sin texto diminuto.
-- [x] Las cinco escenas comparten paleta, trazo y lenguaje.
-- [x] Sombras botánicas presentes en cubierta, ofrendas, luz y final.
-- [x] La semilla cuadrada reaparece: cubierta (escondida), escena I,
-      escena II (se planta), escena IV (medio enterrada, easter egg).
-- [x] Sin elementos prohibidos (confeti, corazones, barras de progreso,
-      gradientes SaaS, fotografías…).
+- [x] Matriz comprobada: 360×640, 390×844, 412×915, 768×1024,
+      1366×768 y 1440×900.
+- [x] `document.scrollWidth === innerWidth` en los seis tamaños.
+- [x] A 360×640 la escena final habilita scroll vertical interno de la sala
+      actual; no existen escenas futuras debajo ni overflow horizontal.
+- [x] A 390×844 el recorrido completo cabe sin scroll horizontal; textos,
+      instrucciones y alternativas permanecen visibles.
+- [x] A 1366×768 y 1440×900 se conserva la composición editorial en dos zonas.
 
 ## Pendiente de revisión humana
 
-- [ ] Sensación del raspado y el arrastre en un teléfono táctil real.
-- [ ] Escucha de los sonidos generados (volumen y carácter) con altavoces.
-- [ ] Lectura final del tono de la microcopy por parte del autor.
+- [ ] Sensación del raspado, arrastre del paraguas y pulsación sostenida en un
+      teléfono físico.
+- [ ] Escucha del paisaje sonoro con altavoces reales.
+- [ ] Lectura final del tono emocional y del grado de humor por Dani y Diego.

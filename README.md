@@ -2,10 +2,10 @@
 
 *Manual mínimo para una semilla cuadrada y dos criaturas.*
 
-Un pequeño libro de artista digital: cuatro gestos interactivos
-(hacer lugar, traer lo que tenemos, buscar la luz, volver) alrededor de
-una planta, un gatito amarillo, un akita turquesa y una semilla cuadrada.
-Dura entre dos y tres minutos. No hay puntuaciones, ni fracasos, ni prisa.
+Un pequeño libro de artista digital: hacer lugar, traer lo que tenemos,
+encontrar la medida, buscar la luz y quedarse alrededor de una planta,
+Dani —gata amarilla con lentes—, Diego —akita turquesa con lentes— y una
+semilla cuadrada. Dura entre dos y tres minutos. No hay puntuaciones ni prisa.
 
 ## Requisitos
 
@@ -52,7 +52,7 @@ No se requieren variables de entorno.
 src/
 ├── main.ts                    punto de entrada
 ├── app/                       controlador, escenas, estado, microcopy
-├── scenes/                    las cinco escenas narrativas
+├── scenes/                    seis escenas; cuidados contiene tres momentos
 ├── interactions/              raspado, arrastre, alineación de luz
 ├── art/                       librería SVG y arte procedural (Canvas)
 ├── audio/                     paisaje sonoro con Web Audio API
@@ -69,9 +69,11 @@ scripts/export-art.mjs         regenera public/art/ desde svgLibrary.ts
 - **I. Hacer lugar**: frota la capa de hojas; alternativa «dejar pasar la luz».
 - **II. Traer lo que tenemos**: arrastra el dedal y la semilla a la maceta;
   con teclado, Enter sobre cada objeto los coloca.
-- **III. Buscar la luz**: arrastra la luz o muévela con las flechas;
+- **III. Encontrar la medida**: mueve el paraguas, mantén la corriente y regula
+  el sol; cada gesto tiene una alternativa accesible.
+- **IV. Buscar la luz**: arrastra la luz o muévela con las flechas;
   alternativa «encontrar la luz».
-- **IV. Volver**: escena viva; la planta y el cubo reaccionan al tacto.
+- **V. Quedarse**: escena viva; la planta y el cubo reaccionan al tacto.
 - Abajo a la izquierda: «empezar de nuevo». Abajo a la derecha: sonido
   (desactivado por defecto; la preferencia se recuerda).
 

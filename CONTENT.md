@@ -1,65 +1,39 @@
 # Microcopy — Herbario de lo que cuidamos
 
-Fuente única en código: `src/app/content.ts`. Este documento la ordena por escena.
+La fuente única en código es `src/app/content.ts`. Cada sala muestra una sola
+instrucción; las alternativas describen el mismo gesto sin revelar salas
+futuras.
 
-## Escena 0 · Cubierta
+## Recorrido
 
-- Título: **Herbario de lo que cuidamos**
-- Subtítulo: *Manual mínimo para una semilla cuadrada y dos criaturas*
-- Instrucción: `aparta una hoja`
-- Detalle oculto (aparece al mover la hoja): *había algo respirando aquí*
+| Sala | Contexto | Instrucción / alternativa |
+| --- | --- | --- |
+| Cubierta | Herbario de lo que cuidamos | `aparta una hoja` |
+| I. Hacer lugar | A veces cuidar empieza por despejar un poco. | `aparta las hojas` / `dejar pasar la luz` |
+| II. Traer lo que tenemos | No siempre traemos lo mismo. Por suerte. | `acércalos a la maceta` |
+| III. Encontrar la medida · lluvia | Cuidar también es no exagerar. | `deja pasar un poco de lluvia` / `medir la lluvia` |
+| III. Encontrar la medida · viento | — | `sopla con cuidado` / `dar aire justo` |
+| III. Encontrar la medida · sol | — | `acerca el sol` / `templar la luz` |
+| IV. Buscar la luz | La sombra también puede cuidar. | `mueve la luz` / `encontrar la luz` |
+| V. Quedarse | Escena contemplativa | sin instrucción |
 
-## Escena I · Hacer lugar
+## Reacciones climáticas
 
-- Encabezado: **I. Hacer lugar**
-- Texto: *A veces cuidar empieza por despejar un poco.*
-- Instrucción: `aparta las hojas`
-- Alternativa accesible: `dejar pasar la luz`
-- Diálogo del gato: *yo traje agua.*
-- Diálogo del akita: *yo traje una semilla cuadrada.*
-- Comentario editorial: *La botánica decidió no intervenir.*
-- Control: `seguir`
+- Lluvia: `un poquito` / `eso ya era un océano`.
+- Viento: `suavecito` / `eso fue meteorología hostil`.
+- Sol: `un poco de sol` / `el concepto de poco era importante`.
 
-## Escena II · Traer lo que tenemos
+## Voces
 
-- Encabezado: **II. Traer lo que tenemos**
-- Texto: *No siempre traemos lo mismo. Por suerte.*
-- Instrucción: `acércalos a la maceta`
-- Pensamiento del gato: *cantidad científicamente suficiente*
-- Pensamiento del akita: *geometría aplicada*
-- Texto tras colocar ambos: *Algo puede empezar incluso cuando cada uno llega con una cosa distinta.*
-- Notas editoriales:
-  - *El gato mira el brote.*
-  - *El akita mira al gato.*
-  - *El brote se mueve porque aparentemente es el único adulto responsable de la escena.*
-- Control: `seguir`
+- Dani: curiosa, lateral, breve; `yo traje agua.`
+- Diego: preciso y solemne; `yo traje una semilla cuadrada.`
+- La voz editorial observa sin explicar la metáfora.
 
-## Escena III · Buscar la luz
+## Final
 
-- Encabezado: **III. Buscar la luz**
-- Texto: *La sombra también puede cuidar.*
-- Instrucción: `mueve la luz`
-- Alternativa accesible: `encontrar la luz`
-- Texto tras la alineación: *Encontrarse no siempre es ocupar el mismo lugar. A veces es aprender dónde poner la luz.*
-- Gato: *¿eso cuenta como arquitectura?*
-- Akita: *sí.*
-- Control: `seguir`
-
-## Escena IV · Volver
-
-- Encabezado: **IV. Volver**
-- Texto (progresivo):
-  - *No sé si las plantas entienden de promesas.*
-  - *Esta aprendió nuestros gestos: hacer lugar, traer lo que tenemos, buscar la luz y volver.*
-- Dedicatoria:
-  - **Para Dani.**
-  - *Quiero seguir aprendiendo contigo las formas pequeñas de cuidar.*
-- Línea final en portugués (pequeña): *a gente cuida do que quer ver crescer.*
-- Firma: 👾💛
-- Pensamiento del gato (tardío): *nanai para a plantinha.*
-- Pensamiento del akita (tardío): *turno de guardia innecesariamente serio.*
-
-## Controles globales
-
-- Sonido: `sonido activado` / `sonido desactivado`
-- Reinicio: `empezar de nuevo`
+- `No sé si las plantas entienden de promesas.`
+- `Esta aprendió nuestros gestos: hacer lugar, encontrar la medida, buscar la luz y quedarse.`
+- `Para Dani.`
+- `Quiero seguir aprendiendo contigo las formas pequeñas de cuidar.`
+- `a gente cuida do que quer ver crescer.`
+- Firma: `D + D`.
