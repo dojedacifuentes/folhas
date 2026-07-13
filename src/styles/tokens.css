@@ -1,0 +1,40 @@
+:root {
+  --paper: #f1e8d8;
+  --paper-light: #fbf5e9;
+  --ink: #24231f;
+  --night: #1f2b33;
+  --yellow: #d8ad38;
+  --yellow-soft: #e5c769;
+  --turquoise: #4d9691;
+  --turquoise-dark: #34736f;
+  --sage: #7d8b72;
+  --leaf-dry: #986a4c;
+  --leaf-dark: #63483a;
+  --green-new: #718f5a;
+  --shadow: rgba(25, 31, 31, 0.22);
+  --shadow-deep: rgba(16, 22, 24, 0.36);
+
+  --font-display:
+    "Iowan Old Style",
+    "Palatino Linotype",
+    "Book Antiqua",
+    Palatino,
+    Georgia,
+    serif;
+
+  --font-interface:
+    "Avenir Next",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
+
+  --ease-page: cubic-bezier(0.33, 0.02, 0.2, 1);
+  --dur-micro: 220ms;
+  --dur-object: 420ms;
+  --dur-page: 750ms;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
