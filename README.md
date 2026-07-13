@@ -34,6 +34,18 @@ El contenido de `dist/` puede desplegarse en cualquier hosting estático
 (Netlify, GitHub Pages, Vercel, un servidor propio). No hay backend,
 analítica ni fuentes remotas.
 
+### Desplegar en Vercel
+
+El repositorio incluye `vercel.json` con la configuración exacta. Al
+importar el proyecto en Vercel:
+
+- **Framework Preset**: Vite
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Install Command**: `npm install` (por defecto)
+
+No se requieren variables de entorno.
+
 ## Estructura
 
 ```
