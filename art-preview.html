@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventario visual — solo desarrollo</title>
+  <style>
+    :root { color-scheme: light; }
+    body {
+      margin: 0; padding: 2rem; background: #f1e8d8; color: #24231f;
+      font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    }
+    h1 { font-family: Palatino, Georgia, serif; font-weight: 500; }
+    p.note { opacity: .6; font-size: .85rem; max-width: 60ch; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.4rem; margin-top: 2rem; }
+    figure { margin: 0; padding: 1rem; background: #fbf5e9; border-radius: 8px; }
+    figure.dark { background: #1f2b33; color: #f1e8d8; }
+    figcaption { font-size: .75rem; letter-spacing: .08em; margin-top: .6rem; opacity: .7; }
+    img { width: 100%; height: 130px; object-fit: contain; }
+    .small img { height: 70px; }
+  </style>
+</head>
+<body>
+  <h1>Inventario visual</h1>
+  <p class="note">
+    Página temporal de revisión: coherencia de siluetas, tamaños, tonos y expresiones.
+    No está enlazada desde la aplicación y no forma parte del build de producción.
+  </p>
+  <div class="grid">
+    <figure><img src="/art/cat-yellow.svg" alt="gato amarillo" /><figcaption>gato amarillo</figcaption></figure>
+    <figure><img src="/art/akita-turquoise.svg" alt="akita turquesa" /><figcaption>akita turquesa</figcaption></figure>
+    <figure><img src="/art/plant.svg" alt="planta completa" /><figcaption>planta (tres hojas)</figcaption></figure>
+    <figure class="small"><img src="/art/seed-cube.svg" alt="semilla cuadrada" /><figcaption>semilla cuadrada</figcaption></figure>
+    <figure class="small"><img src="/art/thimble.svg" alt="dedal" /><figcaption>dedal de agua</figcaption></figure>
+    <figure><img src="/art/branch-shadow-01.svg" alt="sombra de rama 1" /><figcaption>sombra botánica 01</figcaption></figure>
+    <figure><img src="/art/branch-shadow-02.svg" alt="sombra de rama 2" /><figcaption>sombra botánica 02</figcaption></figure>
+    <figure class="dark"><img src="/art/shadow-shelter.svg" alt="refugio de sombras" /><figcaption>refugio de sombras</figcaption></figure>
+    <figure class="small"><img src="/art/leaves/leaf-01.svg" alt="hoja 1" /><figcaption>hoja seca 01</figcaption></figure>
+    <figure class="small"><img src="/art/leaves/leaf-02.svg" alt="hoja 2" /><figcaption>hoja seca 02</figcaption></figure>
+    <figure class="small"><img src="/art/leaves/leaf-03.svg" alt="hoja 3" /><figcaption>hoja seca 03</figcaption></figure>
+    <figure class="small"><img src="/art/leaves/leaf-04.svg" alt="hoja 4" /><figcaption>hoja seca 04</figcaption></figure>
+    <figure class="small"><img src="/art/leaves/leaf-05.svg" alt="hoja 5" /><figcaption>hoja seca 05</figcaption></figure>
+    <figure class="small"><img src="/art/leaves/leaf-06.svg" alt="hoja 6" /><figcaption>hoja seca 06</figcaption></figure>
+  </div>
+</body>
+</html>

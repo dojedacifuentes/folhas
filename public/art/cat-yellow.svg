@@ -1,0 +1,21 @@
+<svg class="fig fig-cat " viewBox="0 0 150 122" role="img" aria-label="Gatito amarillo con la cola curvada como un signo de interrogación" xmlns="http://www.w3.org/2000/svg">
+  <ellipse class="fig-shadow" cx="72" cy="112" rx="46" ry="7" fill="rgba(25, 31, 31, 0.22)"/>
+  <g class="cat-tail-group">
+    <path class="cat-tail" d="M108 82 C130 76 137 52 121 43 C111 37 100 44 104 53"
+      fill="none" stroke="#d8ad38" stroke-width="8.5" stroke-linecap="round"/>
+    <circle cx="103" cy="64" r="4.4" fill="#d8ad38"/>
+  </g>
+  <path class="cat-body" d="M40 108 C30 88 39 63 66 58 C93 53 109 68 105 88 C102 102 85 109 62 109 C53 109 44 111 40 108 Z"
+    fill="#d8ad38"/>
+  <ellipse class="cat-paw" cx="52" cy="106" rx="10" ry="5" fill="#e5c769"/>
+  <g class="cat-head">
+    <path class="cat-ear cat-ear--left" d="M30 34 L25 13 L45 25 Z" fill="#d8ad38"/>
+    <path class="cat-ear cat-ear--right" d="M56 24 L70 9 L72 30 Z" fill="#d8ad38" transform="rotate(13 64 20)"/>
+    <path d="M26 52 C21 33 36 20 52 22 C68 24 75 40 68 55 C61 68 32 68 26 52 Z" fill="#e5c769"/>
+    <path class="cat-eye" d="M39 44 q3.4 3.2 6.6 0" stroke="#24231f" fill="none" stroke-width="1.7" stroke-linecap="round"/>
+    <circle class="cat-eye" cx="57" cy="43" r="1.8" fill="#24231f"/>
+    <path d="M47 51 l3 2.4 -3.2 2.2" stroke="#24231f" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M24 50 l-9 -1.4 M25 55 l-8 2.2" stroke="#24231f" fill="none" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+    <path d="M69 49 l9 -1.8 M68 54 l8 2.6" stroke="#24231f" fill="none" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  </g>
+</svg>
