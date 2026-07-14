@@ -10,8 +10,8 @@ es un pequeño libro de artista digital, no una landing ni un juego.
 
 | Símbolo | Significado |
 | --- | --- |
-| Gatito amarillo | Danielle: intuición, curiosidad, calidez, humor, independencia. Cola en forma de signo de interrogación, una oreja inclinada, ojos mínimos. |
-| Akita turquesa | Diego: constancia, estructura, protección, seriedad levemente absurda. Geometría sólida, orejas triangulares, postura concentrada. |
+| Dani (gatita amarilla) | Danielle: intuición, curiosidad, calidez, humor, independencia. Anteojos redondos, cola en forma de signo de interrogación, una oreja inclinada. |
+| Diego (akita turquesa) | Diego: constancia, estructura, protección, seriedad levemente absurda. Anteojos rectangulares, cejas serias, cola enroscada de spitz. |
 | Planta | El vínculo: lo que se crea entre dos y no pertenece del todo a ninguno. Termina con una hoja amarilla, una turquesa y una verde nueva en el centro. |
 | Semilla cuadrada | Una forma poco convencional de empezar. Un cubo turquesa tratado como semilla perfectamente normal. |
 | Hojas secas | Ruido, estaciones anteriores, capas. Se apartan con cuidado, no se destruyen. |
@@ -21,17 +21,22 @@ La hoja verde central no es una mezcla cromática: es una forma distinta
 (más vertical, con nervio visible) porque la conexión produce algo
 distinto de sus partes.
 
-## Paleta
+## Paleta (v2)
 
 Definida en `src/styles/tokens.css`:
 
-- papel `#f1e8d8` / papel claro `#fbf5e9`
-- tinta `#24231f` / noche `#1f2b33`
-- amarillo `#d8ad38` / amarillo suave `#e5c769`
-- turquesa `#4d9691` / turquesa oscuro `#34736f`
-- salvia `#7d8b72` / hoja seca `#986a4c` / hoja oscura `#63483a`
-- verde nuevo `#718f5a`
-- sombras `rgba(25,31,31,.22)` y `rgba(16,22,24,.36)`
+- papel `#f2e9d6` / papel claro `#fbf4e4`
+- tinta `#2b261e` / noche `#1d2b35` / noche suave `#2a3d49`
+- amarillo ocre `#d9a53f` / amarillo suave `#eac878`
+- turquesa `#47867f` / turquesa oscuro `#2f665f`
+- salvia `#7f8d74` / hoja seca `#a26e4c` / hoja oscura `#6a4c39`
+- verde nuevo `#7a9a62`
+- arcilla (acento pequeño: narices, orejas internas) `#c17250`
+- sombras entintadas de verde `rgba(39,55,52,.18)` y `rgba(22,37,39,.4)`
+
+Las sombras llevan tinte verde en lugar de gris neutro: atmósfera,
+no adorno. Los anteojos de tinta unen a los dos personajes; la arcilla
+aparece solo en detalles diminutos compartidos.
 
 ## Tipografía
 
@@ -73,6 +78,30 @@ sobre toda la pantalla, sin filtros pesados.
   sombras que cruzan, opacidad. Nunca zoom dramático ni rebotes.
 - `prefers-reduced-motion`: se elimina la deriva ambiental y los
   desplazamientos se sustituyen por opacidad. Todo sigue siendo funcional.
+
+## Humor: pequeños accidentes de cuidado
+
+Dos accidentes reversibles, legibles y tiernos refuerzan el tema
+(cuidar es dosificar), nunca castigan:
+
+- **Agua de más** (escena II): tras colocar el dedal, este descansa junto
+  a la maceta y puede verterse otra vez. Al tercer vertido extra la
+  planta hace *glub* (charco, bamboleo), Diego abre un paraguas diminuto
+  («protocolo paraguas.») y el gesto del agua se reinicia con calma.
+- **Sol de más** (escena III): si la luz se queda demasiado cerca de la
+  planta, primero sale humo (aviso amable), luego un *puf.* la deja
+  chamuscada un momento y la luz vuelve a su punto de partida.
+
+Reglas: el aviso llega antes que la consecuencia, la causa siempre es
+visible, el reinicio es local (solo el gesto implicado) y el comentario
+sustituye a la instrucción — nunca conviven dos textos de guía.
+
+## Progresión
+
+Ninguna etapa puede saltarse: cada escena desbloquea solo la siguiente
+(validado también al reanudar desde localStorage). Solo se muestra la
+instrucción de la sala actual; las alternativas accesibles aparecen a
+los 12 segundos, como ayuda paciente y no como atajo.
 
 ## Elementos prohibidos
 

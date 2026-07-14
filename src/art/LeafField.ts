@@ -4,13 +4,13 @@
  */
 
 const PALETTE = {
-  base: "#8a6247",
-  baseDark: "#6d4c39",
-  leafDry: "#986a4c",
-  leafDark: "#63483a",
-  sage: "#7d8b72",
-  sageDark: "#66735d",
-  branch: "#4d3a30",
+  base: "#8f684b",
+  baseDark: "#71503b",
+  leafDry: "#a26e4c",
+  leafDark: "#6a4c39",
+  sage: "#7f8d74",
+  sageDark: "#687660",
+  branch: "#503c2f",
 };
 
 /** PRNG mulberry32: pequeño y determinista. */

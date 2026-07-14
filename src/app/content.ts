@@ -1,6 +1,7 @@
 /**
  * Toda la microcopy de la experiencia vive aquí.
  * No dispersar frases por componentes.
+ * Voces: dani (gatita amarilla), diego (akita turquesa).
  */
 export const content = {
   cover: {
@@ -9,6 +10,7 @@ export const content = {
     instruction: "aparta una hoja",
     whisper: "había algo respirando aquí",
     leafLabel: "Hoja seca. Arrástrala hacia un lado, o pulsa Enter, para abrir el herbario.",
+    cubeLabel: "Una semilla cuadrada, escondida. Tócala si quieres.",
   },
 
   clearSpace: {
@@ -23,7 +25,8 @@ export const content = {
     akitaSays: "yo traje una semilla cuadrada.",
     editorial: "La botánica decidió no intervenir.",
     next: "seguir",
-    revealedAnnouncement: "Las hojas se apartaron. Debajo esperaban dos criaturas y una planta dormida.",
+    revealedAnnouncement:
+      "Las hojas se apartaron. Debajo esperaban Dani, Diego y una planta dormida.",
   },
 
   offerings: {
@@ -35,12 +38,18 @@ export const content = {
       "Dedal de agua. Arrástralo hasta la maceta, o pulsa Enter para colocarlo.",
     seedLabel:
       "Semilla cuadrada. Arrástrala hasta la maceta, o pulsa Enter para colocarla.",
+    pourAgainLabel: "Verter un poco más de agua. La planta confía en ti.",
     catThought: "cantidad científicamente suficiente",
     akitaThought: "geometría aplicada",
+    umbrellaThought: "protocolo paraguas.",
+    floodGag: "glub.",
+    floodEditorial: "Demasiada agua. La planta pidió una pausa y una toalla.",
+    floodAnnouncement:
+      "La planta recibió demasiada agua. El dedal vuelve a su sitio para intentarlo de nuevo.",
     afterMain: "Algo puede empezar incluso cuando cada uno llega con una cosa distinta.",
     afterNotes: [
-      "El gato mira el brote.",
-      "El akita mira al gato.",
+      "Dani mira el brote.",
+      "Diego mira a Dani.",
       "El brote se mueve porque aparentemente es el único adulto responsable de la escena.",
     ],
     next: "seguir",
@@ -55,8 +64,12 @@ export const content = {
     lede: "La sombra también puede cuidar.",
     instruction: "mueve la luz",
     lampLabel:
-      "Fuente de luz. Arrástrala, o muévela con las flechas del teclado, hasta que las sombras se encuentren.",
+      "Fuente de luz. Arrástrala, o muévela con las flechas del teclado, hasta que las sombras se encuentren. Si la acercas demasiado a la planta, se calienta.",
     altAlign: "encontrar la luz",
+    burnGag: "puf.",
+    burnEditorial: "Demasiado sol. La planta prefiere los atardeceres por partes.",
+    burnAnnouncement:
+      "La luz estuvo demasiado cerca y la planta se chamuscó un poco. La luz vuelve a empezar.",
     afterMain:
       "Encontrarse no siempre es ocupar el mismo lugar. A veces es aprender dónde poner la luz.",
     catSays: "¿eso cuenta como arquitectura?",
@@ -91,7 +104,7 @@ export const content = {
   },
 
   speakers: {
-    cat: "gato",
-    akita: "akita",
+    cat: "dani",
+    akita: "diego",
   },
 } as const;

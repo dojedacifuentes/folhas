@@ -50,6 +50,106 @@
   }
 }
 
+/* ============ pequeños accidentes: agua y sol ============ */
+
+/* charco de agua desbordada (se escala desde el centro) */
+.plant-puddle {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  opacity: 0;
+  transition:
+    transform 800ms var(--ease-page),
+    opacity 500ms ease;
+}
+
+.is-flooded .plant-puddle {
+  transform: scale(1);
+  opacity: 0.8;
+}
+
+/* humo: primero un aviso amable */
+.plant-smoke .smoke {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.is-heating .plant-smoke .smoke {
+  animation: smokeRise 1.5s ease-in infinite;
+}
+
+.is-heating .plant-smoke .smoke--2 {
+  animation-delay: 0.45s;
+}
+
+.is-heating .plant-smoke .smoke--3 {
+  animation-delay: 0.9s;
+}
+
+@keyframes smokeRise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.5);
+  }
+  25% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(1.3);
+  }
+}
+
+/* resplandor de calor junto a la planta */
+.light-plant.is-heating::before {
+  content: "";
+  position: absolute;
+  inset: 18% 6% 26%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(217, 165, 63, 0.45), transparent 70%);
+  animation: heatPulse 900ms ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes heatPulse {
+  from {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* chamuscado cómico: la planta queda carbonizada un momento */
+.is-burnt .plant-leaves {
+  filter: brightness(0.28) saturate(0.25);
+  transition: filter 500ms ease;
+}
+
+.plant-leaves {
+  transition: filter 900ms ease;
+}
+
+.is-burnt .fig-plant {
+  animation: burnWobble 480ms ease 2;
+}
+
+@keyframes burnWobble {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2.5px) rotate(-1.4deg);
+  }
+  75% {
+    transform: translateX(2.5px) rotate(1.2deg);
+  }
+}
+
 /* ============ escena final: ilustración viva ============ */
 .scene--final {
   background: linear-gradient(180deg, #1a252c 0%, var(--night) 55%, #26363f 100%);
@@ -263,11 +363,32 @@
   }
 }
 
+/* en pantallas bajas, la escena final puede desplazarse con calma */
+.scene--final .scene-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(251, 244, 228, 0.22) transparent;
+}
+
+.scene--final .scene-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scene--final .scene-body::-webkit-scrollbar-thumb {
+  background: rgba(251, 244, 228, 0.2);
+  border-radius: 3px;
+}
+
+.scene--final .scene-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 /* texto final progresivo */
 .final-text {
   position: relative;
   z-index: 6;
-  padding: 0.8rem 0 0.4rem;
+  padding: 0.8rem 0 2.2rem;
 }
 
 .final-line {

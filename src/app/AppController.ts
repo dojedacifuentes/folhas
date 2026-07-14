@@ -1,5 +1,5 @@
 import { content } from "./content";
-import { defaultState, type ExperienceState, type SceneId } from "./state";
+import { defaultState, SCENE_ORDER, type ExperienceState, type SceneId } from "./state";
 import { SceneManager, type Scene, type SceneContext } from "./SceneManager";
 import { StorageManager } from "../storage/StorageManager";
 import { Soundscape } from "../audio/Soundscape";
@@ -75,10 +75,17 @@ export class AppController {
 
     this.manager = new SceneManager(stage, (id) => this.makeScene(id), ctx);
 
-    // reanudar donde se quedó
-    const initial: SceneId = this.state.currentScene ?? "cover";
+    // pausar animaciones ambientales cuando la pestaña no está visible
+    document.addEventListener("visibilitychange", () => {
+      document.documentElement.classList.toggle("is-paused", document.hidden);
+    });
+
+    // reanudar exactamente hasta donde los gestos completados lo permiten
+    const initial = this.furthestAllowed();
     if (initial !== "cover") this.showChrome();
     this.root.classList.toggle("on-dark", initial === "light" || initial === "final");
+    this.state.currentScene = initial;
+    this.save();
     this.manager.show(initial);
   }
 
@@ -97,7 +104,21 @@ export class AppController {
     }
   }
 
+  /** Ninguna etapa puede saltarse: cada gesto desbloquea solo la siguiente. */
+  private furthestAllowed(): SceneId {
+    const s = this.state;
+    if (!s.coverOpened) return "cover";
+    if (!s.leavesCleared) return "clear-space";
+    if (!(s.waterPlaced && s.seedPlaced)) return "offerings";
+    if (!s.lightAligned) return "light";
+    return "final";
+  }
+
   private goTo(id: SceneId): void {
+    const limit = this.furthestAllowed();
+    if (SCENE_ORDER.indexOf(id) > SCENE_ORDER.indexOf(limit)) {
+      id = limit;
+    }
     this.state.currentScene = id;
     this.save();
     this.root.classList.toggle("on-dark", id === "light" || id === "final");

@@ -25,12 +25,16 @@ Fuente única en código: `src/app/content.ts`. Este documento la ordena por esc
 - Encabezado: **II. Traer lo que tenemos**
 - Texto: *No siempre traemos lo mismo. Por suerte.*
 - Instrucción: `acércalos a la maceta`
-- Pensamiento del gato: *cantidad científicamente suficiente*
-- Pensamiento del akita: *geometría aplicada*
+- Pensamiento de Dani: *cantidad científicamente suficiente*
+- Pensamiento de Diego: *geometría aplicada*
+- Accidente de agua (tercer vertido extra):
+  - Gag: *glub.*
+  - Editorial: *Demasiada agua. La planta pidió una pausa y una toalla.*
+  - Pensamiento de Diego con paraguas: *protocolo paraguas.*
 - Texto tras colocar ambos: *Algo puede empezar incluso cuando cada uno llega con una cosa distinta.*
 - Notas editoriales:
-  - *El gato mira el brote.*
-  - *El akita mira al gato.*
+  - *Dani mira el brote.*
+  - *Diego mira a Dani.*
   - *El brote se mueve porque aparentemente es el único adulto responsable de la escena.*
 - Control: `seguir`
 
@@ -40,9 +44,12 @@ Fuente única en código: `src/app/content.ts`. Este documento la ordena por esc
 - Texto: *La sombra también puede cuidar.*
 - Instrucción: `mueve la luz`
 - Alternativa accesible: `encontrar la luz`
+- Accidente de sol (luz demasiado cerca):
+  - Gag: *puf.*
+  - Editorial: *Demasiado sol. La planta prefiere los atardeceres por partes.*
 - Texto tras la alineación: *Encontrarse no siempre es ocupar el mismo lugar. A veces es aprender dónde poner la luz.*
-- Gato: *¿eso cuenta como arquitectura?*
-- Akita: *sí.*
+- Dani: *¿eso cuenta como arquitectura?*
+- Diego: *sí.*
 - Control: `seguir`
 
 ## Escena IV · Volver

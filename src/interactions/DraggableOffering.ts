@@ -125,6 +125,31 @@ export class DraggableOffering {
     }, 420);
   }
 
+  /** Desplaza el objeto ya colocado (p. ej. a un sitio de descanso junto a la maceta). */
+  nudge(ox: number, oy: number): void {
+    this.dx += ox;
+    this.dy += oy;
+    const el = this.opts.el;
+    el.classList.add("is-nudging");
+    el.style.transform = `translate(${this.dx}px, ${this.dy}px)`;
+    window.setTimeout(() => el.classList.remove("is-nudging"), 620);
+  }
+
+  /** Vuelve al estado inicial: el objeto regresa a casa y puede arrastrarse otra vez. */
+  reset(): void {
+    this.placed = false;
+    this.dragging = false;
+    this.dx = 0;
+    this.dy = 0;
+    const el = this.opts.el;
+    el.classList.remove("is-placed", "is-placing", "is-dragging");
+    el.classList.add("is-returning");
+    el.style.transform = "translate(0px, 0px)";
+    el.removeAttribute("aria-disabled");
+    el.tabIndex = 0;
+    window.setTimeout(() => el.classList.remove("is-returning"), 640);
+  }
+
   get isPlaced(): boolean {
     return this.placed;
   }

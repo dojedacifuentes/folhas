@@ -2,8 +2,33 @@
 
 ## Fase actual
 
-Completado. QA documentado en `QA_CHECKLIST.md`; queda la revisión
-humana en un teléfono real (tacto y sonido).
+Segunda iteración completada (2026-07-14). QA documentado en
+`QA_CHECKLIST.md`; queda la revisión humana en un teléfono real.
+
+## Segunda iteración — dirección de arte y humor
+
+- Rediseño total de personajes: Dani (gatita amarilla, anteojos
+  redondos) y Diego (akita turquesa, anteojos rectangulares, cejas
+  serias, cola de spitz). Verificados en `/art-preview.html`.
+- Paleta v2 más cálida y cohesionada; sombras entintadas de verde;
+  arcilla como acento compartido (narices, orejas internas).
+- Sombras botánicas rediseñadas: rama de eucalipto en arco y fronda de
+  helecho; una rama cruza el tableau de la escena I; luz que se mueve
+  lentamente sobre la cubierta.
+- Voces con nombre: dani y diego en diálogos y notas editoriales.
+- Humor implementado y verificado en navegador:
+  - agua de más → glub, charco, paraguas de Diego, reinicio del agua
+    (ciclo completo verificado dos veces);
+  - sol de más → humo (0.7 s), chamuscado + «puf.» (2.3 s),
+    restauración y luz al inicio (3 s) — verificado con MutationObserver.
+- Progresión bloqueada: `furthestAllowed()` valida cada `goTo` y la
+  reanudación; probado manipulando localStorage (currentScene «final»
+  sin gestos → arranca en cubierta y corrige el guardado).
+- Solo la instrucción de la sala actual es visible; las alternativas
+  accesibles aparecen a los 12 s; el gag sustituye a la instrucción.
+- Optimización: animaciones pausadas con pestaña oculta
+  (`visibilitychange` + `animation-play-state`), `will-change` solo
+  durante transiciones de escena, scroll fino solo en la escena final.
 
 ## Tareas realizadas
 

@@ -1,26 +1,32 @@
 <svg class="fig fig-plant plant--full" viewBox="0 0 170 190" role="img" aria-label="Planta pequeña en una maceta azul noche" xmlns="http://www.w3.org/2000/svg">
-  <ellipse class="fig-shadow" cx="85" cy="182" rx="44" ry="6" fill="rgba(25, 31, 31, 0.22)"/>
+  <ellipse class="fig-shadow" cx="85" cy="182" rx="44" ry="6" fill="rgba(39, 55, 52, 0.18)"/>
   <g class="plant-leaves">
     <g class="plant-leaf plant-leaf--yellow">
-      <path d="M84 96 C62 88 46 66 52 46 C74 50 88 72 86 94 Z" fill="#d8ad38"/>
-      <path d="M84 94 C74 82 64 66 58 52" stroke="#63483a" stroke-width="1.2" fill="none" opacity="0.5"/>
+      <path d="M84 96 C62 88 46 66 52 46 C74 50 88 72 86 94 Z" fill="#d9a53f"/>
+      <path d="M84 94 C74 82 64 66 58 52" stroke="#6a4c39" stroke-width="1.2" fill="none" opacity="0.5"/>
     </g>
     <g class="plant-leaf plant-leaf--turquoise">
-      <path d="M88 96 C110 90 128 68 122 47 C99 51 84 74 86 94 Z" fill="#4d9691"/>
-      <path d="M88 94 C98 82 108 66 116 53" stroke="#1f2b33" stroke-width="1.2" fill="none" opacity="0.5"/>
+      <path d="M88 96 C110 90 128 68 122 47 C99 51 84 74 86 94 Z" fill="#47867f"/>
+      <path d="M88 94 C98 82 108 66 116 53" stroke="#1d2b35" stroke-width="1.2" fill="none" opacity="0.5"/>
     </g>
     <g class="plant-leaf plant-leaf--green">
-      <path d="M85 92 C74 74 76 48 86 34 C97 47 99 74 87 92 Z" fill="#718f5a"/>
-      <path d="M86 88 C85 72 85 56 86 42" stroke="#63483a" stroke-width="1.2" fill="none" opacity="0.55"/>
+      <path d="M85 92 C74 74 76 48 86 34 C97 47 99 74 87 92 Z" fill="#7a9a62"/>
+      <path d="M86 88 C85 72 85 56 86 42" stroke="#6a4c39" stroke-width="1.2" fill="none" opacity="0.55"/>
     </g>
-    <path class="plant-stem" d="M85 118 C84 108 84 100 85 92" stroke="#718f5a" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path class="plant-stem" d="M85 118 C84 108 84 100 85 92" stroke="#7a9a62" stroke-width="4" stroke-linecap="round" fill="none"/>
     <g class="plant-sprout">
-      <path d="M85 118 C85 112 85 108 85 104" stroke="#718f5a" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <path d="M85 105 C79 101 76 93 79 87 C86 90 89 98 86 104 Z" fill="#718f5a"/>
+      <path d="M85 118 C85 112 85 108 85 104" stroke="#7a9a62" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M85 105 C79 101 76 93 79 87 C86 90 89 98 86 104 Z" fill="#7a9a62"/>
+    </g>
+    <g class="plant-smoke" aria-hidden="true">
+      <circle class="smoke smoke--1" cx="82" cy="86" r="4" fill="#fbf4e4" opacity="0"/>
+      <circle class="smoke smoke--2" cx="90" cy="80" r="5" fill="#fbf4e4" opacity="0"/>
+      <circle class="smoke smoke--3" cx="85" cy="72" r="3.4" fill="#fbf4e4" opacity="0"/>
     </g>
   </g>
-  <ellipse class="plant-soil" cx="85" cy="121" rx="30" ry="7" fill="#63483a"/>
-  <path class="plant-pot" d="M52 120 L118 120 L112 172 C111 178 105 181 96 181 L74 181 C65 181 59 178 58 172 Z" fill="#1f2b33"/>
-  <path d="M52 120 L118 120 L116.5 131 L53.5 131 Z" fill="#1f2b33" opacity="0.8"/>
-  <path d="M60 134 L64 168" stroke="#fbf5e9" stroke-width="1.4" opacity="0.18"/>
+  <ellipse class="plant-soil" cx="85" cy="121" rx="30" ry="7" fill="#6a4c39"/>
+  <ellipse class="plant-puddle" cx="85" cy="121.5" rx="41" ry="7.5" fill="#47867f"/>
+  <path class="plant-pot" d="M52 120 L118 120 L112 172 C111 178 105 181 96 181 L74 181 C65 181 59 178 58 172 Z" fill="#1d2b35"/>
+  <path d="M52 120 L118 120 L116.5 131 L53.5 131 Z" fill="#1d2b35" opacity="0.8"/>
+  <path d="M60 134 L64 168" stroke="#fbf4e4" stroke-width="1.4" opacity="0.18"/>
 </svg>

@@ -168,6 +168,13 @@ button {
   opacity: 0;
 }
 
+/* con la pestaña oculta, el herbario también descansa */
+html.is-paused *,
+html.is-paused *::before,
+html.is-paused *::after {
+  animation-play-state: paused !important;
+}
+
 /* movimiento reducido: se conserva todo, sin deriva ni parallax */
 html.reduced-motion *,
 html.reduced-motion *::before,

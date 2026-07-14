@@ -23,20 +23,22 @@ const lib = await import(pathToFileURL(tmp).href);
 rmSync(tmp);
 
 const palette = {
-  "--paper": "#f1e8d8",
-  "--paper-light": "#fbf5e9",
-  "--ink": "#24231f",
-  "--night": "#1f2b33",
-  "--yellow": "#d8ad38",
-  "--yellow-soft": "#e5c769",
-  "--turquoise": "#4d9691",
-  "--turquoise-dark": "#34736f",
-  "--sage": "#7d8b72",
-  "--leaf-dry": "#986a4c",
-  "--leaf-dark": "#63483a",
-  "--green-new": "#718f5a",
-  "--shadow": "rgba(25, 31, 31, 0.22)",
-  "--shadow-deep": "rgba(16, 22, 24, 0.36)",
+  "--paper": "#f2e9d6",
+  "--paper-light": "#fbf4e4",
+  "--ink": "#2b261e",
+  "--night": "#1d2b35",
+  "--night-soft": "#2a3d49",
+  "--yellow": "#d9a53f",
+  "--yellow-soft": "#eac878",
+  "--turquoise": "#47867f",
+  "--turquoise-dark": "#2f665f",
+  "--sage": "#7f8d74",
+  "--leaf-dry": "#a26e4c",
+  "--leaf-dark": "#6a4c39",
+  "--green-new": "#7a9a62",
+  "--clay": "#c17250",
+  "--shadow": "rgba(39, 55, 52, 0.18)",
+  "--shadow-deep": "rgba(22, 37, 39, 0.4)",
 };
 
 function resolve(svg) {
@@ -59,6 +61,7 @@ const files = {
   "branch-shadow-01.svg": lib.branchShadowSVG(1),
   "branch-shadow-02.svg": lib.branchShadowSVG(2),
   "shadow-shelter.svg": lib.shadowShelterSVG(),
+  "umbrella.svg": lib.umbrellaSVG(),
 };
 for (let i = 1; i <= 6; i++) {
   files[`leaves/leaf-0${i}.svg`] = lib.leafSVG(i);

@@ -10,6 +10,14 @@ import {
   shadowShelterSVG,
 } from "../art/svgLibrary";
 
+/** Centro de la planta en fracciones del escenario. */
+const PLANT_X = 0.5;
+const PLANT_Y = 0.8;
+/** Radio de «demasiado cerca» y tiempos del pequeño accidente solar. */
+const HEAT_RADIUS = 0.17;
+const SMOKE_AFTER_MS = 700;
+const BURN_AFTER_MS = 2300;
+
 export class LightScene implements Scene {
   readonly id = "light" as const;
   private el: HTMLElement | null = null;
@@ -17,6 +25,9 @@ export class LightScene implements Scene {
   private aligner: LightAligner | null = null;
   private timers: number[] = [];
   private leafStep = 0;
+  private heatSmokeTimer: number | null = null;
+  private heatBurnTimer: number | null = null;
+  private burning = false;
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
@@ -62,7 +73,8 @@ export class LightScene implements Scene {
       </div>
       <footer class="scene-foot">
         <p class="scene-instruction">${c.instruction}</p>
-        <button class="link-alt" type="button">${c.altAlign}</button>
+        <p class="gag" hidden></p>
+        <button class="link-alt" type="button" hidden>${c.altAlign}</button>
       </footer>
     `;
     this.el = el;
@@ -77,10 +89,14 @@ export class LightScene implements Scene {
       onUpdate: (a, x, y) => this.update(a, x, y),
       onAligned: () => this.aligned(),
     });
-    // posición inicial: descentrada, cerca del gato, para invitar al gesto
+    // posición inicial: descentrada, cerca de Dani, para invitar al gesto
     this.update(0, 0.28, 0.74);
 
-    el.querySelector<HTMLButtonElement>(".link-alt")!.addEventListener("click", () => {
+    // la alternativa accesible aparece con calma, no como atajo
+    const alt = el.querySelector<HTMLButtonElement>(".link-alt")!;
+    this.timers.push(window.setTimeout(() => (alt.hidden = false), 12000));
+    alt.addEventListener("click", () => {
+      this.clearHeat();
       this.aligner?.align();
     });
     el.querySelector<HTMLButtonElement>(".btn-leaf")!.addEventListener("click", () => {
@@ -97,8 +113,8 @@ export class LightScene implements Scene {
     stage.style.setProperty("--align", a.toFixed(3));
 
     // dirección de las sombras: se alejan de la luz
-    const catDir = 0.22 - x; // gato a la izquierda (~22%)
-    const akitaDir = 0.78 - x; // akita a la derecha (~78%)
+    const catDir = 0.22 - x; // Dani a la izquierda (~22%)
+    const akitaDir = 0.78 - x; // Diego a la derecha (~78%)
     const lengthBoost = 0.8 + (1 - y) * 0.9;
     stage.style.setProperty("--cat-skew", `${(catDir * -60).toFixed(1)}deg`);
     stage.style.setProperty("--akita-skew", `${(akitaDir * -60).toFixed(1)}deg`);
@@ -114,10 +130,91 @@ export class LightScene implements Scene {
       this.leafStep = 2;
       plant.classList.add("show-turquoise");
     }
+
+    // demasiado cerca de la planta: primero humo, luego chamuscado
+    const nearPlant =
+      Math.hypot(x - PLANT_X, y - PLANT_Y) < HEAT_RADIUS && !this.burning;
+    if (nearPlant) {
+      this.startHeat(plant);
+    } else if (!this.burning) {
+      this.clearHeat();
+    }
+  }
+
+  private startHeat(plant: HTMLElement): void {
+    if (this.heatSmokeTimer !== null || this.heatBurnTimer !== null) return;
+    this.heatSmokeTimer = window.setTimeout(() => {
+      plant.classList.add("is-heating");
+      this.ctx.audio.rustle(0.5);
+    }, SMOKE_AFTER_MS);
+    this.heatBurnTimer = window.setTimeout(() => this.burn(), BURN_AFTER_MS);
+  }
+
+  private clearHeat(): void {
+    if (this.heatSmokeTimer !== null) {
+      window.clearTimeout(this.heatSmokeTimer);
+      this.heatSmokeTimer = null;
+    }
+    if (this.heatBurnTimer !== null) {
+      window.clearTimeout(this.heatBurnTimer);
+      this.heatBurnTimer = null;
+    }
+    this.el
+      ?.querySelector<HTMLElement>(".light-plant")
+      ?.classList.remove("is-heating");
+  }
+
+  /** Humor: demasiado sol chamusca a la planta y la luz vuelve a empezar. */
+  private burn(): void {
+    if (!this.el || this.burning) return;
+    this.burning = true;
+    this.heatSmokeTimer = null;
+    this.heatBurnTimer = null;
+    const c = content.light;
+    const plant = this.el.querySelector<HTMLElement>(".light-plant")!;
+    plant.classList.add("is-burnt");
+    this.aligner?.freeze(true);
+    this.ctx.audio.rustle(1.4);
+    this.ctx.audio.woodTap();
+    this.showGag(c.burnGag, c.burnEditorial);
+    this.ctx.announce(c.burnAnnouncement);
+
+    this.timers.push(
+      window.setTimeout(
+        () => {
+          if (!this.el) return;
+          plant.classList.remove("is-burnt", "is-heating", "show-yellow", "show-turquoise");
+          this.leafStep = 0;
+          this.hideGag();
+          this.aligner?.freeze(false);
+          this.aligner?.reset(0.28, 0.74);
+          this.burning = false;
+        },
+        this.ctx.reducedMotion() ? 1600 : 3000
+      )
+    );
+  }
+
+  private showGag(gag: string, editorial: string): void {
+    const foot = this.el?.querySelector<HTMLElement>(".scene-foot");
+    const gagEl = this.el?.querySelector<HTMLElement>(".gag");
+    if (!foot || !gagEl) return;
+    foot.classList.add("is-gagging");
+    gagEl.innerHTML = `<em>${gag}</em> ${editorial}`;
+    gagEl.hidden = false;
+  }
+
+  private hideGag(): void {
+    const foot = this.el?.querySelector<HTMLElement>(".scene-foot");
+    const gagEl = this.el?.querySelector<HTMLElement>(".gag");
+    if (!foot || !gagEl) return;
+    foot.classList.remove("is-gagging");
+    gagEl.hidden = true;
   }
 
   private aligned(): void {
     if (!this.el) return;
+    this.clearHeat();
     const c = content.light;
     this.el.classList.add("is-aligned");
     const plant = this.el.querySelector<HTMLElement>(".light-plant")!;
@@ -144,6 +241,7 @@ export class LightScene implements Scene {
   }
 
   destroy(): void {
+    this.clearHeat();
     this.aligner?.destroy();
     this.aligner = null;
     this.timers.forEach((t) => window.clearTimeout(t));

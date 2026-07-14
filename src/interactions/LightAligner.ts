@@ -22,6 +22,7 @@ export class LightAligner {
   private x = 0.28;
   private y = 0.74;
   private aligned = false;
+  private frozen = false;
   private activeId: number | null = null;
 
   private onDown = (e: PointerEvent) => this.pointerDown(e);
@@ -41,14 +42,14 @@ export class LightAligner {
   }
 
   private pointerDown(e: PointerEvent): void {
-    if (this.aligned || this.activeId !== null) return;
+    if (this.aligned || this.frozen || this.activeId !== null) return;
     this.activeId = e.pointerId;
     this.opts.lamp.setPointerCapture(e.pointerId);
     this.opts.lamp.classList.add("is-held");
   }
 
   private pointerMove(e: PointerEvent): void {
-    if (this.aligned || e.pointerId !== this.activeId) return;
+    if (this.aligned || this.frozen || e.pointerId !== this.activeId) return;
     const r = this.opts.stage.getBoundingClientRect();
     this.x = Math.min(0.96, Math.max(0.04, (e.clientX - r.left) / r.width));
     this.y = Math.min(0.9, Math.max(0.06, (e.clientY - r.top) / r.height));
@@ -63,7 +64,7 @@ export class LightAligner {
   }
 
   private keyMove(e: KeyboardEvent): void {
-    if (this.aligned) return;
+    if (this.aligned || this.frozen) return;
     const step = 0.035;
     let handled = true;
     switch (e.key) {
@@ -137,6 +138,23 @@ export class LightAligner {
   /** Alternativa accesible: encontrar la luz directamente. */
   align(): void {
     this.settle();
+  }
+
+  /** Congela o libera la luz (durante los pequeños accidentes). */
+  freeze(on: boolean): void {
+    this.frozen = on;
+    if (on && this.activeId !== null) {
+      this.activeId = null;
+      this.opts.lamp.classList.remove("is-held");
+    }
+  }
+
+  /** Devuelve la luz a una posición (tras la quemadura). */
+  reset(x: number, y: number): void {
+    if (this.aligned) return;
+    this.x = x;
+    this.y = y;
+    this.apply();
   }
 
   destroy(): void {

@@ -20,7 +20,7 @@ export class CoverScene implements Scene {
     el.className = "scene scene--cover";
     el.setAttribute("aria-label", c.title);
     el.innerHTML = `
-      <div class="cover-cube" aria-hidden="true">${seedCubeSVG()}</div>
+      <button class="cover-cube" type="button" aria-label="${c.cubeLabel}">${seedCubeSVG()}</button>
       <header class="cover-titles">
         <h1 class="cover-title">${c.title}</h1>
         <p class="cover-subtitle">${c.subtitle}</p>
@@ -46,6 +46,15 @@ export class CoverScene implements Scene {
         e.preventDefault();
         this.open(true);
       }
+    });
+
+    // pequeño secreto: la semilla escondida se estremece si la tocas
+    const cube = el.querySelector<HTMLButtonElement>(".cover-cube")!;
+    cube.addEventListener("click", () => {
+      if (cube.classList.contains("is-wiggling")) return;
+      cube.classList.add("is-wiggling");
+      ctx.audio.woodTap();
+      window.setTimeout(() => cube.classList.remove("is-wiggling"), 700);
     });
     return el;
   }

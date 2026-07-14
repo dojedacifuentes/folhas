@@ -1,23 +1,31 @@
-<svg class="fig fig-akita " viewBox="0 0 160 138" role="img" aria-label="Criatura akita turquesa, sentada con seriedad concentrada" xmlns="http://www.w3.org/2000/svg">
-  <ellipse class="fig-shadow" cx="80" cy="128" rx="50" ry="7.5" fill="rgba(25, 31, 31, 0.22)"/>
-  <path class="akita-tail" d="M112 82 C134 74 140 50 120 46 C106 43 102 58 112 62"
-    fill="none" stroke="#34736f" stroke-width="11" stroke-linecap="round"/>
-  <path class="akita-body" d="M44 124 C38 96 46 70 80 66 C112 62 126 82 122 104 C119 120 102 126 78 126 C64 126 50 128 44 124 Z"
-    fill="#4d9691"/>
-  <path class="akita-chest" d="M62 124 C58 104 64 88 80 86 C94 84 100 96 98 110 C96 121 84 125 74 125 Z"
-    fill="#fbf5e9" opacity="0.85"/>
-  <rect class="akita-leg" x="58" y="100" width="9" height="26" rx="4.5" fill="#34736f"/>
-  <rect class="akita-leg" x="88" y="100" width="9" height="26" rx="4.5" fill="#34736f"/>
+<svg class="fig fig-akita " viewBox="0 0 170 150" role="img" aria-label="Diego, akita turquesa con anteojos rectangulares y cola enroscada" xmlns="http://www.w3.org/2000/svg">
+  <ellipse class="fig-shadow" cx="86" cy="140" rx="50" ry="6.5" fill="rgba(39, 55, 52, 0.18)"/>
+  <path class="akita-tail" d="M120 92 C146 84 152 52 128 47 C112 44 106 60 118 65"
+    fill="none" stroke="#2f665f" stroke-width="12" stroke-linecap="round"/>
+  <path class="akita-body" d="M52 138 C42 108 52 78 88 72 C120 67 136 87 132 112 C129 130 110 138 84 138 Z"
+    fill="#47867f"/>
+  <path class="akita-chest" d="M70 136 C66 114 74 97 89 95 C101 93 108 105 106 120 C104 132 92 136 82 136 Z"
+    fill="#fbf4e4" opacity="0.92"/>
+  <rect class="akita-leg" x="64" y="106" width="9.5" height="31" rx="4.7" fill="#2f665f"/>
+  <rect class="akita-leg" x="90" y="106" width="9.5" height="31" rx="4.7" fill="#2f665f"/>
   <g class="akita-head">
-    <path class="akita-ear akita-ear--left" d="M50 29 L49 9 L66 22 Z" fill="#34736f"/>
-    <path class="akita-ear akita-ear--right" d="M82 20 L94 6 L96 25 Z" fill="#34736f"/>
-    <path d="M40 48 C36 26 54 14 74 16 C94 18 102 36 94 54 C86 70 46 68 40 48 Z" fill="#4d9691"/>
-    <path class="akita-muzzle" d="M58 46 C58 38 66 34 74 36 C82 38 84 46 80 52 C76 58 60 56 58 46 Z"
-      fill="#fbf5e9" opacity="0.9"/>
-    <path d="M67 42 l6 0 M67 46 l0 0" stroke="none"/>
-    <circle cx="70" cy="43" r="2.2" fill="#24231f"/>
-    <path d="M52 36 l8 0" stroke="#24231f" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M82 34 l8 0" stroke="#24231f" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M50 30 l7 -2 M84 28 l7 2" stroke="#24231f" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+    <path class="akita-ear akita-ear--left" d="M46 34 L46 8 L67 25 Z" fill="#2f665f"/>
+    <path d="M51 29 L51 17 L60 24 Z" fill="#c17250" opacity="0.5"/>
+    <path class="akita-ear akita-ear--right" d="M80 24 L96 8 L99 30 Z" fill="#2f665f"/>
+    <path d="M85 23 L93 15 L94.5 25 Z" fill="#c17250" opacity="0.5"/>
+    <path d="M38 64 C32 38 52 20 78 22 C102 24 112 44 103 64 C94 82 46 84 38 64 Z" fill="#47867f"/>
+    <path class="akita-muzzle" d="M56 58 C55 46 65 40 75 42 C85 44 88 55 82 63 C75 71 58 68 56 58 Z"
+      fill="#fbf4e4" opacity="0.94"/>
+    <ellipse cx="61" cy="51" rx="3.5" ry="3" fill="#2b261e"/>
+    <path d="M64 55 q4 3.6 8.6 1.4" stroke="#2b261e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <g class="akita-glasses">
+      <line x1="42" y1="42" x2="36" y2="40" stroke="#2b261e" stroke-width="1.6"/>
+      <rect x="45" y="34" width="17" height="13.5" rx="4.4" fill="#fbf4e4" fill-opacity="0.4" stroke="#2b261e" stroke-width="1.9"/>
+      <rect x="72" y="32" width="17" height="13.5" rx="4.4" fill="#fbf4e4" fill-opacity="0.4" stroke="#2b261e" stroke-width="1.9"/>
+      <path d="M62 40 Q67 37.5 72 38.6" fill="none" stroke="#2b261e" stroke-width="1.6"/>
+    </g>
+    <path d="M50 41 l7 -0.6" stroke="#2b261e" stroke-width="2" stroke-linecap="round"/>
+    <path d="M77 39 l7 -0.6" stroke="#2b261e" stroke-width="2" stroke-linecap="round"/>
+    <path d="M47 27.5 l9 -2 M76 25 l9 1" stroke="#2b261e" stroke-width="1.1" stroke-linecap="round" opacity="0.6"/>
   </g>
 </svg>

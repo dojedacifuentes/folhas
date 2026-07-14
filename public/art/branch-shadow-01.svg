@@ -1,10 +1,14 @@
-<svg class="branch-shadow " viewBox="0 0 620 420" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-  <g fill="rgba(25, 31, 31, 0.22)">
-    <path d="M-10 60 C120 40 240 90 340 70 C440 50 540 110 630 90 L630 96 C530 118 430 60 340 80 C240 100 120 52 -10 70 Z"/>
-    <path d="M180 76 C170 40 190 14 214 4 C216 30 202 58 188 78 Z"/>
-    <path d="M300 74 C316 44 348 34 372 40 C360 66 330 80 306 82 Z"/>
-    <path d="M430 68 C420 36 436 10 458 2 C462 28 450 54 438 72 Z"/>
-    <path d="M92 62 C74 44 70 18 82 0 C98 16 102 44 98 64 Z"/>
-    <path d="M520 92 C540 70 570 66 592 74 C578 96 548 104 524 100 Z"/>
+<svg class="branch-shadow " viewBox="0 0 640 420" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <g fill="rgba(39, 55, 52, 0.18)">
+    <path d="M-10 330 C140 300 300 220 470 140 C530 112 590 92 650 84 L650 92 C592 100 534 120 476 148 C306 228 146 308 -10 338 Z"/>
+    <ellipse cx="80" cy="306" rx="34" ry="15" transform="rotate(-18 80 306)"/>
+    <ellipse cx="150" cy="284" rx="30" ry="13" transform="rotate(24 150 284)"/>
+    <ellipse cx="222" cy="252" rx="33" ry="14" transform="rotate(-24 222 252)"/>
+    <ellipse cx="292" cy="222" rx="28" ry="12" transform="rotate(20 292 222)"/>
+    <ellipse cx="360" cy="190 " rx="30" ry="13" transform="rotate(-26 360 190)"/>
+    <ellipse cx="425" cy="160" rx="25" ry="11" transform="rotate(18 425 160)"/>
+    <ellipse cx="488" cy="132" rx="26" ry="11" transform="rotate(-28 488 132)"/>
+    <ellipse cx="548" cy="108" rx="21" ry="9" transform="rotate(14 548 108)"/>
+    <ellipse cx="602" cy="92" rx="17" ry="7.5" transform="rotate(-22 602 92)"/>
   </g>
 </svg>

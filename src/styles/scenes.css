@@ -17,14 +17,19 @@
   overflow: hidden;
 }
 
+.scene-enter,
+.scene-leave {
+  will-change: transform, opacity;
+}
+
 .scene-enter {
   opacity: 0;
-  transform: translateX(3.5%);
+  transform: translateX(3.5%) translateY(0.6%);
 }
 
 .scene-leave {
   opacity: 0;
-  transform: translateX(-4%);
+  transform: translateX(-4%) translateY(-0.6%);
   pointer-events: none;
 }
 
@@ -124,6 +129,32 @@
   align-content: end;
 }
 
+/* pequeño movimiento de luz sobre el papel */
+.scene--cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    55% 45% at 68% 22%,
+    rgba(234, 200, 120, 0.16),
+    transparent 70%
+  );
+  animation: lightSway 16s ease-in-out infinite alternate;
+}
+
+@keyframes lightSway {
+  from {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-4%, 4%) scale(1.05);
+    opacity: 0.75;
+  }
+}
+
 .cover-titles {
   z-index: 3;
   align-self: end;
@@ -134,10 +165,37 @@
   position: absolute;
   left: 8%;
   bottom: 12%;
-  width: 30px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
   opacity: 0.55;
-  z-index: 2;
+  z-index: 3;
   transform: rotate(-8deg);
+}
+
+.cover-cube svg {
+  width: 30px;
+}
+
+.cover-cube.is-wiggling svg {
+  animation: cubeWiggle 650ms ease;
+}
+
+@keyframes cubeWiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-11deg) translateY(-2px);
+  }
+  55% {
+    transform: rotate(8deg);
+  }
+  80% {
+    transform: rotate(-4deg);
+  }
 }
 
 .cover-leaf-area {
@@ -212,6 +270,17 @@
   position: absolute;
   inset: 0;
   background: var(--paper-light);
+  overflow: hidden;
+}
+
+/* una rama de eucalipto atraviesa el tableau revelado */
+.tableau-shadow {
+  position: absolute;
+  top: -12%;
+  right: -18%;
+  width: 95%;
+  opacity: 0.55;
+  transform: rotate(9deg);
 }
 
 .tableau-plant {
@@ -436,7 +505,7 @@
   z-index: 7;
 }
 
-.water-done .water-drop {
+.water-drop.drip {
   animation: dropFall 750ms ease-in 1;
 }
 
@@ -458,13 +527,21 @@
   }
 }
 
-/* la tierra cambia levemente de color */
-.water-done .offer-plant .plant-soil {
-  fill: #4c372b;
-}
-
+/* la tierra se va empapando, vertido a vertido */
 .plant-soil {
   transition: fill 900ms ease;
+}
+
+.soak-1 .plant-soil {
+  fill: #5a4232;
+}
+
+.soak-2 .plant-soil {
+  fill: #4a362a;
+}
+
+.soak-3 .plant-soil {
+  fill: #3b2c22;
 }
 
 /* el cubo gira un cuarto de vuelta al hundirse */
@@ -478,9 +555,98 @@
   transform: rotate(90deg) scale(0.82) translateY(6px);
 }
 
-.offering--water.is-placed {
-  transition: opacity 500ms ease 600ms;
+/* el dedal descansa junto a la maceta, por si hace falta más agua */
+.offering--water.is-nudging {
+  transition: transform 600ms var(--ease-page);
+}
+
+.offering--water.is-resting {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.offering--water.is-resting .thimble-solid {
+  transform-box: fill-box;
+  transform-origin: 80% 90%;
+}
+
+.offering--water.is-pouring .thimble-solid {
+  animation: pourTilt 640ms ease;
+}
+
+@keyframes pourTilt {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-26deg) translateY(-3px);
+  }
+  70% {
+    transform: rotate(-20deg);
+  }
+}
+
+/* tras el brote, el dedal se retira con discreción */
+.offering--water.is-done {
+  transition: opacity 700ms ease;
   opacity: 0;
+  pointer-events: none;
+}
+
+/* ahogo: charco, planta mareada, paraguas de protocolo */
+.is-flooded .offer-plant .fig-plant {
+  animation: glubWobble 900ms ease-in-out 2;
+}
+
+@keyframes glubWobble {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-2.6deg) translateY(1px);
+  }
+  70% {
+    transform: rotate(2.2deg);
+  }
+}
+
+.akita-umbrella {
+  position: absolute;
+  top: -44%;
+  left: 2%;
+  width: 66%;
+  opacity: 0;
+  transform: translateY(16px) rotate(-16deg) scale(0.55);
+  transform-origin: bottom center;
+  transition:
+    opacity 450ms ease,
+    transform 550ms cubic-bezier(0.2, 0.8, 0.3, 1.15);
+  pointer-events: none;
+}
+
+.is-flooded .akita-umbrella {
+  opacity: 1;
+  transform: translateY(0) rotate(-6deg) scale(1);
+}
+
+/* el comentario del accidente sustituye a la instrucción, nunca conviven */
+.scene-foot.is-gagging .scene-instruction {
+  display: none;
+}
+
+.gag {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin: 0;
+  max-width: 44ch;
+}
+
+.gag em {
+  font-style: italic;
+  margin-right: 0.5em;
 }
 
 /* reacciones de personajes */
@@ -530,13 +696,15 @@
 }
 
 .shadow-layer--edges .shadow-drift--a {
-  top: -10%;
-  left: -30%;
-  opacity: 0.75;
+  top: -14%;
+  left: -26%;
+  width: 105%;
+  opacity: 0.8;
 }
 
 .shadow-layer--edges .shadow-drift--b {
-  bottom: -18%;
-  right: -26%;
-  opacity: 0.75;
+  bottom: -20%;
+  right: -22%;
+  width: 72%;
+  opacity: 0.8;
 }

@@ -1,21 +1,34 @@
-<svg class="fig fig-cat " viewBox="0 0 150 122" role="img" aria-label="Gatito amarillo con la cola curvada como un signo de interrogación" xmlns="http://www.w3.org/2000/svg">
-  <ellipse class="fig-shadow" cx="72" cy="112" rx="46" ry="7" fill="rgba(25, 31, 31, 0.22)"/>
+<svg class="fig fig-cat " viewBox="0 0 160 140" role="img" aria-label="Dani, gatita amarilla con anteojos redondos y cola en signo de interrogación" xmlns="http://www.w3.org/2000/svg">
+  <ellipse class="fig-shadow" cx="78" cy="130" rx="46" ry="6" fill="rgba(39, 55, 52, 0.18)"/>
   <g class="cat-tail-group">
-    <path class="cat-tail" d="M108 82 C130 76 137 52 121 43 C111 37 100 44 104 53"
-      fill="none" stroke="#d8ad38" stroke-width="8.5" stroke-linecap="round"/>
-    <circle cx="103" cy="64" r="4.4" fill="#d8ad38"/>
+    <path class="cat-tail" d="M112 100 C138 96 146 68 127 59 C114 53 103 63 110 72"
+      fill="none" stroke="#d9a53f" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="108" cy="86" r="4.6" fill="#d9a53f"/>
   </g>
-  <path class="cat-body" d="M40 108 C30 88 39 63 66 58 C93 53 109 68 105 88 C102 102 85 109 62 109 C53 109 44 111 40 108 Z"
-    fill="#d8ad38"/>
-  <ellipse class="cat-paw" cx="52" cy="106" rx="10" ry="5" fill="#e5c769"/>
+  <path class="cat-body" d="M48 128 C38 102 46 72 76 64 C102 57 118 74 116 100 C114 118 97 128 72 128 Z"
+    fill="#d9a53f"/>
+  <path class="cat-chest" d="M64 126 C60 108 66 94 79 92 C90 90 96 100 94 112 C92 122 82 126 74 126 Z"
+    fill="#eac878" opacity="0.92"/>
+  <path d="M72 128 l0 -9" stroke="#d9a53f" stroke-width="0" fill="none"/>
   <g class="cat-head">
-    <path class="cat-ear cat-ear--left" d="M30 34 L25 13 L45 25 Z" fill="#d8ad38"/>
-    <path class="cat-ear cat-ear--right" d="M56 24 L70 9 L72 30 Z" fill="#d8ad38" transform="rotate(13 64 20)"/>
-    <path d="M26 52 C21 33 36 20 52 22 C68 24 75 40 68 55 C61 68 32 68 26 52 Z" fill="#e5c769"/>
-    <path class="cat-eye" d="M39 44 q3.4 3.2 6.6 0" stroke="#24231f" fill="none" stroke-width="1.7" stroke-linecap="round"/>
-    <circle class="cat-eye" cx="57" cy="43" r="1.8" fill="#24231f"/>
-    <path d="M47 51 l3 2.4 -3.2 2.2" stroke="#24231f" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M24 50 l-9 -1.4 M25 55 l-8 2.2" stroke="#24231f" fill="none" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
-    <path d="M69 49 l9 -1.8 M68 54 l8 2.6" stroke="#24231f" fill="none" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+    <path class="cat-ear cat-ear--left" d="M40 32 L38 8 L60 21 Z" fill="#d9a53f"/>
+    <path d="M44 26 L43.4 15 L53 21 Z" fill="#c17250" opacity="0.55"/>
+    <g transform="rotate(11 79 16)">
+      <path class="cat-ear cat-ear--right" d="M70 21 L86 6 L88 27 Z" fill="#d9a53f"/>
+      <path d="M75 20 L83 13 L84 23 Z" fill="#c17250" opacity="0.55"/>
+    </g>
+    <path d="M34 58 C28 34 46 18 68 20 C89 22 100 41 91 59 C82 76 42 77 34 58 Z" fill="#eac878"/>
+    <g class="cat-glasses">
+      <line x1="41" y1="45" x2="34.5" y2="43" stroke="#2b261e" stroke-width="1.6"/>
+      <circle cx="53" cy="46" r="8.6" fill="#fbf4e4" fill-opacity="0.42" stroke="#2b261e" stroke-width="1.9"/>
+      <circle cx="75" cy="45" r="8.6" fill="#fbf4e4" fill-opacity="0.42" stroke="#2b261e" stroke-width="1.9"/>
+      <path d="M61.5 45.6 Q66.5 43.4 66.4 45.4" fill="none" stroke="#2b261e" stroke-width="1.6"/>
+    </g>
+    <circle class="cat-eye" cx="54" cy="46.5" r="1.9" fill="#2b261e"/>
+    <circle class="cat-eye" cx="75.5" cy="45.5" r="1.9" fill="#2b261e"/>
+    <path d="M61 56.5 L66.5 56.5 L63.8 60 Z" fill="#c17250"/>
+    <path d="M63.8 60 q3 3.4 6.6 1.6" stroke="#2b261e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <path d="M32 52 l-10 -1.6 M33 57 l-9 2.4" stroke="#2b261e" stroke-width="0.9" stroke-linecap="round" opacity="0.55"/>
+    <path d="M92 50 l10 -2 M91 55 l9 2.8" stroke="#2b261e" stroke-width="0.9" stroke-linecap="round" opacity="0.55"/>
   </g>
 </svg>

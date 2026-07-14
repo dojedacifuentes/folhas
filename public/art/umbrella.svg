@@ -1,0 +1,7 @@
+<svg class="fig fig-umbrella " viewBox="0 0 80 92" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <path d="M40 8 L40 3" stroke="#2b261e" stroke-width="2" stroke-linecap="round"/>
+  <path d="M8 42 C10 20 24 9 40 9 C56 9 70 20 72 42 L61 42 Q55.5 35 50 42 Q45 35 40 42 Q35 35 30 42 Q24.5 35 19 42 Z"
+    fill="#2f665f"/>
+  <path d="M12 38 C16 24 26 15 38 13" stroke="#fbf4e4" stroke-width="1.4" fill="none" opacity="0.35"/>
+  <path d="M40 42 L40 76 Q40 84 33 84" stroke="#2b261e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+</svg>

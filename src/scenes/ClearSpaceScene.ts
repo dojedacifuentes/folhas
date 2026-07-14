@@ -4,6 +4,7 @@ import { ScratchReveal } from "../interactions/ScratchReveal";
 import { spawnLeafParticle } from "../art/particles";
 import {
   akitaSVG,
+  branchShadowSVG,
   catSVG,
   leafButtonSVG,
   plantSVG,
@@ -33,6 +34,7 @@ export class ClearSpaceScene implements Scene {
       <div class="scene-body">
         <div class="scratch-stage">
           <div class="tableau plant-wrap plant--dormant" aria-hidden="true">
+            <div class="tableau-shadow">${branchShadowSVG(1)}</div>
             <div class="tableau-cat">${catSVG()}</div>
             <div class="tableau-plant">${plantSVG()}</div>
             <div class="tableau-akita">${akitaSVG()}</div>
@@ -51,7 +53,7 @@ export class ClearSpaceScene implements Scene {
       </div>
       <footer class="scene-foot">
         <p class="scene-instruction">${c.instruction}</p>
-        <button class="link-alt" type="button">${c.altReveal}</button>
+        <button class="link-alt" type="button" hidden>${c.altReveal}</button>
       </footer>
     `;
     this.el = el;
@@ -73,7 +75,10 @@ export class ClearSpaceScene implements Scene {
     // esperar a que la transición asiente el layout antes de medir
     this.timers.push(window.setTimeout(() => this.scratch?.init(), 80));
 
-    el.querySelector<HTMLButtonElement>(".link-alt")!.addEventListener("click", () => {
+    // la alternativa accesible aparece con calma, no como atajo
+    const alt = el.querySelector<HTMLButtonElement>(".link-alt")!;
+    this.timers.push(window.setTimeout(() => (alt.hidden = false), 12000));
+    alt.addEventListener("click", () => {
       this.scratch?.reveal();
     });
     el.querySelector<HTMLButtonElement>(".btn-leaf")!.addEventListener("click", () => {

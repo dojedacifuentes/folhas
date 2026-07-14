@@ -68,9 +68,11 @@ scripts/export-art.mjs         regenera public/art/ desde svgLibrary.ts
 - **Cubierta**: arrastra la hoja (o Enter con la hoja enfocada).
 - **I. Hacer lugar**: frota la capa de hojas; alternativa «dejar pasar la luz».
 - **II. Traer lo que tenemos**: arrastra el dedal y la semilla a la maceta;
-  con teclado, Enter sobre cada objeto los coloca.
+  con teclado, Enter sobre cada objeto los coloca. Cuidado con regar de
+  más: la planta hace *glub* y el agua vuelve a empezar.
 - **III. Buscar la luz**: arrastra la luz o muévela con las flechas;
-  alternativa «encontrar la luz».
+  alternativa «encontrar la luz». Si la acercas demasiado a la planta,
+  primero sale humo y luego un pequeño *puf*.
 - **IV. Volver**: escena viva; la planta y el cubo reaccionan al tacto.
 - Abajo a la izquierda: «empezar de nuevo». Abajo a la derecha: sonido
   (desactivado por defecto; la preferencia se recuerda).
