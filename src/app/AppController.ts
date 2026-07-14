@@ -66,9 +66,29 @@ export class AppController {
       this.save();
     });
 
-    this.root
-      .querySelector<HTMLButtonElement>(".chrome-restart")!
-      .addEventListener("click", () => this.restart());
+    // reinicio en dos toques: un roce accidental no debe borrar el recorrido
+    const restartBtn = this.root.querySelector<HTMLButtonElement>(".chrome-restart")!;
+    let confirmTimer: number | null = null;
+    restartBtn.addEventListener("click", () => {
+      if (restartBtn.classList.contains("is-confirming")) {
+        if (confirmTimer !== null) window.clearTimeout(confirmTimer);
+        confirmTimer = null;
+        restartBtn.classList.remove("is-confirming");
+        restartBtn.textContent = content.chrome.restart;
+        restartBtn.setAttribute("aria-label", content.chrome.restartLabel);
+        this.restart();
+        return;
+      }
+      restartBtn.classList.add("is-confirming");
+      restartBtn.textContent = content.chrome.restartConfirm;
+      restartBtn.setAttribute("aria-label", content.chrome.restartConfirmLabel);
+      confirmTimer = window.setTimeout(() => {
+        restartBtn.classList.remove("is-confirming");
+        restartBtn.textContent = content.chrome.restart;
+        restartBtn.setAttribute("aria-label", content.chrome.restartLabel);
+        confirmTimer = null;
+      }, 3500);
+    });
 
     const ctx: SceneContext = {
       state: this.state,

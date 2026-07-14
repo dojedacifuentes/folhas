@@ -128,25 +128,38 @@ button {
   font-family: var(--font-interface);
   font-size: 0.72rem;
   letter-spacing: 0.04em;
-  opacity: 0.5;
+  opacity: 0.6;
   min-height: 44px;
-  padding: 0 10px;
+  padding: 0 12px;
   text-decoration: underline dotted;
   text-underline-offset: 3px;
   transition: opacity var(--dur-micro) ease;
   color: inherit;
-  mix-blend-mode: luminosity;
+  /* chip de papel: legible aunque el contenido pase por debajo */
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  border-radius: 999px;
+}
+
+.chrome-sound {
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  border-radius: 999px;
 }
 
 #app.on-dark .chrome-restart,
 #app.on-dark .chrome-sound {
   color: var(--paper);
-  mix-blend-mode: normal;
+  background: color-mix(in srgb, var(--night) 82%, transparent);
 }
 
 .chrome-restart:hover,
 .chrome-restart:focus-visible {
   opacity: 0.9;
+}
+
+.chrome-restart.is-confirming {
+  opacity: 1;
+  color: var(--terracotta-light);
+  text-decoration-style: solid;
 }
 
 .chrome-sound {

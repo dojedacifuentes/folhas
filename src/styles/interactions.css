@@ -225,7 +225,8 @@
   font-family: var(--font-interface);
   font-size: 0.92rem;
   letter-spacing: 0.1em;
-  margin-top: 0.9rem;
+  /* aire alrededor del control: nunca pegado a los controles fijos */
+  margin: 0.9rem 0 0.6rem;
 }
 
 .btn-leaf svg {

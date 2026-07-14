@@ -51,14 +51,39 @@ La fachada `artDirection.ts` conserva aliases narrativos anteriores, pero las nu
 - [x] Respuesta HTTP 200 de la página interna y las dos referencias durante desarrollo.
 - [x] Generación y parseo estático de combinaciones de personajes.
 
+## Validación manual realizada (2026-07-14, navegador integrado)
+
+- [x] Recorrido completo desde sesión nueva: cubierta → hacer lugar →
+      traer lo que tenemos → encontrar la medida → quedarse.
+- [x] Recorrido con ratón/toque en las cinco escenas; sin errores de
+      consola en ningún punto.
+- [x] Momento del agua: dos gotas exactas avanzan; secuencia
+      agua → semilla no expone la acción futura.
+- [x] Momento del viento: un soplo corto avanza.
+- [x] Umbrales del sol verificados con eventos temporizados:
+      mantener 1.4 s completa el gesto; mantener 6 s dispara el fallo
+      («la maceta respiró. probemos con una luz más corta»), que
+      reinicia solamente ese momento y conserva los hitos previos.
+- [x] Escena final: paraguas, planta florecida, texto completo,
+      dedicatoria, línea en portugués y firma D + D visibles con scroll.
+- [x] Estado persistido saneado (verificado en sesiones previas del
+      flujo antiguo adaptándose al actual).
+
+## Corregido tras la validación en navegador
+
+- **Reinicio accidental**: en viewports bajos, el contenido desplazable
+  pasaba bajo los controles fijos y un toque destinado a «ver lo que
+  creció» aterrizaba en «empezar de nuevo», borrando todo el recorrido.
+  Ahora el reinicio pide confirmación en dos toques
+  («¿de nuevo, seguro?», revierte solo a los 3.5 s) — verificado.
+- Los controles fijos llevan chip de papel (o de noche en escenas
+  oscuras) para leerse sobre cualquier contenido que pase debajo.
+- Más holgura inferior en pantallas bajas y margen bajo los controles
+  de avance para reducir la superposición.
+
 ## Validación manual pendiente
 
-- [ ] Recorrer desde una sesión nueva y desde estados persistidos representativos.
-- [ ] Probar ratón, tacto y teclado en las cinco escenas.
-- [ ] Revisar los umbrales del sol en un dispositivo táctil real.
-- [ ] Confirmar foco, anuncios, contraste y movimiento reducido en navegador.
-- [ ] Completar todas las resoluciones de `QA_CHECKLIST.md`.
-- [ ] Revisar consola y solicitudes de red durante un recorrido completo.
-- [ ] Realizar una pasada con sonido y otra sin sonido.
-
-No hubo un navegador disponible en la sesión de implementación. El build, el marcado y los assets están validados; la matriz visual/táctil permanece abierta de forma intencional.
+- [ ] Teclado completo (Tab/Enter/flechas) en las cinco escenas.
+- [ ] Umbrales del sol en un dispositivo táctil real.
+- [ ] Movimiento reducido y contraste en navegador real.
+- [ ] Una pasada con sonido activado (altavoces).

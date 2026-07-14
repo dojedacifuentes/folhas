@@ -116,6 +116,9 @@ export const content = {
     soundLabel: "Sonido",
     restart: "empezar de nuevo",
     restartLabel: "Empezar el herbario de nuevo desde la cubierta",
+    restartConfirm: "¿de nuevo, seguro?",
+    restartConfirmLabel:
+      "Confirmar: tocar otra vez borra el progreso y vuelve a la cubierta",
   },
 
   speakers: {

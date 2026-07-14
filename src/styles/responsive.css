@@ -86,6 +86,8 @@
   .scene {
     gap: 0.3rem;
     padding-top: calc(0.7rem + var(--safe-top));
+    /* holgura extra: el final del contenido nunca pisa los controles fijos */
+    padding-bottom: calc(4.2rem + var(--safe-bottom));
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: none;
