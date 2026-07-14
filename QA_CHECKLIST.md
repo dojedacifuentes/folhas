@@ -1,71 +1,100 @@
-# QA — Herbario de lo que cuidamos · segunda edición
+# Checklist de QA
 
-Fecha: 2026-07-13. Recorrido completo realizado en el navegador integrado
-sobre el servidor local de Vite; build de producción ejecutado por separado.
+Estado al 2026-07-13: validación estructural y build completados. También se recorrió la experiencia real en navegador con puntero, teclado semántico y un gesto mantenido, además de inspección visual en escritorio y marcos de 320/360 px. Permanecen abiertas las variantes de error difíciles de automatizar, tecnología asistiva real y la matriz completa de dispositivos.
 
-## Técnica
+## Validación estructural automatizada
 
-- [x] `npm install` sin vulnerabilidades y `npm run build` correcto (TypeScript
-      + Vite, sin dependencias de runtime).
-- [x] `git diff --check` sin errores de whitespace.
-- [x] Sin errores ni advertencias de consola durante el recorrido completo.
-- [x] Arte local: 19 SVG exportados y válidos; sin peticiones de assets remotos.
-- [x] `/art-preview.html` funciona en desarrollo y no se incluye en `dist/`.
-- [x] Canvas con DPR máximo 2; partículas y RAF se cancelan al desmontar.
-- [x] Animaciones CSS se pausan con la pestaña oculta.
+- [x] TypeScript reconoce 12 estados de Dani, 13 de Diego y cinco ángulos compartidos.
+- [x] `PlantCharacter` expone sus 12 estados canónicos.
+- [x] Los ocho objetos generan wrappers con los cinco `data-state` válidos.
+- [x] `ShadowSystem` genera las seis capas declaradas y el modo de refugio final.
+- [x] Las combinaciones de personajes inspeccionadas generan SVG/XML válido.
+- [x] `/dev/art-reference/`, su módulo, CSS y dos PNG responden HTTP 200 con Vite.
+- [x] Las referencias permanecen fuera de `public/` y de la entrada de producción.
 
-## Progresión y persistencia
+## Flujo y estado
 
-- [x] Orden único: cubierta → hojas → ofrendas → cuidados → luz → final.
-- [x] El estado persistido se sanea por tipo y por prerrequisitos; una sala solo
-      puede pedir la inmediatamente siguiente.
-- [x] Solo hay una escena interactiva; la saliente se vuelve `inert`, se oculta
-      del árbol accesible y destruye listeners antes del fundido.
-- [x] Recarga en el momento de sol reanudó exactamente ese momento sin mostrar
-      lluvia, viento ni sala futura.
-- [x] Reinicio durante el vuelo de la hoja permaneció en cubierta después de
-      drenar los temporizadores; no hubo salto tardío.
-- [x] Las instrucciones y alternativas completadas quedan inertes y con
-      `aria-hidden`; el control siguiente recibe foco.
+- [x] Una sesión nueva recorre, en orden: `cover → clear-space → offerings → care → final`.
+- [x] No se puede saltar a una escena futura mediante estado local o activaciones rápidas.
+- [x] Recargar conserva la escena y los hitos válidos.
+- [ ] Un estado antiguo, incompleto o corrupto se adapta al último punto alcanzable.
+- [ ] Reiniciar vuelve a la cubierta y limpia los hitos narrativos.
+- [ ] Cada escena saliente deja de responder y libera temporizadores, eventos y animaciones.
 
-## Interacción
+## Acciones por escena
 
-- [x] Recorrido completo con Enter/clic y alternativas accesibles.
-- [x] Ofrendas: ambos botones colocan objetos, el brote aparece una sola vez y
-      el siguiente paso no se ofrece antes de completar ambos.
-- [x] Lluvia: paraguas regulable, pista por falta de agua, éxito moderado y
-      reinicio local por inundación.
-- [x] Viento: pulsación sostenida o teclado, éxito al soltar en medida y fallo
-      local con lentes de Diego.
-- [x] Sol: regulación, éxito moderado y fallo local con planta quemada/manual.
-- [x] Luz: arrastre, flechas y alternativa directa; refugio y tres hojas.
-- [x] Final: planta y semilla siguen siendo objetivos táctiles; no hay premio,
-      puntuación, confeti ni llamada a compartir.
+- [ ] Cover: tocar la hoja abre el herbario; Enter y Espacio producen el mismo resultado.
+- [x] Clear-space: tocar el montón aparta las hojas una sola vez y revela el elenco.
+- [x] Offerings: el dedal aparece primero y un toque deja una gota.
+- [x] Offerings: solo después se habilita la semilla; al completarla aparece la continuación.
+- [x] Care / agua: el primer toque muestra «falta una» y el segundo completa el momento.
+- [x] Care / viento: un solo toque completa el momento.
+- [x] Care / sol: menos de 480 ms pide un poco más; entre 480 y 1800 ms completa.
+- [ ] Care / sol: Enter o Espacio mantenidos y soltados respetan los mismos límites.
+- [x] Final: tocar planta o semilla es opcional y no altera el progreso.
 
-## Accesibilidad y movimiento
+## Errores locales — pendiente de navegador
 
-- [x] Foco visible en controles; foco programático discreto en encabezados.
-- [x] Controles táctiles de al menos 44×44 px, incluidos planta y semilla final.
-- [x] `aria-live` anuncia hitos y reacciones; Dani/Diego tienen nombres y los
-      SVG de contenido tienen etiquetas descriptivas.
-- [x] Toda interacción de arrastre/raspado/regulación tiene alternativa.
-- [x] `prefers-reduced-motion` elimina desplazamientos amplios, acorta fallos,
-      asienta la luz sin 18 RAF y conserva las consecuencias narrativas.
+- [ ] Un tercer toque rápido de agua, antes de asentarse el segundo, muestra `drowned`.
+- [ ] Reintentar agua vuelve a `small`; no borra ofrendas ni avanza al viento.
+- [ ] Un segundo toque rápido de viento muestra `windBent` y desplaza los lentes de Diego.
+- [ ] Reintentar viento vuelve a `hydrated`; no repite agua ni avanza al sol.
+- [ ] Soltar el sol después de 1800 ms muestra `overheated`.
+- [ ] Mantener el sol hasta 2100 ms muestra `burnt` y humo.
+- [ ] Reintentar sol vuelve a `growing`; no repite agua o viento ni abre el final.
+- [ ] Durante una reacción, activaciones adicionales se ignoran o permanecen en el mismo error.
+- [ ] El anuncio accesible describe el error y el reintento una sola vez.
 
-## Responsive
+## Continuidad visual
 
-- [x] Matriz comprobada: 360×640, 390×844, 412×915, 768×1024,
-      1366×768 y 1440×900.
-- [x] `document.scrollWidth === innerWidth` en los seis tamaños.
-- [x] A 360×640 la escena final habilita scroll vertical interno de la sala
-      actual; no existen escenas futuras debajo ni overflow horizontal.
-- [x] A 390×844 el recorrido completo cabe sin scroll horizontal; textos,
-      instrucciones y alternativas permanecen visibles.
-- [x] A 1366×768 y 1440×900 se conserva la composición editorial en dos zonas.
+- [x] La planta conserva maceta, baseline, escala y posición reconocibles entre escenas.
+- [x] Se distinguen `seed`, `sprout`, `small`, `hydrated`, `growing`, `healthy` y `flowering`.
+- [ ] Cada exceso parte del estado correcto y vuelve al último momento válido.
+- [x] En final se distinguen hojas ocres, turquesas, verdes y floración.
+- [x] Dani y Diego conservan rasgos, lentes, proporciones y orientación en cinco ángulos.
+- [x] Las sombras cambian con la luz sin reducir la legibilidad.
+- [x] El final forma un refugio vegetal y no un corazón literal.
 
-## Pendiente de revisión humana
+## Accesibilidad — pendiente de navegador/tecnología asistiva
 
-- [ ] Sensación del raspado, arrastre del paraguas y pulsación sostenida en un
-      teléfono físico.
-- [ ] Escucha del paisaje sonoro con altavoces reales.
-- [ ] Lectura final del tono emocional y del grado de humor por Dani y Diego.
+- [x] Todos los controles son alcanzables en un orden de foco lógico.
+- [x] Hay foco visible y área interactiva mínima de 44 × 44 px.
+- [x] Los nombres accesibles explican acción y cantidad sin depender del color.
+- [x] Solo una instrucción activa se anuncia en cada momento.
+- [x] Los controles futuros están deshabilitados y fuera del recorrido de foco.
+- [ ] `prefers-reduced-motion` conserva estados, consecuencias y tiempos comprensibles.
+- [ ] La clase `reduced-motion` ofrece el mismo resultado que la preferencia del sistema.
+- [ ] El contraste de texto, foco y controles cumple AA.
+- [ ] La experiencia es comprensible con sonido desactivado.
+
+## Matriz responsive — pendiente
+
+- [x] Pasada visual complementaria a 320 × 720 y 360 × 700 sin overflow horizontal ni controles inaccesibles.
+
+- [ ] 360 × 640: no hay cortes, superposición ni contenido inaccesible.
+- [ ] 390 × 844: escenario, acción e instrucción caben sin saltos.
+- [ ] 412 × 915: no aparece overflow horizontal.
+- [ ] 768 × 1024: tableta mantiene jerarquía y áreas táctiles.
+- [ ] 1366 × 768: la baja altura no oculta acción o continuación.
+- [ ] 1440 × 900: el espacio negativo no separa texto, acción y personajes.
+- [ ] Orientación horizontal móvil: el control activo sigue visible.
+- [ ] Ratón, pantalla táctil y teclado completan el mismo recorrido.
+
+## Inventario interno — validación parcial
+
+- [x] Las dos referencias aparecen únicamente en la sección de consulta dev-only.
+- [x] La página importa directamente las APIs canónicas; no duplica SVG.
+- [x] Incluye paleta, cinco ángulos, estados, escalas, planta, objetos y sombras.
+- [x] Tiene estructura semántica, textos alternativos, enlace de salto y `noindex`.
+- [x] Revisar visualmente `/dev/art-reference/` en ancho compacto y escritorio.
+
+## Exportador y entrega
+
+- [x] `node scripts/export-art.mjs` genera 68 SVG autónomos y 49 variantes canónicas.
+- [x] Los 68 SVG parsean como XML.
+- [x] No quedan `var(...)` sin resolver ni referencias PNG exportadas.
+- [x] `npx tsc --noEmit` termina sin errores.
+- [x] `npm run build` termina sin errores.
+- [x] `npm run preview` carga la aplicación y permite una recarga profunda.
+- [ ] No hay errores de consola ni solicitudes remotas inesperadas durante el recorrido.
+- [ ] Se realiza una pasada completa con sonido y otra sin sonido.

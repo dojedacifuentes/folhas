@@ -1,60 +1,64 @@
-# PROGRESS
+# Progreso
 
-## Fase actual
+## Implementación completada
 
-Segunda edición implementada. QA documentado en `QA_CHECKLIST.md`; queda la
-revisión humana en un teléfono real (tacto, sonido y tono emocional).
+- [x] Reducir el recorrido a cinco escenas: `cover`, `clear-space`, `offerings`, `care` y `final`.
+- [x] Sanear el estado persistente y adaptar sesiones del recorrido anterior.
+- [x] Sustituir arrastre y raspado obligatorio por acciones nativas de tocar.
+- [x] Secuenciar agua y semilla sin exponer la acción futura.
+- [x] Integrar agua, viento y sol como momentos consecutivos de `care`.
+- [x] Reiniciar solamente el momento fallido y conservar hitos anteriores.
+- [x] Centralizar microcopy e instrucciones en `src/app/content.ts`.
+- [x] Añadir `SceneVisualState` para coordinar estado visual, instrucción y bloqueo.
+- [x] Crear cinco ángulos compartidos y renderers canónicos para personajes.
+- [x] Completar 12 estados de Dani y 13 de Diego.
+- [x] Crear `PlantCharacter` con 12 estados sobre una anatomía continua.
+- [x] Crear ocho objetos interactivos con cinco estados y hitbox mínimo de 44 px.
+- [x] Crear `ShadowSystem` con seis capas, luz, progreso y refugio final.
+- [x] Añadir `/dev/art-reference/` como inventario interno aislado.
+- [x] Actualizar el exportador para consumir APIs canónicas.
 
-## Tareas realizadas
+## Arquitectura actual
 
-- [x] Fase 0: proyecto Vite + TypeScript inicializado en carpeta propia,
-      git, `npm run build` verificado.
-- [x] Fase 1: `ART_DIRECTION.md`, `CONTENT.md`, tokens CSS, tipografías locales.
-- [x] Fase 2: librería SVG completa (gato, akita, planta, cubo, dedal,
-      6 hojas, 2 ramas, refugio, iconos) + exportación a `public/art/` +
-      página `/art-preview.html`.
-- [x] Fase 3: `ScratchReveal` con Pointer Events, captura, interpolación,
-      pincel suave, DPR ≤ 2, ResizeObserver con preservación de trazos,
-      muestreo parcial de alfa con throttle, umbral 58 %, callback único.
-- [x] Fase 4: seis escenas conectadas (cubierta, hacer lugar, traer lo
-      que tenemos, cuidados, buscar la luz, quedarse) con estado secuencial y
-      persistencia versionada `herbario-dani:v1`.
-- [x] Fase 5: reacciones de personajes, pensamientos, sonidos Web Audio
-      opcionales, easter eggs (cubo que gira, hojas que se inclinan),
-      transiciones de página.
-- [x] Fase 6: rediseño de Dani y Diego con lentes/estados, tokens ampliados,
-      sombras narrativas, lluvia, viento, sol y fallos locales amables.
+| Responsabilidad | Fuente canónica |
+| --- | --- |
+| Ángulos, facing, tamaños e interacción común | `src/art/characters/CharacterTypes.ts` |
+| Dani, 12 estados | `src/art/characters/DaniCharacter.ts` |
+| Diego, 13 estados | `src/art/characters/DiegoCharacter.ts` |
+| Planta, 12 estados | `src/art/PlantCharacter.ts` |
+| Objetos, 8 tipos × 5 estados | `src/art/objects/InteractiveObjects.ts` |
+| Sombras, 6 capas | `src/art/ShadowSystem.ts` |
+| Compatibilidad de escenas | `src/art/artDirection.ts` |
+| Estado visual narrativo | `src/app/visualState.ts` |
+| Comparación interna | `src/dev/art-reference.ts` |
 
-## Archivos creados
+La fachada `artDirection.ts` conserva aliases narrativos anteriores, pero las nuevas implementaciones consumen renderers canónicos. La planta ya no se describe únicamente como `dormant → grown`: su continuidad completa es `seed → sprout → small → hydrated → growing → healthy → flowering`, con `drowned`, `windBent`, `fallen`, `overheated` y `burnt` como consecuencias.
 
-Ver estructura en `README.md`. Sin dependencias de runtime.
+## Exportación de arte
 
-## Problemas y decisiones
+- [x] `node scripts/export-art.mjs` ejecutado tras la integración final.
+- [x] 68 SVG autónomos generados en `public/art/`.
+- [x] 49 variantes canónicas incluidas.
+- [x] Los 68 archivos parsean como XML.
+- [x] Cero variables CSS `var(...)` sin resolver.
+- [x] Cero referencias PNG en los SVG exportados.
 
-- El Escritorio del usuario no estaba vacío: el proyecto vive en la
-  subcarpeta `herbario-de-lo-que-cuidamos/` con su propio repositorio git.
-- `public/art/` se genera desde `src/art/svgLibrary.ts` (fuente única)
-  mediante `scripts/export-art.mjs`, para evitar duplicación divergente.
-- El progreso del raspado se conserva tras resize reproduciendo los
-  trazos normalizados, en lugar de copiar el bitmap (más estable entre DPR).
-- El cálculo de progreso usa `getImageData` con stride 41 y throttle de
-  260 ms: nunca en cada `pointermove`.
+## Validación automatizada realizada
 
-## Correcciones de la fase de QA
+- [x] `npx tsc --noEmit`.
+- [x] `npm run build` con TypeScript y Vite.
+- [x] Transformación Vite de la entrada, módulo y CSS de `/dev/art-reference/`.
+- [x] Respuesta HTTP 200 de la página interna y las dos referencias durante desarrollo.
+- [x] Generación y parseo estático de combinaciones de personajes.
 
-- `user-select: none` en el escenario: el raspado seleccionaba texto.
-- Padding inferior de escena ampliado: la instrucción chocaba con los
-  controles fijos.
-- Reinicio a la izquierda y sonido a la derecha; en escenas oscuras los
-  controles pasan a color papel (clase `on-dark`).
-- La luz de la escena III ahora nace descentrada (cerca del gato) para
-  invitar al gesto.
-- Cola del akita enroscada sobre el lomo y orejas más pequeñas (leía
-  como un segundo gato).
-- El pie oculto usa `visibility: hidden` para salir del árbol de
-  accesibilidad.
+## Validación manual pendiente
 
-## Tareas restantes
+- [ ] Recorrer desde una sesión nueva y desde estados persistidos representativos.
+- [ ] Probar ratón, tacto y teclado en las cinco escenas.
+- [ ] Revisar los umbrales del sol en un dispositivo táctil real.
+- [ ] Confirmar foco, anuncios, contraste y movimiento reducido en navegador.
+- [ ] Completar todas las resoluciones de `QA_CHECKLIST.md`.
+- [ ] Revisar consola y solicitudes de red durante un recorrido completo.
+- [ ] Realizar una pasada con sonido y otra sin sonido.
 
-- [ ] Revisión humana: tono de los textos, tacto del raspado y volumen
-      de los sonidos en un teléfono real.
+No hubo un navegador disponible en la sesión de implementación. El build, el marcado y los assets están validados; la matriz visual/táctil permanece abierta de forma intencional.

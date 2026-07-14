@@ -1,96 +1,78 @@
 # Herbario de lo que cuidamos
 
-*Manual mínimo para una semilla cuadrada y dos criaturas.*
+Experiencia web breve y narrativa sobre cuidar algo en común. Funciona sin backend, usa TypeScript y SVG local, y organiza un recorrido de dos o tres minutos en cinco escenas.
 
-Un pequeño libro de artista digital: hacer lugar, traer lo que tenemos,
-encontrar la medida, buscar la luz y quedarse alrededor de una planta,
-Dani —gata amarilla con lentes—, Diego —akita turquesa con lentes— y una
-semilla cuadrada. Dura entre dos y tres minutos. No hay puntuaciones ni prisa.
+## Recorrido
 
-## Requisitos
+| Escena | Propósito | Acción principal |
+| --- | --- | --- |
+| `cover` | Entrar en la historia | Tocar la hoja |
+| `clear-space` | Hacer lugar | Tocar el montón de hojas |
+| `offerings` | Aportar algo distinto | Dejar una gota y después acomodar la semilla |
+| `care` | Encontrar la medida | Dos toques de agua, un soplo y mantener el sol |
+| `final` | Contemplar lo construido | Interacciones opcionales |
 
-- Node.js 18+ y npm.
-- Un navegador moderno. Funciona con mouse, touch, stylus y teclado.
+`care` contiene tres momentos consecutivos. Un exceso de agua, viento o sol produce una reacción breve y reinicia solamente ese momento; los hitos anteriores permanecen guardados.
 
 ## Desarrollo
+
+Requiere Node.js 18 o superior.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Abre la URL local que indica Vite. La página `/art-preview.html` muestra
-el inventario visual de ilustraciones (solo en desarrollo; no forma parte
-del build).
+La experiencia principal queda en `/`. El inventario interno de arte está disponible únicamente durante desarrollo en:
 
-## Build y despliegue
+```text
+/dev/art-reference/
+```
+
+Esta página compara las dos láminas de `references/`, tokens, personajes, planta, objetos y sombras. No está enlazada desde la aplicación, no copia las referencias a `public/` y no forma parte de la entrada de producción.
+
+## Verificación y exportación
 
 ```bash
-npm run build     # genera dist/ (sitio estático, sin peticiones externas)
-npm run preview   # sirve dist/ localmente para comprobarlo
+npx tsc --noEmit
+npm run build
+npm run preview
+node scripts/export-art.mjs
 ```
 
-El contenido de `dist/` puede desplegarse en cualquier hosting estático
-(Netlify, GitHub Pages, Vercel, un servidor propio). No hay backend,
-analítica ni fuentes remotas.
+El exportador consume las APIs canónicas y genera 68 SVG autónomos en `public/art/`: 49 variantes canónicas, vistas por ángulo y recursos compartidos. La ejecución verificada dejó cero variables `var(...)` sin resolver y cero referencias PNG.
 
-### Desplegar en Vercel
+## Arquitectura visual
 
-El repositorio incluye `vercel.json` con la configuración exacta. Al
-importar el proyecto en Vercel:
+- `src/art/characters/CharacterTypes.ts`: contrato común y cinco ángulos.
+- `src/art/characters/DaniCharacter.ts`: 12 estados canónicos de Dani.
+- `src/art/characters/DiegoCharacter.ts`: 13 estados canónicos de Diego.
+- `src/art/PlantCharacter.ts`: una anatomía continua con 12 estados.
+- `src/art/objects/InteractiveObjects.ts`: ocho objetos y cinco estados de interacción.
+- `src/art/ShadowSystem.ts`: seis capas de sombra gobernadas por luz y progreso.
+- `src/art/artDirection.ts`: fachada de compatibilidad para las escenas existentes.
+- `src/app/visualState.ts`: `SceneVisualState`, contrato narrativo compartido entre personajes, planta, instrucción y bloqueo de interacción.
+- `src/dev/art-reference.ts`: entrada aislada del inventario interno.
 
-- **Framework Preset**: Vite
-- **Build Command**: `npm run build`
-- **Output Directory**: `dist`
-- **Install Command**: `npm install` (por defecto)
+Las escenas solicitan estados; no copian anatomía SVG. Dani y Diego comparten proporciones, tamaños y ángulos, pero conservan siluetas y gestos propios. La planta cambia de estado sobre el mismo nodo y mantiene maceta, escala y partes anatómicas.
 
-No se requieren variables de entorno.
+## Interacción y accesibilidad
 
-## Estructura
+- Solo existe una instrucción y una acción principal activas por momento.
+- Clic, toque, Enter y Espacio siguen rutas equivalentes donde corresponde.
+- Los controles tienen foco visible, nombre accesible y hitbox mínimo de 44 × 44 px.
+- Las acciones futuras permanecen deshabilitadas y fuera del recorrido de foco.
+- Los cambios importantes se anuncian mediante la región viva existente.
+- `prefers-reduced-motion` y la clase `reduced-motion` reducen desplazamientos y animaciones sin eliminar consecuencias narrativas.
+- El sonido es opcional; ninguna instrucción depende exclusivamente de él o del color.
 
-```
-src/
-├── main.ts                    punto de entrada
-├── app/                       controlador, escenas, estado, microcopy
-├── scenes/                    seis escenas; cuidados contiene tres momentos
-├── interactions/              raspado, arrastre, alineación de luz
-├── art/                       librería SVG y arte procedural (Canvas)
-├── audio/                     paisaje sonoro con Web Audio API
-├── storage/                   persistencia en localStorage
-├── accessibility/             preferencias de movimiento
-└── styles/                    tokens, base, tipografía, escenas…
-public/art/                    SVG independientes (exportados de la librería)
-scripts/export-art.mjs         regenera public/art/ desde svgLibrary.ts
-```
+El progreso se guarda localmente. El saneamiento del estado acepta sesiones anteriores y las adapta al flujo actual sin habilitar escenas futuras.
 
-## Controles
+## Documentación
 
-- **Cubierta**: arrastra la hoja (o Enter con la hoja enfocada).
-- **I. Hacer lugar**: frota la capa de hojas; alternativa «dejar pasar la luz».
-- **II. Traer lo que tenemos**: arrastra el dedal y la semilla a la maceta;
-  con teclado, Enter sobre cada objeto los coloca.
-- **III. Encontrar la medida**: mueve el paraguas, mantén la corriente y regula
-  el sol; cada gesto tiene una alternativa accesible.
-- **IV. Buscar la luz**: arrastra la luz o muévela con las flechas;
-  alternativa «encontrar la luz».
-- **V. Quedarse**: escena viva; la planta y el cubo reaccionan al tacto.
-- Abajo a la izquierda: «empezar de nuevo». Abajo a la derecha: sonido
-  (desactivado por defecto; la preferencia se recuerda).
-
-## Accesibilidad
-
-- Navegación completa por teclado con foco visible.
-- Alternativas para cada gesto (raspado, arrastre, alineación).
-- Anuncios discretos con `aria-live`.
-- `prefers-reduced-motion` respetado: sin deriva ambiental ni parallax.
-- Controles de al menos 44 × 44 px; la información no depende solo del color.
-
-## Personalizar los textos
-
-Toda la microcopy vive en `src/app/content.ts` (documentada en
-`CONTENT.md`). Cambia allí cualquier frase y reconstruye.
-
-## Estado guardado
-
-El progreso se guarda en `localStorage` bajo la clave `herbario-dani:v1`.
-No se guarda información personal y no hay analítica.
+- `CONTENT.md`: microcopy y secuencia editorial.
+- `ART_DIRECTION.md`: lenguaje visual y APIs canónicas.
+- `ART_REVISION.md`: decisiones y límites de esta iteración.
+- `ART_REFERENCE.md`: procedencia y uso dev-only de las láminas.
+- `PROGRESS.md`: estado real de implementación y validación.
+- `QA_CHECKLIST.md`: matriz funcional, visual y accesible; las pruebas manuales pendientes permanecen sin marcar.

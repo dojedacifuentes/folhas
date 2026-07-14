@@ -15,7 +15,6 @@ import { CoverScene } from "../scenes/CoverScene";
 import { ClearSpaceScene } from "../scenes/ClearSpaceScene";
 import { OfferingsScene } from "../scenes/OfferingsScene";
 import { CareScene } from "../scenes/CareScene";
-import { LightScene } from "../scenes/LightScene";
 import { FinalScene } from "../scenes/FinalScene";
 
 export class AppController {
@@ -100,8 +99,6 @@ export class AppController {
         return new OfferingsScene();
       case "care":
         return new CareScene();
-      case "light":
-        return new LightScene();
       case "final":
         return new FinalScene();
     }
@@ -154,8 +151,8 @@ export class AppController {
   }
 
   private applySceneAppearance(id: SceneId): void {
-    // Cuidados conserva el papel claro; solo luz y final usan cromo nocturno.
-    this.root.classList.toggle("on-dark", id === "light" || id === "final");
+    // Las salas de interacción conservan el papel claro; el final es nocturno.
+    this.root.classList.toggle("on-dark", id === "final");
   }
 
   private announce(message: string): void {

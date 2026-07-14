@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg class="character-shadow character-shadow--dani " viewBox="0 0 220 170" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-  <g fill="rgba(16, 22, 24, 0.36)" opacity="0.9">
+  <g fill="rgba(15, 21, 23, 0.42)" opacity="0.9">
     <path d="M27 154 C28 119 49 89 82 78 C112 68 143 80 153 103 C160 120 153 141 137 153 Z"/>
     <path d="M50 92 C40 72 48 48 69 38 C89 29 111 38 118 57 C124 75 111 91 91 95 Z"/>
     <path d="M47 56 L42 26 L66 45 Z M88 41 L110 18 L110 51 Z"/>

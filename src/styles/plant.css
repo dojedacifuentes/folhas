@@ -1,0 +1,604 @@
+/*
+ * Planta canónica.
+ *
+ * El SVG conserva todas sus capas entre estados; estas reglas solo cambian
+ * escala, postura, color y visibilidad. Las duraciones deliberadamente lentas
+ * (800–1400 ms) hacen legible la continuidad sin convertirla en un indicador.
+ */
+
+.fig-plant.plant-character {
+  --plant-pot-body: #ad6237;
+  --plant-pot-rim: #c77b4b;
+  --plant-pot-shadow: #814526;
+  --plant-pot-highlight: #df9b68;
+  --plant-soil: var(--soil-dry, #765038);
+  --plant-soil-dark: #4d3528;
+  --plant-water: var(--rain, #6c9696);
+  --plant-leaf-green: var(--green-moss, #56643a);
+  --plant-leaf-ochre: var(--dani-yellow, #d99d29);
+  --plant-leaf-turquoise: var(--diego-turquoise, #3f776f);
+  --plant-leaf-ink: #3f4932;
+  --plant-stem-color: var(--green-new, #657c45);
+  --plant-flower-petal: #f1dfad;
+  --plant-flower-center: var(--dani-yellow, #d99d29);
+  --plant-state-duration: 1100ms;
+  --plant-state-ease: cubic-bezier(0.22, 0.72, 0.24, 1);
+
+  overflow: visible;
+  isolation: isolate;
+}
+
+/* Antes de que Diego la plante, la misma anatomía conserva la maceta y oculta
+   la semilla interna. Después reaparece en ese nodo, sin cambiar de planta. */
+.fig-plant.plant-character.plant-context--empty .plant-character__seed {
+  opacity: 0 !important;
+  transform: translateY(-8px) scale(0.72) !important;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-growth,
+.fig-plant.plant-character[data-plant-state] .plant-sprout,
+.fig-plant.plant-character[data-plant-state] .plant-seed,
+.fig-plant.plant-character[data-plant-state] .plant-pot-group,
+.fig-plant.plant-character[data-plant-state] .plant-soil-layer,
+.fig-plant.plant-character[data-plant-state] .plant-face,
+.fig-plant.plant-character[data-plant-state] .plant-water-puddle,
+.fig-plant.plant-character[data-plant-state] .plant-waterline,
+.fig-plant.plant-character[data-plant-state] .plant-water-drops,
+.fig-plant.plant-character[data-plant-state] .plant-bubble,
+.fig-plant.plant-character[data-plant-state] .plant-heat-lines,
+.fig-plant.plant-character[data-plant-state] .plant-smoke,
+.fig-plant.plant-character[data-plant-state] .plant-fallen-leaf,
+.fig-plant.plant-character[data-plant-state] .plant-recovery-mark {
+  transition:
+    transform var(--plant-state-duration) var(--plant-state-ease),
+    opacity 900ms ease,
+    filter var(--plant-state-duration) ease,
+    fill 1000ms ease;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-leaf,
+.fig-plant.plant-character[data-plant-state] .plant-stem,
+.fig-plant.plant-character[data-plant-state] .plant-flower {
+  transition:
+    transform 1200ms var(--plant-state-ease),
+    opacity 900ms ease,
+    filter 1100ms ease;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-face__eyes,
+.fig-plant.plant-character[data-plant-state] .plant-face__mouth {
+  transition:
+    transform 900ms var(--plant-state-ease),
+    opacity 800ms ease;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-growth,
+.fig-plant.plant-character[data-plant-state] .plant-sprout,
+.fig-plant.plant-character[data-plant-state] .plant-seed,
+.fig-plant.plant-character[data-plant-state] .plant-leaf,
+.fig-plant.plant-character[data-plant-state] .plant-flower,
+.fig-plant.plant-character[data-plant-state] .plant-face,
+.fig-plant.plant-character[data-plant-state] .plant-waterline,
+.fig-plant.plant-character[data-plant-state] .plant-recovery-mark {
+  transform-box: fill-box;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-growth,
+.fig-plant.plant-character[data-plant-state] .plant-sprout,
+.fig-plant.plant-character[data-plant-state] .plant-seed,
+.fig-plant.plant-character[data-plant-state] .plant-leaf {
+  transform-origin: center bottom;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-flower {
+  transform-origin: center;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-growth {
+  opacity: 1;
+  transform: scale(0.96);
+  transform-origin: 50% 100%;
+  filter: none;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-leaf,
+.fig-plant.plant-character[data-plant-state] .plant-stem {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-seed {
+  opacity: 0;
+  transform: translateY(5px) scale(0.35) rotate(-8deg);
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-sprout {
+  opacity: 0;
+  transform: scale(0.35);
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-flowers {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-flower {
+  opacity: 0;
+  transform: scale(0.15) rotate(-5deg);
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-water-puddle,
+.fig-plant.plant-character[data-plant-state] .plant-waterline,
+.fig-plant.plant-character[data-plant-state] .plant-water-drops,
+.fig-plant.plant-character[data-plant-state] .plant-bubble,
+.fig-plant.plant-character[data-plant-state] .plant-heat-lines,
+.fig-plant.plant-character[data-plant-state] .plant-smoke,
+.fig-plant.plant-character[data-plant-state] .plant-fallen-leaf,
+.fig-plant.plant-character[data-plant-state] .plant-recovery-mark {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-water-puddle {
+  transform-origin: center;
+  transform: scale(0.72);
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-water-drop {
+  fill: var(--plant-water);
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-bubble {
+  fill: none;
+  stroke: var(--plant-water);
+  stroke-width: 1.5;
+  transform-origin: center;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-face {
+  opacity: 0.58;
+  transform-origin: center;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-face__eyes--normal,
+.fig-plant.plant-character[data-plant-state] .plant-face__mouth--calm {
+  opacity: 1;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-face__eyes--dizzy,
+.fig-plant.plant-character[data-plant-state] .plant-face__mouth--happy,
+.fig-plant.plant-character[data-plant-state] .plant-face__mouth--sad {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state] .plant-soil {
+  transition: fill 1000ms ease;
+}
+
+/* Semilla: la maceta y la línea de tierra establecen la escala del personaje. */
+.fig-plant.plant-character[data-plant-state="seed"] .plant-growth,
+.fig-plant.plant-character[data-plant-state="seed"] .plant-sprout {
+  opacity: 0;
+  transform: scale(0.08);
+}
+
+.fig-plant.plant-character[data-plant-state="seed"] .plant-seed {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotate(0);
+}
+
+.fig-plant.plant-character[data-plant-state="seed"] .plant-face {
+  opacity: 0.2;
+}
+
+/* Brote: la semilla se repliega mientras aparece el primer tallo. */
+.fig-plant.plant-character[data-plant-state="sprout"] .plant-growth {
+  opacity: 0;
+  transform: scale(0.12);
+}
+
+.fig-plant.plant-character[data-plant-state="sprout"] .plant-sprout {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fig-plant.plant-character[data-plant-state="sprout"] .plant-seed {
+  opacity: 0.24;
+  transform: translateY(4px) scale(0.64) rotate(8deg);
+}
+
+.fig-plant.plant-character[data-plant-state="sprout"] .plant-face {
+  opacity: 0.32;
+}
+
+/*
+ * Primera planta: la anatomía adulta ya existe, pero solo abre sus hojas bajas.
+ * Esta superposición permite que sprout → small sea una transición, no un corte.
+ */
+.fig-plant.plant-character[data-plant-state="small"] .plant-growth,
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-growth,
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-growth {
+  opacity: 1;
+  transform: scale(0.62);
+}
+
+.fig-plant.plant-character[data-plant-state="small"] .plant-sprout,
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-sprout,
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-sprout {
+  opacity: 0;
+  transform: scale(1.16);
+}
+
+.fig-plant.plant-character[data-plant-state="small"] .plant-leaf--middle-left,
+.fig-plant.plant-character[data-plant-state="small"] .plant-leaf--middle-right,
+.fig-plant.plant-character[data-plant-state="small"] .plant-leaf--upper-left,
+.fig-plant.plant-character[data-plant-state="small"] .plant-leaf--crown,
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-leaf--middle-left,
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-leaf--middle-right,
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-leaf--upper-left,
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-leaf--crown,
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-leaf--middle-left,
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-leaf--middle-right,
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-leaf--upper-left,
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-leaf--crown {
+  opacity: 0;
+  transform: scale(0.18);
+}
+
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-growth {
+  transform: scale(0.68) translateY(-1px);
+}
+
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-soil {
+  fill: var(--soil-wet, #4b382c);
+}
+
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-water-drops {
+  opacity: 0.72;
+  transform: translateY(1px);
+}
+
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-face__mouth--calm {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="hydrated"] .plant-face__mouth--happy {
+  opacity: 1;
+}
+
+/* Crecimiento intermedio: aparecen ramas y colores sin anticipar la flor. */
+.fig-plant.plant-character[data-plant-state="growing"] .plant-growth,
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-growth,
+.fig-plant.plant-character[data-plant-state="fallen"] .plant-growth {
+  opacity: 1;
+  transform: scale(0.82);
+}
+
+.fig-plant.plant-character[data-plant-state="growing"] .plant-leaf--crown,
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-leaf--crown,
+.fig-plant.plant-character[data-plant-state="fallen"] .plant-leaf--crown {
+  opacity: 0;
+  transform: scale(0.25);
+}
+
+.fig-plant.plant-character[data-plant-state="growing"] .plant-face__mouth--calm {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="growing"] .plant-face__mouth--happy {
+  opacity: 1;
+}
+
+/* Salud: las tres familias de hojas se leen antes de que aparezcan flores. */
+.fig-plant.plant-character[data-plant-state="healthy"] .plant-growth,
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-growth,
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-growth {
+  opacity: 1;
+  transform: scale(0.96);
+}
+
+.fig-plant.plant-character[data-plant-state="healthy"] .plant-face__mouth--calm {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="healthy"] .plant-face__mouth--happy {
+  opacity: 1;
+}
+
+/* Floración: remate cálido y reconocible de la misma anatomía. */
+.fig-plant.plant-character[data-plant-state="flowering"] .plant-growth {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fig-plant.plant-character[data-plant-state="flowering"] .plant-flowers {
+  opacity: 1;
+}
+
+.fig-plant.plant-character[data-plant-state="flowering"] .plant-flower {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+}
+
+.fig-plant.plant-character[data-plant-state="flowering"] .plant-flower--left {
+  transition-delay: 100ms;
+}
+
+.fig-plant.plant-character[data-plant-state="flowering"] .plant-flower--right {
+  transition-delay: 180ms;
+}
+
+.fig-plant.plant-character[data-plant-state="flowering"] .plant-face__mouth--calm {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="flowering"] .plant-face__mouth--happy {
+  opacity: 1;
+}
+
+/* Exceso de agua: la planta sigue siendo pequeña y la maceta, reconocible. */
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-growth {
+  transform: translateY(6px) rotate(6deg) scale(0.64);
+  animation: plantDrownedSettle 1400ms var(--plant-state-ease) both;
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-leaf--lower-left {
+  transform: translateY(7px) rotate(-14deg) scaleY(0.84);
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-leaf--lower-right {
+  transform: translateY(8px) rotate(16deg) scaleY(0.82);
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-soil {
+  fill: var(--soil-wet, #4b382c);
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-water-puddle {
+  opacity: 0.78;
+  transform: scale(1);
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-waterline {
+  opacity: 0.74;
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-bubble {
+  opacity: 0.86;
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-bubble--a {
+  animation: plantWaterBubble 1400ms ease-in-out infinite;
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-bubble--b {
+  animation: plantWaterBubble 1200ms ease-in-out 160ms infinite;
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-face__mouth--calm,
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-face__mouth--happy {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="drowned"] .plant-face__mouth--sad {
+  opacity: 1;
+}
+
+/* Viento: se inclina desde la base sin cambiar de maceta ni de escala narrativa. */
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-growth {
+  transform: translateX(7px) rotate(18deg) scale(0.82);
+  animation: plantWindSettle 1200ms var(--plant-state-ease) both;
+}
+
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-leaf--lower-left,
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-leaf--middle-left {
+  transform: translateX(5px) rotate(12deg);
+}
+
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-leaf--lower-right,
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-leaf--middle-right,
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-leaf--upper-left {
+  transform: translateX(8px) rotate(20deg);
+}
+
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-face {
+  transform: translateX(2px) rotate(3deg);
+}
+
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-face__mouth--calm,
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-face__mouth--happy {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="windBent"] .plant-face__mouth--sad {
+  opacity: 1;
+}
+
+/* Caída: exageración local; las raíces y la maceta permanecen en su lugar. */
+.fig-plant.plant-character[data-plant-state="fallen"] .plant-growth {
+  transform: translate(28px, 8px) rotate(58deg) scale(0.8);
+}
+
+.fig-plant.plant-character[data-plant-state="fallen"] .plant-fallen-leaf {
+  opacity: 0.92;
+  transform: translateY(0) rotate(0);
+}
+
+.fig-plant.plant-character[data-plant-state="fallen"] .plant-face {
+  transform: translateY(2px) rotate(5deg);
+}
+
+.fig-plant.plant-character[data-plant-state="fallen"] .plant-face__mouth--calm,
+.fig-plant.plant-character[data-plant-state="fallen"] .plant-face__mouth--happy {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="fallen"] .plant-face__mouth--sad {
+  opacity: 1;
+}
+
+/* Calor: primero se ablanda el color; burnt conserva esa postura y la profundiza. */
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-growth {
+  filter: sepia(0.3) saturate(0.72) brightness(1.04);
+}
+
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-leaf--lower-left {
+  transform: translateY(7px) rotate(-10deg) scaleY(0.88);
+}
+
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-leaf--lower-right {
+  transform: translateY(7px) rotate(11deg) scaleY(0.86);
+}
+
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-leaf--middle-left,
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-leaf--upper-left {
+  transform: translateY(5px) rotate(-7deg) scaleY(0.9);
+}
+
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-leaf--middle-right,
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-leaf--crown {
+  transform: translateY(6px) rotate(7deg) scaleY(0.88);
+}
+
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-heat-lines {
+  opacity: 0.78;
+  animation: plantHeatRise 1400ms ease-in-out infinite;
+}
+
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-face__mouth--calm,
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-face__mouth--happy {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="overheated"] .plant-face__mouth--sad {
+  opacity: 1;
+}
+
+.fig-plant.plant-character[data-plant-state="burnt"] {
+  --plant-stem-color: var(--burnt, #39362b);
+}
+
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-growth {
+  filter: brightness(0.48) saturate(0.22) sepia(0.42);
+}
+
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-leaf--lower-left,
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-leaf--middle-left,
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-leaf--upper-left {
+  transform: translateY(10px) rotate(-14deg) scaleY(0.76);
+}
+
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-leaf--lower-right,
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-leaf--middle-right,
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-leaf--crown {
+  transform: translateY(11px) rotate(14deg) scaleY(0.74);
+}
+
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-smoke {
+  opacity: 0.72;
+  animation: plantSmokeRise 1400ms ease-in-out infinite;
+}
+
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-face__eyes--normal,
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-face__mouth--calm,
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-face__mouth--happy {
+  opacity: 0;
+}
+
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-face__eyes--dizzy,
+.fig-plant.plant-character[data-plant-state="burnt"] .plant-face__mouth--sad {
+  opacity: 1;
+}
+
+/* Marca de compatibilidad para el estado transitorio de la iteración anterior. */
+.fig-plant.plant-character.plant--recovering .plant-recovery-mark {
+  opacity: 0.72;
+  transform: translateY(0) scale(1);
+}
+
+@keyframes plantDrownedSettle {
+  0% {
+    transform: translateY(0) rotate(-3deg) scale(0.68);
+  }
+  55% {
+    transform: translateY(8px) rotate(8deg) scale(0.63);
+  }
+  100% {
+    transform: translateY(6px) rotate(6deg) scale(0.64);
+  }
+}
+
+@keyframes plantWaterBubble {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: translateY(5px) scale(0.7);
+  }
+  55% {
+    opacity: 0.9;
+    transform: translateY(-6px) scale(1);
+  }
+}
+
+@keyframes plantWindSettle {
+  0% {
+    transform: translateX(13px) rotate(31deg) scale(0.82);
+  }
+  64% {
+    transform: translateX(5px) rotate(15deg) scale(0.82);
+  }
+  100% {
+    transform: translateX(7px) rotate(18deg) scale(0.82);
+  }
+}
+
+@keyframes plantHeatRise {
+  0%,
+  100% {
+    opacity: 0.38;
+    transform: translateY(4px);
+  }
+  50% {
+    opacity: 0.82;
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes plantSmokeRise {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: translateY(5px) scale(0.9);
+  }
+  50% {
+    opacity: 0.78;
+    transform: translateY(-6px) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fig-plant.plant-character[data-plant-state] .plant-growth,
+  .fig-plant.plant-character[data-plant-state] .plant-sprout,
+  .fig-plant.plant-character[data-plant-state] .plant-seed,
+  .fig-plant.plant-character[data-plant-state] .plant-pot-group,
+  .fig-plant.plant-character[data-plant-state] .plant-soil-layer,
+  .fig-plant.plant-character[data-plant-state] .plant-face,
+  .fig-plant.plant-character[data-plant-state] .plant-leaf,
+  .fig-plant.plant-character[data-plant-state] .plant-stem,
+  .fig-plant.plant-character[data-plant-state] .plant-flower,
+  .fig-plant.plant-character[data-plant-state] .plant-water-puddle,
+  .fig-plant.plant-character[data-plant-state] .plant-waterline,
+  .fig-plant.plant-character[data-plant-state] .plant-water-drops,
+  .fig-plant.plant-character[data-plant-state] .plant-bubble,
+  .fig-plant.plant-character[data-plant-state] .plant-heat-lines,
+  .fig-plant.plant-character[data-plant-state] .plant-smoke,
+  .fig-plant.plant-character[data-plant-state] .plant-fallen-leaf,
+  .fig-plant.plant-character[data-plant-state] .plant-recovery-mark,
+  .fig-plant.plant-character[data-plant-state] .plant-face__eyes,
+  .fig-plant.plant-character[data-plant-state] .plant-face__mouth {
+    animation: none !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+}

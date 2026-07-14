@@ -1,82 +1,117 @@
-# Dirección de arte — Herbario de lo que cuidamos
+# Dirección de arte
 
 ## Metáfora
 
-Cuidar no es conservar algo intacto. Es hacerle lugar, acercar lo que uno tiene,
-encontrar la luz y volver. Cada escena es uno de esos gestos; la obra completa
-es un pequeño libro de artista digital, no una landing ni un juego.
+Cuidar es hacer lugar, acercar lo que cada uno tiene, encontrar la medida y quedarse. La experiencia se plantea como un pequeño libro de artista digital: íntimo, táctil, botánico y con humor seco.
 
 ## Sistema simbólico
 
-| Símbolo | Significado |
+| Símbolo | Función |
 | --- | --- |
-| Dani, gata amarilla con lentes | Intuición, curiosidad, calidez y observación. Cola caligráfica en forma de interrogación, orejas asimétricas y lentes irregulares. |
-| Diego, akita turquesa con lentes | Constancia, estructura y protección seria de manera levemente absurda. Geometría sólida, orejas triangulares y lentes rectangulares bajos. |
-| Planta | El vínculo: lo que se crea entre dos y no pertenece del todo a ninguno. Termina con una hoja amarilla, una turquesa y una verde nueva en el centro. |
-| Semilla cuadrada | Una forma poco convencional de empezar. Un cubo turquesa tratado como semilla perfectamente normal. |
-| Hojas secas | Ruido, estaciones anteriores, capas. Se apartan con cuidado, no se destruyen. |
-| Sombras | Huella y presencia indirecta. No amenazan: acompañan y protegen sin ocupar el centro. |
+| Dani, gata amarilla con lentes | Curiosidad, sensibilidad y observación lateral |
+| Diego, akita turquesa con lentes | Constancia, estructura y protección seriamente absurda |
+| Planta | El vínculo compartido y la memoria de cada gesto |
+| Semilla cuadrada | Una forma poco convencional de empezar |
+| Dedal y regadera | La medida pequeña tratada como procedimiento importante |
+| Hojas secas | Capas anteriores que se apartan con cuidado |
+| Sombras | Presencia indirecta, consecuencia y refugio |
 
-La hoja verde central no es una mezcla cromática: es una forma distinta
-(más vertical, con nervio visible) porque la conexión produce algo
-distinto de sus partes.
+La floración final conserva acentos amarillos, turquesas y verdes. Lo compartido produce una forma nueva, no una mezcla indiferenciada.
 
-## Paleta
+## Paleta y materialidad
 
-Definida en `src/styles/tokens.css`:
+La fuente canónica es `src/styles/tokens.css`.
 
-- papel `#eee4d3` / papel claro `#f8f1e5` / sombra `#d9cbb8`
-- tinta `#252521` / tinta suave `#44433d`
-- noche `#233039` / noche profunda `#172329`
-- Dani `#d3a83c` / luz `#e6c96e` / sombra `#9d7333`
-- Diego `#4d918b` / luz `#79aaa4` / sombra `#316a68`
-- salvia `#77866e` / hoja seca `#9a694d` / verde nuevo `#6f8f59`
-- lluvia `#708a99` / sol `#e4b957` / quemado `#3a342f`
+- Papel: `#f0e5d1`, `#faf3e5`, sombra `#d9c7aa`.
+- Tinta y noche: `#29291f`, `#4a4739`, `#21383a`, `#172a2e`.
+- Dani: `#d99d29`, luz `#e8b83f`, sombra `#a86a22`.
+- Diego: `#3f776f`, luz `#6e9991`, sombra `#285451`.
+- Botánica: hoja seca `#97623a`, salvia `#85865a`, musgo `#56643a`, verde nuevo `#657c45`.
+- Clima: lluvia `#6c9696`, sol `#e6b748`, quemado `#39362b`.
 
-## Tipografía
+El grano, las fibras, los bordes levemente irregulares y la tinta desplazada deben acompañar la composición sin reducir la legibilidad. No se cargan fuentes, imágenes de personajes ni texturas remotas.
 
-Sin fuentes externas. Serif local (Iowan Old Style → Palatino → Georgia)
-para títulos, frases, numeración y textos contemplativos. Sans local
-(Avenir Next → Segoe UI → system-ui) para instrucciones, controles y
-textos técnicos.
+## Personajes canónicos
 
-## Reglas de ilustración
+`CharacterTypes.ts` define cinco vistas con geometría propia:
 
-- Curvas imperfectas, formas sencillas, bordes ligeramente irregulares.
-- Máximo tres tonos principales por objeto.
-- Sombras separadas de la figura (elipse propia bajo cada personaje).
-- Expresividad mediante postura y proporción, no mediante detalle facial.
-- Nada de clipart, emoji, ojos brillantes, degradados plásticos, 3D ni
-  estética infantil.
+`front`, `three-quarter-left`, `three-quarter-right`, `profile`, `back`.
 
-Todos los SVG viven en `src/art/svgLibrary.ts` (fuente única) y se exportan
-a `public/art/` con `node scripts/export-art.mjs`.
+No se simulan los ángulos reflejando el SVG completo. `facing` solo cambia la dirección pertinente de mirada o gesto.
 
-## Composición
+### Dani
+
+`DaniCharacter.ts` expone 12 estados:
+
+`idle`, `curious`, `happy`, `surprised`, `worried`, `proud`, `sleeping`, `watering`, `watching`, `reactingToRain`, `reactingToWind`, `reactingToHeat`.
+
+La silueta es curva y ligera; la cola, las orejas, las patas y los lentes llevan la mayor parte de la expresión.
+
+### Diego
+
+`DiegoCharacter.ts` expone 13 estados:
+
+`idle`, `focused`, `concerned`, `happy`, `surprised`, `proud`, `protecting`, `planting`, `watching`, `recoveringGlasses`, `reactingToRain`, `reactingToWind`, `reactingToHeat`.
+
+La silueta es más vertical y geométrica; pecho, postura, orejas, cola y lentes comunican estabilidad o pérdida momentánea de compostura.
+
+Ambos renderers aceptan estado, ángulo, orientación, tamaño, movimiento reducido e interacción opcional. Los tamaños semánticos son `small`, `medium` y `large`; también se acepta un ancho numérico acotado.
+
+## PlantCharacter
+
+`src/art/PlantCharacter.ts` mantiene una única anatomía SVG y 12 estados canónicos:
+
+| Continuidad | Estados |
+| --- | --- |
+| Crecimiento | `seed`, `sprout`, `small`, `growing`, `healthy`, `flowering` |
+| Cuidado | `hydrated` |
+| Excesos y consecuencias | `drowned`, `windBent`, `fallen`, `overheated`, `burnt` |
+
+Cambiar de estado conserva maceta, tierra, tallos, hojas, rostro y baseline. CSS muestra, inclina o transforma esas mismas capas. `PlantArt.ts` y `artDirection.ts` mantienen aliases de compatibilidad como `dormant`, `awakened`, `balanced`, `grown`, `soaked`, `windblown` y `recovering` para escenas anteriores.
+
+## Objetos interactivos
+
+`src/art/objects/InteractiveObjects.ts` unifica ocho objetos:
+
+`seed`, `thimble`, `watering-cup`, `drop`, `sun`, `umbrella`, `dry-leaves`, `wind`.
+
+Todos comparten `idle`, `hovered`, `active`, `completed` y `disabled`, un wrapper con `data-state`, nombre accesible y hitbox mínimo de 44 px. Semilla, dedal, paraguas y hojas reutilizan las fachadas SVG existentes; los demás glifos son SVG locales del módulo, nunca PNG.
+
+## Sombras narrativas
+
+`src/art/ShadowSystem.ts` separa seis capas:
+
+`scene`, `botanical`, `dani`, `diego`, `plant`, `interactive`.
+
+Las props `x`, `y`, `intensity`, `length`, `angle`, `shelter` y `progress` se convierten en variables CSS. La luz cambia dirección, longitud y opacidad; el progreso acerca objetos y personajes a la planta. En modo `final`, las sombras de Dani y Diego convergen con una copa vegetal para formar refugio, no un corazón literal.
+
+## Estado visual de escena
+
+`src/app/visualState.ts` define `SceneVisualState`:
+
+- `daniState`
+- `diegoState`
+- `plantState`
+- `instruction`
+- `interactionEnabled`
+- `completed`
+
+La narrativa decide ese estado y los SVG lo representan. `setSceneVisualState` actualiza los mismos nodos, la instrucción y los atributos `data-*`; así una acción futura no aparece antes de tiempo y las transiciones no requieren reemplazar anatomías completas.
+
+## Composición, interacción y movimiento
 
 - Mucho espacio negativo y asimetría equilibrada.
-- Elementos que salen parcialmente del encuadre (sombras botánicas).
-- Una acción principal por escena; instrucción de máximo seis palabras.
-- Móvil: vertical y táctil. Escritorio: columna de texto lateral y
-  escenario amplio, sin estirar la versión móvil.
+- Una acción principal y una instrucción visible por momento.
+- Tocar para acciones discretas; mantener y soltar solo cuando la duración expresa medida.
+- Respuesta inmediata en cientos de milisegundos y pausas narrativas breves.
+- Animación ambiental lenta y no simultánea.
+- Móvil prioriza composición vertical; escritorio amplía el escenario sin deformar figuras.
+- Con `prefers-reduced-motion` o la clase `reduced-motion` se eliminan deriva y repeticiones, se acortan transiciones y se conservan todos los estados.
 
-## Textura
+## Referencia interna
 
-Papel casi imperceptible: `feTurbulence` en data-URI a 3.5 % de opacidad
-sobre toda la pantalla, sin filtros pesados.
+`/dev/art-reference/` muestra las dos láminas de `references/` solo para consulta y genera el resto del inventario desde las APIs canónicas: paleta, cinco ángulos, estados, escalas, planta, objetos y sombras. La entrada está aislada de producción, no se enlaza desde la obra y no copia los PNG a `public/`.
 
-## Movimiento
+## Límites estéticos
 
-- Microinteracciones 120–300 ms; objetos 250–500 ms; transición narrativa
-  600–900 ms; ambiente 6–18 s.
-- Las transiciones son cambios de página o de luz: desplazamiento suave,
-  sombras que cruzan, opacidad. Nunca zoom dramático ni rebotes.
-- `prefers-reduced-motion`: se elimina la deriva ambiental y los
-  desplazamientos se sustituyen por opacidad. Todo sigue siendo funcional.
-
-## Elementos prohibidos
-
-Glassmorphism, tarjetas repetidas, gradientes SaaS, corazones flotantes,
-confeti, partículas permanentes, barras de progreso, puntuaciones,
-insignias, cronómetros, tutoriales modales, carruseles, navegación
-superior, loaders, fotografías, assets remotos.
+Curvas imperfectas, formas sencillas, pocos tonos y sombras separadas de la figura. Evitar clipart, emoji, 3D plástico, tarjetas de producto, glassmorphism, confeti, puntuaciones, cronómetros, navegación superior, tutoriales modales y recursos remotos.

@@ -5,13 +5,15 @@
   overflow: visible;
 }
 
-/* Dani y Diego comparten una gramática de tinta, pero no una silueta. */
+/* Dani y Diego comparten tinta orgánica, pero no masa ni ritmo corporal. */
 .fig-dani,
 .fig-diego {
   overflow: visible;
+  isolation: isolate;
 }
 
 .cat-tail-group,
+.diego-tail-group,
 .akita-head,
 .cat-head,
 .akita-ear,
@@ -21,20 +23,34 @@
 .dani-glasses,
 .dani-eyes,
 .dani-paw,
+.dani-bow,
 .diego-body-group,
 .diego-head,
 .diego-ear,
 .diego-glasses,
 .diego-eyes,
 .diego-paw,
+.diego-bow,
+.plant-leaf,
+.plant-leaf-shape,
+.plant-stem,
 .plant-sprout,
+.plant-sprout-leaf,
+.plant-waterline,
+.plant-bubble,
+.plant-state-face,
+.plant-recovery-mark,
 .cube-solid {
   transform-box: fill-box;
   transform-origin: center;
 }
 
 .cat-tail-group {
-  transform-origin: left bottom;
+  transform-origin: center bottom;
+}
+
+.diego-tail-group {
+  transform-origin: center bottom;
 }
 
 .akita-head {
@@ -49,6 +65,8 @@
 .diego-glasses,
 .dani-ear,
 .diego-ear,
+.dani-leg,
+.diego-leg,
 .dani-paw,
 .diego-paw,
 .dani-eye,
@@ -57,7 +75,7 @@
 }
 
 .dani-head {
-  transform-origin: 62% 80%;
+  transform-origin: center bottom;
 }
 
 .dani-ear--left,
@@ -78,6 +96,37 @@
 .diego-glasses,
 .dani-glasses {
   transform-origin: center;
+}
+
+/* Pruebas de producción: silueta fiel y simplificación para 42/32 px. */
+.character--silhouette {
+  color: var(--ink);
+}
+
+.character--silhouette [data-part="ground-shadow"],
+.character--silhouette [data-detail] {
+  display: none;
+}
+
+.character--silhouette [data-silhouette="true"] {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+.character--small [data-detail="micro"],
+.character--small [data-part="whiskers"] {
+  display: none;
+}
+
+.character--small .dani-glasses,
+.character--small .diego-glasses {
+  stroke-width: 3.25;
+}
+
+.character--small .dani-eye,
+.character--small .diego-eye {
+  transform: scale(1.18);
 }
 
 /* Vista de inventario: la pose lateral conserva la misma anatomía. */
@@ -106,8 +155,9 @@
   transform: translate(-3px, -5px) rotate(-8deg);
 }
 
+.dani--curious .dani-leg--front,
 .dani--curious .dani-paw--front {
-  transform: translate(-3px, -8px) rotate(-10deg);
+  transform: translate(-3px, -5px) rotate(-6deg);
 }
 
 .dani--curious .dani-tail-group {
@@ -165,6 +215,36 @@
 
 .dani--worried .dani-glasses {
   transform: translateY(2px) rotate(2deg);
+}
+
+.dani--delighted .dani-head {
+  transform: translate(-1px, -4px) rotate(4deg);
+}
+
+.dani--delighted .dani-leg--front,
+.dani--delighted .dani-paw--front {
+  transform: translate(-2px, -4px) rotate(-5deg);
+}
+
+.dani--delighted .dani-tail-group {
+  transform: rotate(10deg);
+}
+
+.dani--delighted .dani-eye {
+  transform: scaleY(0.72);
+}
+
+.dani--observing .dani-head {
+  transform: translate(-4px, -2px) rotate(-11deg);
+}
+
+.dani--observing .dani-glasses {
+  transform: translate(-1px, 1px) scale(1.025);
+}
+
+.dani--observing .dani-body-group,
+.dani--observing .dani-tail-group {
+  transform: rotate(-1.5deg);
 }
 
 .dani--sleeping,
@@ -268,6 +348,515 @@
   transform: rotate(-4deg);
 }
 
+.diego--proud .diego-body-group {
+  transform: scaleX(1.035) translateY(-1px);
+}
+
+.diego--proud .diego-head {
+  transform: translateY(-5px) rotate(1.5deg);
+}
+
+.diego--proud .diego-ear--left {
+  transform: rotate(-4deg);
+}
+
+.diego--proud .diego-ear--right {
+  transform: rotate(4deg);
+}
+
+.diego--proud .diego-chest {
+  opacity: 1;
+}
+
+/* API CharacterProps: escala, interacción y movimiento reducido. */
+.character--size-small {
+  width: 4.5rem;
+}
+
+.character--size-medium {
+  width: 8.5rem;
+}
+
+.character--size-large {
+  width: 12rem;
+}
+
+.character--interactive {
+  cursor: pointer;
+  touch-action: manipulation;
+  border-radius: 0.25rem;
+}
+
+.character--interactive:focus-visible {
+  outline: 2px solid var(--ink, #252521);
+  outline-offset: 4px;
+}
+
+.character--interactive:hover .dani-glasses,
+.character--interactive:hover .diego-glasses {
+  transform: translateY(-1px);
+}
+
+.character--reduced-motion,
+.character--reduced-motion *,
+.character--reduced-motion *::before,
+.character--reduced-motion *::after {
+  animation: none !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Las vistas laterales ya tienen paths propios; el alias no debe deformarlas. */
+.dani--profile .dani-head,
+.diego--profile .diego-head {
+  transform: none;
+}
+
+.dani--profile .dani-lens--near,
+.diego--profile .diego-lens--left {
+  opacity: 1;
+}
+
+/* Expresiones alternativas permanecen dentro de la anatomía de cada ángulo. */
+.dani-sleep-eye,
+.dani-worry-brows,
+.diego-blush {
+  opacity: 0;
+  transition: opacity var(--dur-micro) ease;
+}
+
+.dani--sleeping .dani-eye,
+.cat--sleeping .dani-eye {
+  opacity: 0;
+}
+
+.dani--sleeping .dani-sleep-eye,
+.cat--sleeping .dani-sleep-eye,
+.dani--worried .dani-worry-brows,
+.diego--embarrassed .diego-blush {
+  opacity: 1;
+}
+
+.dani--idle:not(.character--reduced-motion) .dani-tail-group {
+  animation: tailFlick 12s ease-in-out infinite;
+}
+
+.diego--idle:not(.character--reduced-motion) .diego-ear--right {
+  animation: earTwitch 16s ease-in-out infinite;
+}
+
+/* El cuerpo de Diego se planta; el de Dani pregunta. */
+.dani--curious .dani-bow {
+  transform: translateY(-2px) rotate(-2deg);
+}
+
+.dani--surprised .dani-mouth {
+  stroke-width: 1.8;
+}
+
+.diego--serious .diego-bow,
+.diego--focused .diego-bow,
+.diego--protecting .diego-bow {
+  transform: translateY(-2px);
+}
+
+.diego--concerned .diego-brow--left {
+  transform: rotate(-7deg);
+}
+
+.diego--concerned .diego-brow--right {
+  transform: rotate(7deg);
+}
+
+/* Estados canónicos completos de Dani. */
+.dani--happy .dani-head {
+  transform: translateY(-4px) rotate(4deg);
+}
+
+.dani--happy .dani-eye {
+  transform: scaleY(0.72);
+}
+
+.dani--happy .dani-tail-group {
+  transform: rotate(10deg);
+}
+
+.dani--proud .dani-head {
+  transform: translateY(-6px) rotate(-2deg);
+}
+
+.dani--proud .dani-bow {
+  transform: translateY(-3px) scale(1.04);
+}
+
+.dani--watering .dani-head {
+  transform: translate(-3px, 3px) rotate(-8deg);
+}
+
+.dani--watering .dani-leg--front,
+.dani--watering .dani-paw--front {
+  transform: translate(8px, -9px) rotate(-14deg);
+}
+
+.dani--watching .dani-head {
+  transform: translate(-4px, -2px) rotate(-10deg);
+}
+
+.dani--watching .dani-glasses {
+  transform: translate(-1px, 1px) scale(1.025);
+}
+
+.dani--reactingToRain .dani-head {
+  transform: translateY(5px) rotate(-4deg);
+}
+
+.dani--reactingToRain .dani-ear--left,
+.dani--reactingToRain .dani-ear--right {
+  transform: rotate(10deg);
+}
+
+.dani--reactingToRain .dani-tail-group {
+  transform: translateY(6px) rotate(-8deg);
+}
+
+.dani--reactingToWind .dani-head {
+  transform: translate(5px, 1px) rotate(8deg);
+}
+
+.dani--reactingToWind .dani-glasses {
+  transform: translate(5px, -2px) rotate(6deg);
+}
+
+.dani--reactingToWind .dani-tail-group {
+  transform: rotate(16deg);
+}
+
+.dani--reactingToHeat .dani-body-group {
+  transform: translateY(5px) scaleY(0.96);
+}
+
+.dani--reactingToHeat .dani-head {
+  transform: translateY(7px) rotate(5deg);
+}
+
+.dani--reactingToHeat .dani-ear--left {
+  transform: rotate(14deg);
+}
+
+.dani--reactingToHeat .dani-ear--right {
+  transform: rotate(-14deg);
+}
+
+/* Estados canónicos completos de Diego. */
+.diego--focused .diego-head {
+  transform: translateY(-2px);
+}
+
+.diego--focused .diego-brow--left {
+  transform: rotate(3deg);
+}
+
+.diego--focused .diego-brow--right {
+  transform: rotate(-3deg);
+}
+
+.diego--happy .diego-head {
+  transform: translateY(-4px) rotate(2deg);
+}
+
+.diego--happy .diego-tail-group {
+  transform: rotate(8deg);
+}
+
+.diego--surprised .diego-head {
+  transform: translateY(-6px);
+}
+
+.diego--surprised .diego-ear--left {
+  transform: rotate(-11deg);
+}
+
+.diego--surprised .diego-ear--right {
+  transform: rotate(11deg);
+}
+
+.diego--surprised .diego-eye {
+  transform: scale(1.38);
+}
+
+.diego--planting .diego-head {
+  transform: translate(-3px, 5px) rotate(-7deg);
+}
+
+.diego--planting .diego-paw--left {
+  transform: translate(10px, -14px) rotate(-16deg);
+}
+
+.diego--watching .diego-head {
+  transform: translate(-2px, 1px) rotate(-4deg);
+}
+
+.diego--watching .diego-glasses {
+  transform: translateY(1px);
+}
+
+.diego--recoveringGlasses .diego-glasses {
+  transform: translate(-8px, 8px) rotate(-11deg);
+}
+
+.diego--reactingToRain .diego-body-group {
+  transform: translateY(3px);
+}
+
+.diego--reactingToRain .diego-head {
+  transform: translateY(4px) rotate(-2deg);
+}
+
+.diego--reactingToRain .diego-ear--left,
+.diego--reactingToRain .diego-ear--right {
+  transform: rotate(8deg);
+}
+
+.diego--reactingToWind .diego-head {
+  transform: translate(4px, 1px) rotate(5deg);
+}
+
+.diego--reactingToWind .diego-glasses {
+  transform: translate(9px, -5px) rotate(9deg);
+}
+
+.diego--reactingToWind .diego-ear--right {
+  transform: rotate(18deg);
+}
+
+.diego--reactingToHeat .diego-body-group {
+  transform: translateY(4px) scaleY(0.98);
+}
+
+.diego--reactingToHeat .diego-head {
+  transform: translateY(6px);
+}
+
+.diego--reactingToHeat .diego-ear--left {
+  transform: rotate(13deg);
+}
+
+.diego--reactingToHeat .diego-ear--right {
+  transform: rotate(-13deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fig-dani *,
+  .fig-diego * {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============ planta: vocabulario visual modular ============ */
+.fig-plant .plant-leaf,
+.fig-plant .plant-stem,
+.fig-plant .plant-sprout,
+.fig-plant .plant-waterline,
+.fig-plant .plant-state-face,
+.fig-plant .plant-recovery-mark {
+  transition:
+    transform 850ms var(--ease-page),
+    opacity 650ms ease,
+    filter 650ms ease;
+}
+
+.fig-plant .plant-leaf,
+.fig-plant .plant-stem,
+.fig-plant .plant-sprout {
+  transform-origin: bottom center;
+}
+
+.fig-plant .plant-waterline,
+.fig-plant .plant-state-face,
+.fig-plant .plant-recovery-mark {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.plant--dormant .plant-leaf,
+.plant--dormant .plant-stem,
+.plant--dormant .plant-sprout {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.plant--awakened .plant-leaf,
+.plant--awakened .plant-stem {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.plant--awakened .plant-sprout {
+  transform: scale(0.58) rotate(-5deg);
+  opacity: 0.78;
+}
+
+.plant--sprout .plant-leaf,
+.plant--sprout .plant-stem {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.plant--sprout .plant-sprout {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.plant--hydrated .plant-soil {
+  fill: color-mix(in srgb, var(--leaf-dark) 78%, var(--rain, #708a99));
+}
+
+.plant--hydrated .plant-leaf--yellow,
+.plant--hydrated .plant-stem {
+  transform: scale(0.92) rotate(-2deg);
+  opacity: 1;
+}
+
+.plant--hydrated .plant-leaf--turquoise,
+.plant--hydrated .plant-leaf--green,
+.plant--hydrated .plant-sprout {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.plant--balanced .plant-leaf--yellow,
+.plant--balanced .plant-leaf--turquoise,
+.plant--balanced .plant-stem {
+  opacity: 1;
+}
+
+.plant--balanced .plant-leaf--yellow {
+  transform: rotate(-2deg) scale(0.97);
+}
+
+.plant--balanced .plant-leaf--turquoise {
+  transform: rotate(2deg) scale(0.97);
+}
+
+.plant--balanced .plant-leaf--green,
+.plant--balanced .plant-sprout {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.plant--grown .plant-leaf,
+.plant--grown .plant-stem,
+.plant--full .plant-leaf,
+.plant--full .plant-stem {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.plant--grown .plant-sprout,
+.plant--full .plant-sprout {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.plant--grown .plant-leaf--green {
+  transform: scale(1.06);
+}
+
+.plant--soaked .plant-leaf,
+.plant--soaked .plant-stem {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.plant--soaked .plant-sprout {
+  transform: translateY(7px) rotate(9deg) scale(0.94);
+  opacity: 0.92;
+}
+
+.plant--soaked .plant-waterline {
+  opacity: 0.88;
+}
+
+.plant--soaked .plant-bubble--a {
+  animation: plantBubble 1.8s ease-in-out infinite;
+}
+
+.plant--soaked .plant-bubble--b {
+  animation: plantBubble 2.2s ease-in-out 500ms infinite;
+}
+
+.plant--windblown .plant-leaf--yellow {
+  transform: rotate(17deg) translateX(5px) scale(0.96);
+}
+
+.plant--windblown .plant-leaf--turquoise {
+  transform: rotate(24deg) translateX(8px) scale(0.94);
+}
+
+.plant--windblown .plant-leaf--green,
+.plant--windblown .plant-stem {
+  transform: rotate(13deg);
+}
+
+.plant--burnt .plant-leaf-shape,
+.plant--burnt .plant-stem {
+  filter: brightness(0.24) saturate(0.18);
+}
+
+.plant--burnt .plant-leaf--yellow {
+  transform: rotate(-11deg) translateY(7px) scaleY(0.86);
+}
+
+.plant--burnt .plant-leaf--turquoise {
+  transform: rotate(12deg) translateY(8px) scaleY(0.84);
+}
+
+.plant--burnt .plant-leaf--green {
+  transform: rotate(5deg) translateY(10px) scaleY(0.8);
+}
+
+.plant--burnt .plant-state-face {
+  opacity: 0.9;
+}
+
+.plant--recovering .plant-stem,
+.plant--recovering .plant-sprout {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.plant--recovering .plant-leaf--yellow {
+  transform: rotate(-8deg) scale(0.7);
+  opacity: 0.72;
+}
+
+.plant--recovering .plant-leaf--turquoise {
+  transform: rotate(8deg) scale(0.72);
+  opacity: 0.72;
+}
+
+.plant--recovering .plant-leaf--green {
+  transform: translateY(4px) scale(0.55);
+  opacity: 0.82;
+}
+
+.plant--recovering .plant-recovery-mark {
+  opacity: 0.72;
+}
+
+@keyframes plantBubble {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: translateY(5px) scale(0.7);
+  }
+  45% {
+    opacity: 0.8;
+    transform: translateY(-5px) scale(1);
+  }
+}
+
 @keyframes tailFlick {
   0%,
   100% {
@@ -309,6 +898,10 @@
   min-height: 250px;
   z-index: 2;
   isolation: isolate;
+}
+
+.final-stage > .final-shadow-system {
+  z-index: 0;
 }
 
 /* Suelo de tinta: sostiene la escena sin convertirla en una tarjeta. */
@@ -389,6 +982,14 @@
   width: clamp(124px, 27vw, 190px);
   z-index: 4;
   cursor: pointer;
+}
+
+.final-cat > .character,
+.final-akita > .character,
+.final-plant > .plant-character {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .final-plant .fig-plant {
@@ -527,8 +1128,31 @@
   place-items: center;
 }
 
+.scene--final .final-cube.interactive-object {
+  position: absolute;
+  inline-size: 48px;
+  block-size: 48px;
+  min-inline-size: 48px;
+  min-block-size: 48px;
+  padding: 7px;
+  border-color: transparent;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.scene--final
+  .final-cube.interactive-object[data-interactive="true"]:not(:disabled):hover,
+.scene--final .final-cube.interactive-object:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+  filter: drop-shadow(0 7px 6px var(--shadow-deep));
+}
+
 .final-cube .fig-cube {
   width: 34px;
+  inline-size: 34px;
+  block-size: auto;
   clip-path: inset(0 0 34% 0); /* parcialmente hundido en la tierra */
 }
 
@@ -540,6 +1164,10 @@
   transform: rotate(90deg);
 }
 
+.scene--final .final-cube.interactive-object.is-spinning .cube-solid {
+  transform: rotate(90deg);
+}
+
 .final-thimble {
   position: absolute;
   bottom: 6%;
@@ -547,6 +1175,12 @@
   width: 26px;
   opacity: 0.85;
   z-index: 3;
+}
+
+.scene--final .final-thimble.interactive-object[data-interactive="false"] {
+  position: absolute;
+  inline-size: 26px;
+  block-size: auto;
 }
 
 /* El paraguas reaparece como una copa tenue: objeto y sombra a la vez. */
@@ -561,6 +1195,12 @@
   filter: saturate(0.62) brightness(0.8);
   mix-blend-mode: screen;
   pointer-events: none;
+}
+
+.scene--final .final-umbrella.interactive-object[data-interactive="false"] {
+  position: absolute;
+  inline-size: clamp(220px, 46vw, 370px);
+  block-size: auto;
 }
 
 .final-umbrella .umbrella-ground-shadow {

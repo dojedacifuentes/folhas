@@ -1,118 +1,112 @@
 /**
  * Toda la microcopy de la experiencia vive aquí.
- * No dispersar frases por componentes.
+ * Una escena puede cambiar de momento, pero solo expone una instrucción a la vez.
  */
 export const content = {
   cover: {
     title: "Herbario de lo que cuidamos",
-    subtitle: "Manual mínimo para una semilla cuadrada y dos criaturas",
-    instruction: "aparta una hoja",
+    subtitle: "Una historia pequeña sobre cuidar en compañía",
+    instruction: "toca la hoja",
     whisper: "había algo respirando aquí",
-    leafLabel: "Hoja seca. Arrástrala hacia un lado, o pulsa Enter, para abrir el herbario.",
+    leafLabel: "Hoja seca que cubre el herbario. Tócala para abrir.",
   },
 
   clearSpace: {
     number: "I",
     heading: "Hacer lugar",
     lede: "A veces cuidar empieza por despejar un poco.",
-    instruction: "aparta las hojas",
-    canvasLabel:
-      "Capa de hojas secas. Frota con el dedo o el ratón para despejarla, o usa la alternativa «dejar pasar la luz».",
-    altReveal: "dejar pasar la luz",
+    instruction: "toca las hojas",
+    revealLabel:
+      "Montoncito de hojas secas. Tócalo para apartarlo y descubrir quién espera debajo.",
     catSays: "yo traje agua.",
     akitaSays: "yo traje una semilla cuadrada.",
-    editorial: "La botánica decidió no intervenir.",
+    editorial: "La botánica decidió no hacer preguntas.",
     next: "seguir",
-    revealedAnnouncement: "Las hojas se apartaron. Debajo esperaban dos criaturas y una planta dormida.",
+    revealedAnnouncement:
+      "Las hojas se apartaron. Dani, Diego y una maceta dormida estaban debajo.",
   },
 
   offerings: {
     number: "II",
     heading: "Traer lo que tenemos",
-    lede: "No siempre traemos lo mismo. Por suerte.",
-    instruction: "acércalos a la maceta",
-    waterLabel:
-      "Dedal de agua. Arrástralo hasta la maceta, o pulsa Enter para colocarlo.",
+    lede: "Dani observa. Diego ya hizo un plan diminuto.",
+    waterInstruction: "deja una gota",
+    seedInstruction: "acomoda la semilla",
+    waterLabel: "Dedal de Dani. Tócalo para dejar una gota en la tierra.",
     seedLabel:
-      "Semilla cuadrada. Arrástrala hasta la maceta, o pulsa Enter para colocarla.",
-    catThought: "cantidad científicamente suficiente",
-    akitaThought: "geometría aplicada",
-    afterMain: "Algo puede empezar incluso cuando cada uno llega con una cosa distinta.",
+      "Semilla cuadrada de Diego. Tócala para que encuentre su lugar en la maceta.",
+    catThought: "una gota. exactamente una.",
+    akitaThought: "procedimiento: semilla, centro, dignidad.",
+    afterMain: "Algo despierta cuando cada uno acerca lo suyo.",
     afterNotes: [
-      "Dani mira el brote.",
-      "Diego comprueba que el cubo siga cuadrado.",
-      "El brote asume la coordinación general.",
+      "Dani mira el brote de cerca.",
+      "Diego confirma que la semilla sigue razonablemente cuadrada.",
     ],
-    next: "seguir",
-    waterAnnouncement: "El agua llegó a la tierra.",
-    seedAnnouncement: "La semilla cuadrada giró un cuarto de vuelta y se quedó.",
-    sproutAnnouncement: "Apareció un brote pequeño con una hoja verde nueva.",
+    next: "cuidarlo",
+    waterAnnouncement:
+      "Una gota oscureció la tierra. Dani movió la cola, satisfecha.",
+    seedAnnouncement:
+      "La semilla hizo un giro pequeño y encajó en la tierra.",
+    sproutAnnouncement:
+      "El brote despertó. Diego asintió con una seriedad innecesaria.",
   },
 
   care: {
     number: "III",
     heading: "Encontrar la medida",
-    lede: "Cuidar también es no exagerar.",
-    rain: {
-      instruction: "deja pasar un poco de lluvia",
+    lede: "Cuidar también es saber cuándo basta.",
+    water: {
+      instruction: "deja dos gotas",
       controlLabel:
-        "Paraguas. Muévelo para dejar pasar una cantidad moderada de lluvia.",
-      alternative: "medir la lluvia",
-      hint: "un poquito",
-      failure: "eso ya era un océano",
-      announcement: "La tierra quedó húmeda y apareció una hoja nueva.",
+        "Dedal con agua. Tócalo dos veces para dejar exactamente dos gotas.",
+      firstDrop: "una gota",
+      hint: "falta una",
+      failure: "ups: ya era una laguna",
+      retry: "volvemos con más cariño",
+      announcement:
+        "Dos gotas humedecieron la tierra y una hoja amarilla se desperezó.",
     },
     wind: {
-      instruction: "sopla con cuidado",
+      instruction: "da un soplo corto",
       controlLabel:
-        "Corriente de aire. Mantén pulsado y suelta cuando el viento sea suficiente.",
-      alternative: "dar aire justo",
-      hint: "suavecito",
-      failure: "eso fue meteorología hostil",
-      announcement: "Las hojas se apartaron y el tallo recuperó el equilibrio.",
+        "Soplo suave. Actívalo una vez para apartar las hojas secas.",
+      hint: "uno basta",
+      failure: "eso fue viento con currículum",
+      retry: "Diego recuperó sus lentes. Otra vez, suave.",
+      announcement:
+        "Un soplo acomodó el tallo y apareció una hoja turquesa.",
     },
     sun: {
-      instruction: "acerca el sol",
-      controlLabel: "Sol. Regula su cercanía para calentar la planta sin quemarla.",
-      alternative: "templar la luz",
-      hint: "un poco de sol",
-      failure: "el concepto de poco era importante",
-      announcement: "La planta se orientó hacia una luz tibia.",
+      instruction: "mantén el sol un instante",
+      controlLabel:
+        "Sol tibio. Mantén pulsado un instante y suelta antes de calentarlo demasiado.",
+      hint: "un poquito más",
+      failure: "salió humo. el concepto de «instante» era importante",
+      retry: "la maceta respiró. probemos con una luz más corta",
+      announcement:
+        "La luz fue suficiente. La planta creció y conservó todas sus hojas.",
     },
-    complete: "La planta aprendió tres maneras de respirar.",
-    next: "encontrar la luz",
-  },
-
-  light: {
-    number: "IV",
-    heading: "Buscar la luz",
-    lede: "La sombra también puede cuidar.",
-    instruction: "mueve la luz",
-    lampLabel:
-      "Fuente de luz. Arrástrala, o muévela con las flechas del teclado, hasta que las sombras se encuentren.",
-    altAlign: "encontrar la luz",
-    afterMain:
-      "Encontrarse no siempre es ocupar el mismo lugar. A veces es aprender dónde poner la luz.",
-    catSays: "¿eso cuenta como arquitectura?",
-    akitaSays: "sí.",
-    next: "seguir",
-    alignedAnnouncement:
-      "La luz encontró su sitio. Las sombras se unieron como un pequeño techo y la planta completó sus tres hojas.",
+    complete: "La planta creció sin que nadie tuviera que salvarla del entusiasmo.",
+    next: "ver lo que creció",
   },
 
   final: {
-    number: "V",
+    number: "IV",
     heading: "Quedarse",
     lines: [
       "No sé si las plantas entienden de promesas.",
-      "Esta aprendió nuestros gestos: hacer lugar, encontrar la medida, buscar la luz y quedarse.",
+      "Esta aprendió nuestros gestos: hacer lugar, aportar distinto y encontrar la medida.",
     ],
-    dedication: ["Para Dani.", "Quiero seguir aprendiendo contigo las formas pequeñas de cuidar."],
+    dedication: [
+      "Para Dani.",
+      "Quiero seguir aprendiendo contigo las formas pequeñas de cuidar.",
+    ],
     portuguese: "a gente cuida do que quer ver crescer.",
     signature: "D + D",
-    catThought: "nanai para a plantinha.",
-    akitaThought: "turno de guardia innecesariamente serio.",
-    plantLabel: "La planta: una hoja amarilla, una turquesa y una verde nueva. Tócala si quieres.",
+    catThought: "la sombra quedó bonita.",
+    akitaThought: "turno de guardia voluntariamente serio.",
+    plantLabel:
+      "La planta florecida conserva hojas ocres, turquesas y verdes. Tócala si quieres.",
     cubeLabel: "La semilla cuadrada, medio enterrada. Tócala si quieres.",
   },
 

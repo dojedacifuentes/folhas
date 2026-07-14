@@ -1,0 +1,266 @@
+/* Sistema narrativo de sombras. Se controla mediante ShadowSystem.ts o variables CSS. */
+.shadow-system {
+  --shadow-light-x: 50%;
+  --shadow-light-y: 18%;
+  --shadow-light-intensity: 0.64;
+  --shadow-cast-length: 1;
+  --shadow-cast-angle: 0deg;
+  --shadow-cast-skew: 0deg;
+  --shadow-shelter: 0;
+  --shadow-progress: 0;
+  --shadow-drift-x: 0%;
+  --shadow-drift-y: 1.44%;
+  --shadow-cast-opacity: 0.64;
+  --shadow-soft-opacity: 0.333;
+  --shadow-interactive-opacity: 0.269;
+  --shadow-shelter-opacity: 0;
+  --shadow-shelter-scale: 0.84;
+  --shadow-dani-shift: 0%;
+  --shadow-diego-shift: 0%;
+  --shadow-object-shift-a: 0px;
+  --shadow-object-shift-b: 0px;
+  --shadow-object-drop: 0px;
+  --shadow-object-scale: 1;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  isolation: isolate;
+  pointer-events: none;
+}
+
+.shadow-system__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.shadow-system__layer--scene {
+  z-index: 0;
+}
+
+.shadow-system__layer--botanical {
+  z-index: 1;
+}
+
+.shadow-system__layer--dani,
+.shadow-system__layer--diego {
+  z-index: 2;
+}
+
+.shadow-system__layer--plant {
+  z-index: 3;
+}
+
+.shadow-system__layer--interactive {
+  z-index: 4;
+}
+
+.shadow-system svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.shadow-system__ground-cast {
+  position: absolute;
+  inset: 0;
+  opacity: var(--shadow-soft-opacity);
+  background: radial-gradient(
+    ellipse 58% 24% at calc(100% - var(--shadow-light-x))
+      calc(100% - var(--shadow-light-y)),
+    var(--shadow-medium, rgba(23, 29, 29, 0.28)),
+    color-mix(in srgb, var(--shadow-soft, rgba(30, 35, 33, 0.16)) 72%, transparent)
+      48%,
+    transparent 76%
+  );
+  mix-blend-mode: multiply;
+  transition:
+    opacity var(--dur-page, 750ms) ease,
+    background-position var(--dur-object, 420ms) ease;
+}
+
+.shadow-system__shelter {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  inline-size: clamp(220px, 52%, 470px);
+  opacity: var(--shadow-shelter-opacity);
+  transform: translateX(-50%) scale(var(--shadow-shelter-scale));
+  transform-origin: 50% 100%;
+  filter: blur(0.3px);
+  mix-blend-mode: multiply;
+  transition:
+    opacity 900ms var(--ease-page, ease),
+    transform 900ms var(--ease-page, ease);
+}
+
+.shadow-system__shelter .shadow-shelter {
+  opacity: 0.84;
+}
+
+/* Hojas grandes: marco editorial cuya deriva responde a la posición de la luz. */
+.shadow-system__branch {
+  position: absolute;
+  opacity: var(--shadow-soft-opacity);
+  filter: blur(0.2px);
+  mix-blend-mode: multiply;
+  transform-origin: var(--shadow-light-x) var(--shadow-light-y);
+  transition:
+    opacity var(--dur-page, 750ms) ease,
+    transform 900ms var(--ease-page, ease);
+}
+
+.shadow-system__branch--a {
+  top: -12%;
+  left: -13%;
+  inline-size: 116%;
+  transform: translate(var(--shadow-drift-x), var(--shadow-drift-y))
+    rotate(var(--shadow-cast-angle));
+}
+
+.shadow-system__branch--b {
+  right: -18%;
+  bottom: -19%;
+  inline-size: 78%;
+  transform: translate(var(--shadow-drift-x), var(--shadow-drift-y))
+    rotate(var(--shadow-cast-angle));
+}
+
+/* Dani y Diego conservan siluetas diferentes, pero comparten dirección de luz. */
+.shadow-system__character {
+  position: absolute;
+  bottom: 0;
+  inline-size: clamp(150px, 29%, 320px);
+  opacity: var(--shadow-cast-opacity);
+  filter: blur(0.45px);
+  mix-blend-mode: multiply;
+  transform-origin: 50% 100%;
+  transition:
+    left 900ms var(--ease-page, ease),
+    right 900ms var(--ease-page, ease),
+    opacity 900ms ease,
+    transform 700ms var(--ease-page, ease);
+}
+
+.shadow-system__character--dani {
+  left: calc(7% + var(--shadow-dani-shift));
+  transform: skewX(var(--shadow-cast-skew)) rotate(var(--shadow-cast-angle))
+    scaleY(var(--shadow-cast-length));
+}
+
+.shadow-system__character--diego {
+  right: calc(7% + var(--shadow-diego-shift));
+  inline-size: clamp(170px, 32%, 350px);
+  transform: skewX(var(--shadow-cast-skew)) rotate(var(--shadow-cast-angle))
+    scaleY(var(--shadow-cast-length));
+}
+
+.shadow-system__character .character-shadow {
+  opacity: 0.82;
+}
+
+.shadow-system__plant {
+  position: absolute;
+  left: 50%;
+  bottom: -1%;
+  inline-size: clamp(120px, 23%, 230px);
+  opacity: var(--shadow-cast-opacity);
+  transform: translateX(-50%) skewX(var(--shadow-cast-skew))
+    rotate(var(--shadow-cast-angle)) scaleY(var(--shadow-cast-length));
+  transform-origin: 50% 100%;
+  filter: blur(0.35px);
+  mix-blend-mode: multiply;
+  transition:
+    opacity 700ms ease,
+    transform 700ms var(--ease-page, ease);
+}
+
+.shadow-system__interactive {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  inline-size: min(74%, 640px);
+  opacity: var(--shadow-interactive-opacity);
+  transform: translateX(-50%) translate(var(--shadow-drift-x), var(--shadow-drift-y))
+    rotate(var(--shadow-cast-angle)) scaleY(var(--shadow-cast-length));
+  transform-origin: 50% 100%;
+  filter: blur(0.6px);
+  mix-blend-mode: multiply;
+  transition:
+    opacity var(--dur-object, 420ms) ease,
+    transform var(--dur-object, 420ms) var(--ease-page, ease);
+}
+
+.shadow-system__object-cast,
+.shadow-system__square-cast {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity var(--dur-object, 420ms) ease,
+    transform var(--dur-object, 420ms) var(--ease-page, ease);
+}
+
+/* El progreso acerca de forma continua las pequeñas sombras a la planta. */
+.shadow-system__object-cast--a {
+  transform: translateX(var(--shadow-object-shift-a))
+    scale(var(--shadow-object-scale));
+}
+
+.shadow-system__object-cast--b {
+  transform: translateX(var(--shadow-object-shift-b))
+    scale(var(--shadow-object-scale));
+}
+
+.shadow-system__square-cast {
+  transform: translateY(var(--shadow-object-drop)) rotate(12deg)
+    scale(var(--shadow-object-scale));
+}
+
+/* Final: las siluetas convergen en una copa/refugio alrededor de la planta. */
+.shadow-system--final .shadow-system__shelter {
+  filter: blur(0.15px);
+}
+
+.shadow-system--final .shadow-system__character {
+  bottom: -2%;
+}
+
+.shadow-system--final .shadow-system__character--dani {
+  transform: skewX(var(--shadow-cast-skew)) rotate(var(--shadow-cast-angle))
+    scaleY(var(--shadow-cast-length)) rotate(-2deg);
+}
+
+.shadow-system--final .shadow-system__character--diego {
+  transform: skewX(var(--shadow-cast-skew)) rotate(var(--shadow-cast-angle))
+    scaleY(var(--shadow-cast-length)) rotate(2deg);
+}
+
+.shadow-system--final .shadow-system__plant {
+  opacity: var(--shadow-light-intensity);
+}
+
+.shadow-system--final .shadow-system__branch--a {
+  transform: translate(var(--shadow-drift-x), var(--shadow-drift-y)) rotate(-3deg);
+}
+
+.shadow-system--final .shadow-system__branch--b {
+  transform: translate(var(--shadow-drift-x), var(--shadow-drift-y)) rotate(4deg);
+}
+
+html.reduced-motion .shadow-system *,
+html.reduced-motion .shadow-system *::before,
+html.reduced-motion .shadow-system *::after {
+  animation: none !important;
+  transition-duration: 120ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shadow-system *,
+  .shadow-system *::before,
+  .shadow-system *::after {
+    animation: none !important;
+    transition-duration: 120ms !important;
+  }
+}

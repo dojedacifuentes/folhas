@@ -3,7 +3,6 @@ export type SceneId =
   | "clear-space"
   | "offerings"
   | "care"
-  | "light"
   | "final";
 
 export type ExperienceState = {
@@ -12,10 +11,9 @@ export type ExperienceState = {
   leavesCleared: boolean;
   waterPlaced: boolean;
   seedPlaced: boolean;
-  rainBalanced: boolean;
+  waterBalanced: boolean;
   windBalanced: boolean;
   sunBalanced: boolean;
-  lightAligned: boolean;
   finalReached: boolean;
   audioEnabled: boolean;
 };
@@ -25,7 +23,6 @@ export const SCENE_ORDER: readonly SceneId[] = [
   "clear-space",
   "offerings",
   "care",
-  "light",
   "final",
 ];
 
@@ -38,10 +35,9 @@ export function defaultState(): ExperienceState {
     leavesCleared: false,
     waterPlaced: false,
     seedPlaced: false,
-    rainBalanced: false,
+    waterBalanced: false,
     windBalanced: false,
     sunBalanced: false,
-    lightAligned: false,
     finalReached: false,
     audioEnabled: false,
   };
@@ -73,26 +69,15 @@ export function isSceneUnlocked(
         state.waterPlaced &&
         state.seedPlaced
       );
-    case "light":
-      return (
-        state.coverOpened &&
-        state.leavesCleared &&
-        state.waterPlaced &&
-        state.seedPlaced &&
-        state.rainBalanced &&
-        state.windBalanced &&
-        state.sunBalanced
-      );
     case "final":
       return (
         state.coverOpened &&
         state.leavesCleared &&
         state.waterPlaced &&
         state.seedPlaced &&
-        state.rainBalanced &&
+        state.waterBalanced &&
         state.windBalanced &&
-        state.sunBalanced &&
-        state.lightAligned
+        state.sunBalanced
       );
   }
 }
@@ -129,9 +114,14 @@ function isTrue(record: UnknownRecord, key: string): boolean {
 export function sanitizeState(value: unknown): ExperienceState {
   if (!isRecord(value)) return defaultState();
 
-  const requestedScene = isSceneId(value.currentScene)
-    ? value.currentScene
-    : "cover";
+  // `light` pertenecía al flujo de seis salas. En el flujo actual, haber
+  // llegado allí equivale a haber terminado los cuidados y poder ver el final.
+  const requestedScene: SceneId =
+    value.currentScene === "light"
+      ? "final"
+      : isSceneId(value.currentScene)
+        ? value.currentScene
+        : "cover";
   const requestedIndex = SCENE_ORDER.indexOf(requestedScene);
 
   const state = defaultState();
@@ -153,28 +143,24 @@ export function sanitizeState(value: unknown): ExperienceState {
     isTrue(value, "seedPlaced");
 
   const offeringsComplete = state.waterPlaced && state.seedPlaced;
-  state.rainBalanced =
+  state.waterBalanced =
     requestedIndex >= 3 &&
     offeringsComplete &&
-    isTrue(value, "rainBalanced");
+    (isTrue(value, "waterBalanced") || isTrue(value, "rainBalanced"));
   state.windBalanced =
     requestedIndex >= 3 &&
-    state.rainBalanced &&
+    state.waterBalanced &&
     isTrue(value, "windBalanced");
   state.sunBalanced =
     requestedIndex >= 3 &&
     state.windBalanced &&
     isTrue(value, "sunBalanced");
 
-  state.lightAligned =
+  state.finalReached =
     requestedIndex >= 4 &&
-    state.rainBalanced &&
+    state.waterBalanced &&
     state.windBalanced &&
     state.sunBalanced &&
-    isTrue(value, "lightAligned");
-  state.finalReached =
-    requestedIndex >= 5 &&
-    state.lightAligned &&
     isTrue(value, "finalReached");
 
   state.currentScene = requestedScene;
@@ -186,10 +172,9 @@ export function sanitizeState(value: unknown): ExperienceState {
 
   // Una escena corregida hacia atras no conserva logros de escenas futuras.
   const currentIndex = SCENE_ORDER.indexOf(state.currentScene);
-  if (currentIndex < 5) state.finalReached = false;
-  if (currentIndex < 4) state.lightAligned = false;
+  if (currentIndex < 4) state.finalReached = false;
   if (currentIndex < 3) {
-    state.rainBalanced = false;
+    state.waterBalanced = false;
     state.windBalanced = false;
     state.sunBalanced = false;
   }

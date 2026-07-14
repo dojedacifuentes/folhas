@@ -140,6 +140,12 @@
   transform: rotate(-8deg);
 }
 
+.scene--cover .cover-cube.interactive-object[data-interactive="false"] {
+  position: absolute;
+  inline-size: 30px;
+  block-size: 30px;
+}
+
 .cover-leaf-area {
   position: relative;
   z-index: 3;
@@ -646,4 +652,590 @@
 
 .water-done .offer-plant .plant-soil {
   fill: color-mix(in srgb, var(--leaf-dark) 88%, var(--rain));
+}
+
+/* ============ tercera edición: acciones táctiles simples ============ */
+.cover-leaf {
+  width: clamp(164px, 34vw, 248px);
+  min-width: 164px;
+  min-height: 164px;
+  padding: 18px;
+  touch-action: manipulation;
+  cursor: pointer;
+  border-radius: 50%;
+  transition:
+    transform var(--dur-micro) ease,
+    filter var(--dur-micro) ease;
+}
+
+.cover-leaf:hover:not(:disabled),
+.cover-leaf:focus-visible:not(:disabled) {
+  transform: rotate(-4deg) scale(1.035);
+  filter: drop-shadow(8px 14px 9px var(--shadow));
+}
+
+.cover-leaf:active:not(:disabled) {
+  transform: rotate(2deg) scale(0.98);
+}
+
+.cover-leaf.is-flying {
+  transform: translate(48vw, -12vh) rotate(54deg) scale(0.92);
+  transition:
+    transform 760ms cubic-bezier(0.2, 0.6, 0.3, 1),
+    opacity 700ms ease;
+}
+
+/* escena I: un único montón de hojas, visible y generoso */
+.clear-stage {
+  position: relative;
+  flex: 1;
+  min-height: 270px;
+  overflow: hidden;
+  border-radius: 52% 48% 50% 50% / 2.5% 3.5% 2% 3%;
+  background: var(--paper-light);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--paper-light) 84%, transparent),
+    0 18px 34px var(--shadow-soft);
+}
+
+.clear-stage::before {
+  content: "";
+  position: absolute;
+  inset: 7% -7% auto auto;
+  z-index: 3;
+  width: 34%;
+  height: 48%;
+  border-right: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  transform: rotate(3deg);
+  pointer-events: none;
+}
+
+.clear-tableau {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.12;
+  filter: saturate(0.65);
+  transform: scale(0.985);
+  transition:
+    opacity 420ms ease,
+    filter 420ms ease,
+    transform 520ms var(--ease-page);
+}
+
+.is-revealed .clear-tableau {
+  opacity: 1;
+  filter: none;
+  transform: scale(1);
+}
+
+.clear-dani,
+.clear-diego,
+.clear-plant,
+.clear-thimble,
+.clear-cube {
+  position: absolute;
+}
+
+.clear-dani > .character,
+.clear-diego > .character,
+.clear-plant > .plant-character {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.clear-dani {
+  bottom: 5%;
+  left: 5%;
+  z-index: 2;
+  width: clamp(92px, 21%, 154px);
+}
+
+.clear-diego {
+  right: 5%;
+  bottom: 4%;
+  z-index: 2;
+  width: clamp(102px, 23%, 166px);
+}
+
+.clear-plant {
+  bottom: 4%;
+  left: 50%;
+  z-index: 1;
+  width: clamp(112px, 25%, 176px);
+  transform: translateX(-50%);
+}
+
+.clear-thimble {
+  bottom: 7%;
+  left: 27%;
+  width: clamp(32px, 7%, 48px);
+  aspect-ratio: 1;
+}
+
+.scene--clear .clear-thimble.interactive-object[data-interactive="false"] {
+  position: absolute;
+  inline-size: clamp(32px, 7%, 48px);
+  block-size: auto;
+}
+
+.clear-cube {
+  right: 27%;
+  bottom: 6%;
+  width: clamp(34px, 7.5%, 52px);
+  aspect-ratio: 1;
+}
+
+.scene--clear .clear-cube.interactive-object[data-interactive="false"] {
+  position: absolute;
+  inline-size: clamp(34px, 7.5%, 52px);
+  block-size: auto;
+}
+
+.clear-leaf-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  width: clamp(232px, 72%, 410px);
+  inline-size: clamp(232px, 72%, 410px);
+  block-size: clamp(182px, 48%, 270px);
+  min-height: clamp(182px, 48%, 270px);
+  padding: 12px;
+  transform: translate(-50%, -50%);
+  border-color: color-mix(in srgb, var(--leaf-dark) 17%, transparent);
+  background:
+    radial-gradient(ellipse at 50% 58%, color-mix(in srgb, var(--leaf-dry) 36%, var(--paper-light)), transparent 70%),
+    color-mix(in srgb, var(--paper-light) 78%, transparent);
+}
+
+/* La acción es un montón de hojas, no una tarjeta alrededor del montón. */
+.scene--clear .clear-leaf-button.interactive-object {
+  position: absolute;
+  inline-size: clamp(232px, 72%, 410px);
+  block-size: clamp(182px, 48%, 270px);
+  border-color: transparent;
+  border-radius: 48%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.scene--clear
+  .clear-leaf-button.interactive-object[data-interactive="true"]:not(:disabled):hover,
+.scene--clear .clear-leaf-button.interactive-object:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+  filter: drop-shadow(0 12px 12px var(--shadow-soft));
+  transform: translate(-50%, calc(-50% - 3px)) rotate(-1deg);
+}
+
+.scene--clear
+  .clear-leaf-button.interactive-object[data-interactive="true"]:not(:disabled):active {
+  box-shadow: none;
+  transform: translate(-50%, calc(-50% + 1px)) scale(0.985);
+}
+
+.clear-leaf-button:hover:not(:disabled),
+.clear-leaf-button:focus-visible:not(:disabled) {
+  transform: translate(-50%, calc(-50% - 3px)) rotate(-1deg);
+}
+
+.clear-leaf-button:active:not(:disabled) {
+  transform: translate(-50%, calc(-50% + 1px)) scale(0.985);
+}
+
+.clear-leaf-pile {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 164px;
+}
+
+.clear-leaf-piece {
+  position: absolute;
+  width: clamp(78px, 31%, 126px);
+  opacity: 0.97;
+  filter: drop-shadow(4px 7px 4px var(--shadow-soft));
+  transition:
+    transform 520ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    opacity 430ms ease;
+}
+
+.clear-leaf-piece--1 {
+  top: 5%;
+  left: 11%;
+  transform: rotate(-28deg);
+  --leaf-exit-x: -150px;
+  --leaf-exit-y: -72px;
+  --leaf-exit-r: -92deg;
+}
+
+.clear-leaf-piece--2 {
+  top: 0;
+  left: 35%;
+  transform: rotate(8deg);
+  --leaf-exit-x: -48px;
+  --leaf-exit-y: -130px;
+  --leaf-exit-r: 58deg;
+}
+
+.clear-leaf-piece--3 {
+  top: 10%;
+  right: 9%;
+  transform: rotate(31deg);
+  --leaf-exit-x: 142px;
+  --leaf-exit-y: -78px;
+  --leaf-exit-r: 118deg;
+}
+
+.clear-leaf-piece--4 {
+  bottom: 0;
+  left: 16%;
+  transform: rotate(-48deg);
+  --leaf-exit-x: -136px;
+  --leaf-exit-y: 94px;
+  --leaf-exit-r: -144deg;
+}
+
+.clear-leaf-piece--5 {
+  bottom: 4%;
+  left: 41%;
+  transform: rotate(14deg);
+  --leaf-exit-x: 24px;
+  --leaf-exit-y: 132px;
+  --leaf-exit-r: 102deg;
+}
+
+.clear-leaf-piece--6 {
+  right: 13%;
+  bottom: 0;
+  transform: rotate(52deg);
+  --leaf-exit-x: 146px;
+  --leaf-exit-y: 90px;
+  --leaf-exit-r: 164deg;
+}
+
+.is-revealed .clear-leaf-piece {
+  opacity: 0;
+  transform: translate(var(--leaf-exit-x), var(--leaf-exit-y))
+    rotate(var(--leaf-exit-r)) scale(0.78);
+}
+
+.is-revealed .clear-leaf-button {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.04);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  transition:
+    opacity 180ms ease 360ms,
+    transform 520ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.scene--clear.is-revealed .clear-leaf-button.interactive-object {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.04);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.scene--clear.is-restored .clear-leaf-button {
+  display: none;
+}
+
+.scene--clear.is-restored .clear-dani .fig-dani,
+.scene--clear.is-restored .clear-diego .fig-diego,
+.scene--clear.is-restored .clear-cube {
+  animation: none;
+}
+
+.is-revealed .clear-dani .fig-dani {
+  animation: pawShake 720ms ease 120ms 1;
+}
+
+.is-revealed .clear-diego .fig-diego {
+  animation: solemnNod 820ms ease 220ms 1;
+}
+
+.is-revealed .clear-cube {
+  animation: cubeRecover 820ms var(--ease-page) 240ms 1;
+}
+
+/* escena II: sólo la ofrenda del momento permanece disponible */
+.offer-stage {
+  min-height: 270px;
+}
+
+.offer-dani,
+.offer-diego {
+  position: absolute;
+  z-index: 3;
+}
+
+.offer-dani > .character,
+.offer-diego > .character,
+.offer-plant-art > .plant-character {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.offer-dani {
+  bottom: 5%;
+  left: 2%;
+  width: clamp(96px, 22vw, 158px);
+  transform: rotate(-2deg);
+}
+
+.offer-diego {
+  right: 2%;
+  bottom: 7%;
+  width: clamp(106px, 24vw, 168px);
+  transform: rotate(1deg);
+}
+
+.offer-dani::after,
+.offer-diego::after {
+  content: "";
+  position: absolute;
+  bottom: -1%;
+  z-index: -1;
+  width: 76%;
+  height: 38%;
+  border-radius: 70% 30% 64% 36%;
+  background: var(--shadow-soft);
+  transform: skewX(-12deg) rotate(-5deg);
+}
+
+.offer-dani::after {
+  left: 22%;
+}
+
+.offer-diego::after {
+  right: 18%;
+  transform: skewX(8deg) rotate(3deg);
+}
+
+.offer-plant {
+  left: 50%;
+  bottom: 4%;
+  width: clamp(124px, 27vw, 184px);
+}
+
+.offer-plant-art {
+  width: 100%;
+}
+
+.offering-action {
+  position: absolute;
+  bottom: 43%;
+  z-index: 7;
+  width: clamp(94px, 16vw, 122px);
+  height: clamp(94px, 16vw, 122px);
+  inline-size: clamp(94px, 16vw, 122px);
+  block-size: clamp(94px, 16vw, 122px);
+  padding: clamp(15px, 2.6vw, 22px);
+}
+
+/* El hitbox sigue siendo generoso, pero visualmente sólo aparece el objeto. */
+.scene--offerings .offering-action.interactive-object {
+  position: absolute;
+  inline-size: clamp(94px, 16vw, 122px);
+  block-size: clamp(94px, 16vw, 122px);
+  border-color: transparent;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.scene--offerings
+  .offering-action.interactive-object[data-interactive="true"]:not(:disabled):hover,
+.scene--offerings .offering-action.interactive-object:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+  filter: drop-shadow(0 10px 9px var(--shadow-soft));
+  transform: translateY(-3px) rotate(-1deg);
+}
+
+.scene--offerings
+  .offering-action.interactive-object[data-interactive="true"]:not(:disabled):active {
+  box-shadow: none;
+  transform: translateY(1px) scale(0.98);
+}
+
+.scene--offerings
+  .offering-action--seed.interactive-object[data-interactive="true"]:not(:disabled):hover,
+.scene--offerings .offering-action--seed.interactive-object:focus-visible {
+  transform: translate(-50%, -3px) rotate(-1deg);
+}
+
+.scene--offerings
+  .offering-action--seed.interactive-object[data-interactive="true"]:not(:disabled):active {
+  transform: translate(-50%, 1px) scale(0.98);
+}
+
+.offering-action .offering-object {
+  display: block;
+  width: 100%;
+  transition: transform var(--dur-micro) ease;
+}
+
+.offering-action:hover:not(:disabled) .offering-object,
+.offering-action:focus-visible:not(:disabled) .offering-object {
+  transform: scale(1.06) rotate(-3deg);
+}
+
+.offering-action--water {
+  left: clamp(2%, 10vw, 15%);
+}
+
+.offering-action--seed {
+  --seed-travel: clamp(82px, 20vw, 154px);
+  --seed-half: clamp(41px, 10vw, 77px);
+  --seed-drop: clamp(54px, 10vh, 82px);
+  left: calc(50% + var(--seed-travel));
+  transform: translateX(-50%);
+}
+
+.offering-action--seed:hover:not(:disabled),
+.offering-action--seed:focus-visible:not(:disabled) {
+  transform: translate(-50%, -3px) rotate(-1deg);
+}
+
+.offering-action--seed:active:not(:disabled) {
+  transform: translate(-50%, 1px) scale(0.98);
+}
+
+.offering-action[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.84);
+}
+
+.scene--offerings .offering-action.interactive-object[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.84);
+}
+
+.offering-action--seed[aria-hidden="true"] {
+  transform: translateX(-50%) scale(0.84);
+}
+
+.scene--offerings
+  .offering-action--seed.interactive-object[aria-hidden="true"] {
+  transform: translateX(-50%) scale(0.84);
+}
+
+.water-feedback .water-drop {
+  animation: dropFall 560ms ease-in 1;
+}
+
+.water-done:not(.water-feedback) .water-drop {
+  animation: none;
+}
+
+.water-feedback .offer-dani .dani-tail-group {
+  animation: tailFlick 720ms ease 120ms 1;
+}
+
+.seed-feedback .offer-diego .diego-head {
+  animation: solemnNod 760ms ease 100ms 1;
+}
+
+.seed-feedback .offering-action--seed {
+  animation: seedToPot 420ms cubic-bezier(0.25, 0.65, 0.25, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes seedToPot {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) rotate(0deg) scale(1);
+  }
+  52% {
+    opacity: 1;
+    transform: translate(calc(-50% - var(--seed-half)), -46px) rotate(48deg)
+      scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% - var(--seed-travel)), var(--seed-drop))
+      rotate(90deg) scale(0.72);
+  }
+}
+
+.sprout-born .offer-plant-art .fig-plant {
+  animation: soilBreath 920ms ease 1;
+}
+
+.is-restored .offer-plant-art .fig-plant {
+  animation: none;
+}
+
+@media (max-width: 520px) {
+  .clear-stage,
+  .offer-stage {
+    min-height: 250px;
+  }
+
+  .clear-leaf-button {
+    width: min(86%, 320px);
+  }
+
+  .clear-dani,
+  .offer-dani {
+    left: 0;
+  }
+
+  .clear-diego,
+  .offer-diego {
+    right: 0;
+  }
+
+  .offering-action {
+    bottom: 46%;
+  }
+}
+
+@media (max-width: 390px) {
+  .clear-stage,
+  .offer-stage {
+    min-height: 244px;
+  }
+
+  .clear-leaf-button {
+    inline-size: min(90%, 304px);
+    block-size: 188px;
+    min-height: 188px;
+  }
+
+  .clear-dani,
+  .offer-dani {
+    width: 94px;
+  }
+
+  .clear-diego,
+  .offer-diego {
+    width: 106px;
+  }
+
+  .clear-plant,
+  .offer-plant {
+    width: 116px;
+  }
+
+  .offering-action {
+    inline-size: 92px;
+    block-size: 92px;
+    padding: 14px;
+  }
 }

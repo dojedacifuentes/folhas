@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg class="fig fig-cat fig-dani character character--angle-front character--facing-front character--reduced-motion dani--watering character--state-watering" viewBox="0 0 180 150"
+  role="img"
+  data-character="dani" data-baseline="141"
+  data-angle="front" data-facing="front" data-state="watering"
+  data-reduced-motion="true" data-interactive="false"
+
+  aria-label="Dani, gata ocre pequeña con rayas, lentes redondos y lazo verde"
+  xmlns="http://www.w3.org/2000/svg">
+<style type="text/css"><![CDATA[
+.fig{width:100%;height:auto;overflow:visible;}.fig-dani,.fig-diego{overflow:visible;isolation:isolate;}.cat-tail-group,.diego-tail-group,.akita-head,.cat-head,.akita-ear,.dani-body-group,.dani-head,.dani-ear,.dani-glasses,.dani-eyes,.dani-paw,.dani-bow,.diego-body-group,.diego-head,.diego-ear,.diego-glasses,.diego-eyes,.diego-paw,.diego-bow,.plant-leaf,.plant-leaf-shape,.plant-stem,.plant-sprout,.plant-sprout-leaf,.plant-waterline,.plant-bubble,.plant-state-face,.plant-recovery-mark,.cube-solid{transform-box:fill-box;transform-origin:center;}.cat-tail-group{transform-origin:center bottom;}.diego-tail-group{transform-origin:center bottom;}.akita-head{transform-origin:center bottom;}.dani-head,.diego-head,.dani-body-group,.diego-body-group,.dani-glasses,.diego-glasses,.dani-ear,.diego-ear,.dani-leg,.diego-leg,.dani-paw,.diego-paw,.dani-eye,.diego-eye{transition:transform 420ms cubic-bezier(0.33,0.02,0.2,1),opacity 220ms ease;}.dani-head{transform-origin:center bottom;}.dani-ear--left,.diego-ear--left{transform-origin:right bottom;}.dani-ear--right,.diego-ear--right{transform-origin:left bottom;}.dani-paw--front,.diego-paw--left{transform-origin:center right;}.diego-glasses,.dani-glasses{transform-origin:center;}.character--silhouette{color:#29291f;}.character--silhouette [data-part="ground-shadow"],.character--silhouette [data-detail]{display:none;}.character--silhouette [data-silhouette="true"]{fill:currentColor !important;stroke:currentColor !important;opacity:1 !important;}.character--small [data-detail="micro"],.character--small [data-part="whiskers"]{display:none;}.character--small .dani-glasses,.character--small .diego-glasses{stroke-width:3.25;}.character--small .dani-eye,.character--small .diego-eye{transform:scale(1.18);}.dani--profile .dani-head{transform:translate(-5px,1px) rotate(-7deg);}.dani--profile .dani-lens--far,.dani--profile .dani-eye--right,.dani--profile .dani-glasses-arm--right{opacity:0.32;}.diego--profile .diego-head{transform:translateX(-4px) rotate(-3deg);}.diego--profile .diego-lens--right,.diego--profile .diego-eye--right,.diego--profile .diego-glasses-arm--right{opacity:0.3;}.dani--curious .dani-head{transform:translate(-3px,-5px) rotate(-8deg);}.dani--curious .dani-leg--front,.dani--curious .dani-paw--front{transform:translate(-3px,-5px) rotate(-6deg);}.dani--curious .dani-tail-group{transform:rotate(7deg);}.dani--surprised .dani-head{transform:translateY(-7px) rotate(2deg);}.dani--surprised .dani-ear--left{transform:rotate(-13deg);}.dani--surprised .dani-ear--right{transform:rotate(12deg);}.dani--surprised .dani-eye{transform:scale(1.45);}.dani--surprised .dani-glasses{transform:translateY(-1px) scale(1.035);}.dani--hiding .dani-body-group{transform:translateY(11px) scaleY(0.9);}.dani--hiding .dani-head{transform:translate(8px,17px) rotate(-4deg);}.dani--hiding .dani-tail-group{transform:translateY(8px) rotate(-9deg);}.dani--hiding .dani-ground-shadow{transform:scaleX(0.82);transform-origin:center;}.dani--worried .dani-head{transform:translateY(5px) rotate(7deg);}.dani--worried .dani-ear--left{transform:rotate(17deg);}.dani--worried .dani-ear--right{transform:rotate(-14deg);}.dani--worried .dani-glasses{transform:translateY(2px) rotate(2deg);}.dani--delighted .dani-head{transform:translate(-1px,-4px) rotate(4deg);}.dani--delighted .dani-leg--front,.dani--delighted .dani-paw--front{transform:translate(-2px,-4px) rotate(-5deg);}.dani--delighted .dani-tail-group{transform:rotate(10deg);}.dani--delighted .dani-eye{transform:scaleY(0.72);}.dani--observing .dani-head{transform:translate(-4px,-2px) rotate(-11deg);}.dani--observing .dani-glasses{transform:translate(-1px,1px) scale(1.025);}.dani--observing .dani-body-group,.dani--observing .dani-tail-group{transform:rotate(-1.5deg);}.dani--sleeping,.cat--sleeping{transform:scaleY(0.94);transform-origin:bottom;}.dani--sleeping .dani-head,.cat--sleeping .dani-head{transform:translate(8px,12px) rotate(10deg);}.dani--sleeping .dani-eye,.cat--sleeping .dani-eye{transform:scaleY(0.18);}.dani--sleeping .dani-tail-group,.cat--sleeping .dani-tail-group{transform:translate(-5px,8px) rotate(-12deg);}.diego--serious .diego-head{transform:translateY(-2px);}.diego--serious .diego-brow--left{transform:rotate(3deg);}.diego--serious .diego-brow--right{transform:rotate(-3deg);}.diego--concerned .diego-head{transform:translateY(3px) rotate(-3deg);}.diego--concerned .diego-ear--left{transform:rotate(-17deg);}.diego--concerned .diego-ear--right{transform:rotate(16deg);}.diego--concerned .diego-glasses{transform:translateY(2px);}.diego--protecting .diego-body-group,.akita--guard .diego-body-group{transform:scaleX(1.055);}.diego--protecting .diego-head,.akita--guard .diego-head{transform:translateY(-4px) scale(1.015);}.diego--protecting .diego-paw--left,.akita--guard .diego-paw--left{transform:translateX(-4px);}.diego--protecting .diego-paw--right,.akita--guard .diego-paw--right{transform:translateX(4px);}.diego--embarrassed .diego-head{transform:translateY(5px) rotate(6deg);}.diego--embarrassed .diego-ear--left{transform:rotate(14deg);}.diego--embarrassed .diego-ear--right{transform:rotate(-19deg);}.diego--embarrassed .diego-glasses{transform:translateY(4px) rotate(3deg);}.diego--recoveringGlasses .diego-glasses,.diego--recovering-glasses .diego-glasses{transform:translate(-8px,8px) rotate(-11deg);}.diego--recoveringGlasses .diego-paw--left,.diego--recovering-glasses .diego-paw--left{transform:translate(12px,-20px) rotate(-21deg);}.diego--recoveringGlasses .diego-head,.diego--recovering-glasses .diego-head{transform:rotate(-4deg);}.diego--proud .diego-body-group{transform:scaleX(1.035) translateY(-1px);}.diego--proud .diego-head{transform:translateY(-5px) rotate(1.5deg);}.diego--proud .diego-ear--left{transform:rotate(-4deg);}.diego--proud .diego-ear--right{transform:rotate(4deg);}.diego--proud .diego-chest{opacity:1;}.character--size-small{width:4.5rem;}.character--size-medium{width:8.5rem;}.character--size-large{width:12rem;}.character--interactive{cursor:pointer;touch-action:manipulation;border-radius:0.25rem;}.character--interactive:focus-visible{outline:2px solid #29291f;outline-offset:4px;}.character--interactive:hover .dani-glasses,.character--interactive:hover .diego-glasses{transform:translateY(-1px);}.character--reduced-motion,.character--reduced-motion *,.character--reduced-motion *::before,.character--reduced-motion *::after{animation:none !important;scroll-behavior:auto !important;transition-duration:0.01ms !important;}.dani--profile .dani-head,.diego--profile .diego-head{transform:none;}.dani--profile .dani-lens--near,.diego--profile .diego-lens--left{opacity:1;}.dani-sleep-eye,.dani-worry-brows,.diego-blush{opacity:0;transition:opacity 220ms ease;}.dani--sleeping .dani-eye,.cat--sleeping .dani-eye{opacity:0;}.dani--sleeping .dani-sleep-eye,.cat--sleeping .dani-sleep-eye,.dani--worried .dani-worry-brows,.diego--embarrassed .diego-blush{opacity:1;}.dani--idle:not(.character--reduced-motion) .dani-tail-group{animation:tailFlick 12s ease-in-out infinite;}.diego--idle:not(.character--reduced-motion) .diego-ear--right{animation:earTwitch 16s ease-in-out infinite;}.dani--curious .dani-bow{transform:translateY(-2px) rotate(-2deg);}.dani--surprised .dani-mouth{stroke-width:1.8;}.diego--serious .diego-bow,.diego--focused .diego-bow,.diego--protecting .diego-bow{transform:translateY(-2px);}.diego--concerned .diego-brow--left{transform:rotate(-7deg);}.diego--concerned .diego-brow--right{transform:rotate(7deg);}.dani--happy .dani-head{transform:translateY(-4px) rotate(4deg);}.dani--happy .dani-eye{transform:scaleY(0.72);}.dani--happy .dani-tail-group{transform:rotate(10deg);}.dani--proud .dani-head{transform:translateY(-6px) rotate(-2deg);}.dani--proud .dani-bow{transform:translateY(-3px) scale(1.04);}.dani--watering .dani-head{transform:translate(-3px,3px) rotate(-8deg);}.dani--watering .dani-leg--front,.dani--watering .dani-paw--front{transform:translate(8px,-9px) rotate(-14deg);}.dani--watching .dani-head{transform:translate(-4px,-2px) rotate(-10deg);}.dani--watching .dani-glasses{transform:translate(-1px,1px) scale(1.025);}.dani--reactingToRain .dani-head{transform:translateY(5px) rotate(-4deg);}.dani--reactingToRain .dani-ear--left,.dani--reactingToRain .dani-ear--right{transform:rotate(10deg);}.dani--reactingToRain .dani-tail-group{transform:translateY(6px) rotate(-8deg);}.dani--reactingToWind .dani-head{transform:translate(5px,1px) rotate(8deg);}.dani--reactingToWind .dani-glasses{transform:translate(5px,-2px) rotate(6deg);}.dani--reactingToWind .dani-tail-group{transform:rotate(16deg);}.dani--reactingToHeat .dani-body-group{transform:translateY(5px) scaleY(0.96);}.dani--reactingToHeat .dani-head{transform:translateY(7px) rotate(5deg);}.dani--reactingToHeat .dani-ear--left{transform:rotate(14deg);}.dani--reactingToHeat .dani-ear--right{transform:rotate(-14deg);}.diego--focused .diego-head{transform:translateY(-2px);}.diego--focused .diego-brow--left{transform:rotate(3deg);}.diego--focused .diego-brow--right{transform:rotate(-3deg);}.diego--happy .diego-head{transform:translateY(-4px) rotate(2deg);}.diego--happy .diego-tail-group{transform:rotate(8deg);}.diego--surprised .diego-head{transform:translateY(-6px);}.diego--surprised .diego-ear--left{transform:rotate(-11deg);}.diego--surprised .diego-ear--right{transform:rotate(11deg);}.diego--surprised .diego-eye{transform:scale(1.38);}.diego--planting .diego-head{transform:translate(-3px,5px) rotate(-7deg);}.diego--planting .diego-paw--left{transform:translate(10px,-14px) rotate(-16deg);}.diego--watching .diego-head{transform:translate(-2px,1px) rotate(-4deg);}.diego--watching .diego-glasses{transform:translateY(1px);}.diego--recoveringGlasses .diego-glasses{transform:translate(-8px,8px) rotate(-11deg);}.diego--reactingToRain .diego-body-group{transform:translateY(3px);}.diego--reactingToRain .diego-head{transform:translateY(4px) rotate(-2deg);}.diego--reactingToRain .diego-ear--left,.diego--reactingToRain .diego-ear--right{transform:rotate(8deg);}.diego--reactingToWind .diego-head{transform:translate(4px,1px) rotate(5deg);}.diego--reactingToWind .diego-glasses{transform:translate(9px,-5px) rotate(9deg);}.diego--reactingToWind .diego-ear--right{transform:rotate(18deg);}.diego--reactingToHeat .diego-body-group{transform:translateY(4px) scaleY(0.98);}.diego--reactingToHeat .diego-head{transform:translateY(6px);}.diego--reactingToHeat .diego-ear--left{transform:rotate(13deg);}.diego--reactingToHeat .diego-ear--right{transform:rotate(-13deg);}@media (prefers-reduced-motion:reduce){.fig-dani *,.fig-diego *{animation:none !important;transition-duration:0.01ms !important;}}
+]]></style>
+  <ellipse class="fig-shadow dani-ground-shadow" data-part="ground-shadow"
+    cx="90" cy="141" rx="55" ry="5.5" fill="rgba(23, 29, 29, 0.28)"/>
+
+  <g class="cat-tail-group dani-tail-group" data-part="tail"><path class="cat-tail dani-tail" data-silhouette="true"
+          d="M116 132 C140 132 151 116 148 99 C146 86 136 80 128 85 C121 90 123 99 131 101 C138 102 142 97 140 91"
+          fill="none" stroke="#a86a22" stroke-width="10" stroke-linecap="round"/></g>
+  <g class="dani-body-group" data-part="body" data-angle-art="front">
+    <path class="cat-body dani-body" data-silhouette="true"
+      d="M53 135 C49 119 51 94 64 80 C72 71 82 68 90 68 C100 68 111 73 118 83 C128 98 130 120 125 136 C107 143 72 143 53 135 Z"
+      fill="#d99d29"/>
+    <path class="dani-belly" data-detail="coat"
+      d="M76 82 C84 76 94 76 101 82 C109 96 109 122 104 138 L73 138 C68 119 69 96 76 82 Z"
+      fill="#e8b83f" opacity="0.78"/>
+    <path class="dani-stripes" data-part="stripes" data-detail="coat"
+      d="M58 93 L70 99 M56 105 L69 109 M122 94 L110 100 M125 107 L111 111"
+      fill="none" stroke="#a86a22" stroke-width="4" stroke-linecap="round" opacity="0.78"/>
+    <path class="dani-leg dani-leg--front" data-part="paw-front" data-silhouette="true"
+      d="M67 104 C63 116 64 130 65 137" fill="none" stroke="#d99d29" stroke-width="8" stroke-linecap="round"/>
+    <path class="dani-leg dani-leg--support" data-part="paw-support" data-silhouette="true"
+      d="M112 104 C116 117 115 130 114 137" fill="none" stroke="#d99d29" stroke-width="8" stroke-linecap="round"/>
+    <path class="dani-paw dani-paw--front" data-part="paw-front-tip" data-silhouette="true"
+      d="M56 137 C62 132 72 132 78 138 C72 143 61 143 56 137 Z" fill="#e8b83f"/>
+    <path class="dani-paw dani-paw--support" data-part="paw-support-tip" data-silhouette="true"
+      d="M102 138 C108 132 119 133 125 138 C120 143 108 143 102 138 Z" fill="#e8b83f"/>
+  </g>
+  <g class="dani-bow" data-part="bow">
+    <path data-silhouette="true" d="M79 78 C70 72 65 76 67 84 C70 91 77 88 84 84 Z" fill="#85865a"/>
+    <path data-silhouette="true" d="M96 78 C105 72 111 77 108 85 C105 91 98 88 92 84 Z" fill="#6f8f59"/>
+    <circle cx="88" cy="82" r="5" fill="#5e4932"/>
+  </g>
+  <g class="cat-head dani-head" data-part="head">
+    <path class="cat-ear dani-ear dani-ear--left" data-part="ear-near" data-silhouette="true"
+      d="M47 35 L52 13 L70 30 Z" fill="#a86a22"/>
+    <path class="cat-ear dani-ear dani-ear--right" data-part="ear-far" data-silhouette="true"
+      d="M107 30 L124 11 L126 38 Z" fill="#d99d29"/>
+    <path class="dani-ear-inner" data-detail="coat" d="M53 29 L56 20 L64 30 Z M113 29 L121 19 L122 32 Z"
+      fill="#faf3e5" opacity="0.34"/>
+    <path class="dani-face" data-part="face" data-silhouette="true"
+      d="M42 50 C43 29 61 19 87 18 C112 17 130 31 132 51 C134 70 117 83 90 84 C62 85 41 72 42 50 Z"
+      fill="#e8b83f"/>
+    <path class="dani-forehead-stripes" data-part="stripes" data-detail="coat"
+      d="M75 20 L79 31 M88 18 L88 30 M101 20 L97 31" fill="none"
+      stroke="#a86a22" stroke-width="3.6" stroke-linecap="round" opacity="0.82"/>
+    <path class="dani-cheek-stripes" data-part="stripes" data-detail="coat"
+      d="M48 57 L59 60 M129 56 L117 60" fill="none" stroke="#a86a22" stroke-width="3" stroke-linecap="round" opacity="0.72"/>
+    <g class="dani-eyes" data-part="eyes">
+      <circle class="cat-eye dani-eye dani-eye--left" data-detail="face" cx="68" cy="50" r="2.4" fill="#29291f"/>
+      <circle class="cat-eye dani-eye dani-eye--right" data-detail="face" cx="105" cy="50" r="2.4" fill="#29291f"/>
+      <path class="dani-sleep-eye" data-detail="face" d="M63 51 Q68 55 73 51 M100 51 Q105 55 110 51"
+        fill="none" stroke="#29291f" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+    <g class="dani-glasses" data-part="glasses" data-detail="face" fill="#faf3e5" fill-opacity="0.08"
+      stroke="#29291f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path class="dani-lens dani-lens--near" data-part="lens-near" d="M53 39 C61 35 75 36 80 41 C82 53 78 62 67 64 C55 63 51 54 53 39 Z"/>
+      <path class="dani-lens dani-lens--far" data-part="lens-far" d="M92 40 C101 35 115 36 121 41 C123 54 117 62 106 64 C95 63 91 54 92 40 Z"/>
+      <path class="dani-glasses-bridge" d="M80 44 C84 41 88 41 92 44" fill="none"/>
+      <path class="dani-glasses-arm" d="M53 44 L42 41 M121 44 L131 42" fill="none"/>
+      <path class="dani-lens-glint" data-detail="micro" d="M58 41 L64 39 M98 41 L104 39"
+        stroke="#faf3e5" stroke-width="1.2" opacity="0.82"/>
+    </g>
+    <path class="dani-worry-brows" data-detail="face" d="M61 37 L72 39 M101 39 L112 37"
+      stroke="#29291f" stroke-width="1.4" stroke-linecap="round"/>
+    <path class="dani-muzzle" data-part="muzzle" data-detail="coat"
+      d="M72 59 C79 54 97 54 104 60 C101 72 78 73 70 65 Z" fill="#faf3e5" opacity="0.42"/>
+    <path class="dani-nose" data-part="nose" data-detail="face" d="M84 59 L91 59 L88 64 Z" fill="#29291f"/>
+    <path class="dani-mouth" data-detail="micro" d="M88 64 Q84 68 80 66 M88 64 Q92 68 96 66"
+      fill="none" stroke="#29291f" stroke-width="1.2" stroke-linecap="round"/>
+    <path class="dani-whiskers" data-part="whiskers" data-detail="micro"
+      d="M66 61 L40 57 M66 66 L39 69 M108 61 L135 57 M108 66 L136 70"
+      fill="none" stroke="#29291f" stroke-width="1" stroke-linecap="round" opacity="0.64"/>
+  </g>
+</svg>

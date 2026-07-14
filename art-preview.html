@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inventario visual de Dani y Diego — solo desarrollo</title>
+  <title>Sistema visual modular — solo desarrollo</title>
   <link rel="stylesheet" href="/src/styles/tokens.css" />
   <link rel="stylesheet" href="/src/styles/characters.css" />
   <style>
@@ -16,11 +16,11 @@
       color: var(--ink);
       font-family: var(--font-interface);
     }
-    header { max-width: 72ch; margin-bottom: 2.5rem; }
+    header { max-width: 74ch; margin-bottom: 2.5rem; }
     h1, h2 { font-family: var(--font-display); font-weight: 500; }
     h1 { margin: 0 0 .45rem; font-size: clamp(2rem, 5vw, 3.5rem); }
-    h2 { margin: 2.4rem 0 .8rem; font-size: clamp(1.3rem, 3vw, 2rem); }
-    .note { opacity: .65; font-size: .88rem; line-height: 1.55; }
+    h2 { margin: 2.6rem 0 .85rem; font-size: clamp(1.3rem, 3vw, 2rem); }
+    .note { opacity: .66; font-size: .88rem; line-height: 1.58; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -42,7 +42,6 @@
       overflow: hidden;
     }
     .art-frame > svg { width: min(100%, 190px); max-height: 172px; }
-    .shadow-card .art-frame > svg { width: 100%; }
     figcaption {
       margin-top: .75rem;
       font-size: .72rem;
@@ -50,77 +49,81 @@
       text-transform: lowercase;
       opacity: .7;
     }
-    .small-test .art-frame { display: flex; align-items: end; justify-content: center; gap: 1.25rem; }
-    .small-test svg:nth-child(1) { width: 64px; }
-    .small-test svg:nth-child(2) { width: 42px; }
-    .lens-study .art-frame { height: 150px; align-items: start; }
-    .lens-study .art-frame > svg { width: 390px; max-width: none; max-height: none; }
-    .lens-study--dani .art-frame > svg { transform: translate(-22%, -7%); }
-    .lens-study--diego .art-frame > svg { transform: translate(-18%, -8%); }
-    .asset-row img { width: 100%; height: 150px; object-fit: contain; }
-    .legend {
+    .scale-card { grid-column: span 2; }
+    .scale-strip {
+      min-height: 190px;
       display: flex;
-      flex-wrap: wrap;
-      gap: .5rem 1rem;
-      margin-top: 1rem;
-      font-size: .75rem;
-      opacity: .62;
+      align-items: end;
+      justify-content: center;
+      gap: clamp(.65rem, 2vw, 1.4rem);
+      overflow: hidden;
     }
-    .legend span::before { content: "— "; }
+    .scale-sample { display: grid; justify-items: center; gap: .4rem; }
+    .scale-sample svg { display: block; }
+    .scale-sample small { font-size: .65rem; opacity: .55; }
+    .contract {
+      max-width: 78ch;
+      padding: 1rem 1.2rem;
+      background: color-mix(in srgb, var(--paper-light) 78%, transparent);
+      border-left: 3px solid var(--sage);
+      font-size: .82rem;
+      line-height: 1.65;
+    }
+    .contract code { font-size: .78rem; }
+    @media (max-width: 520px) {
+      .scale-card { grid-column: span 1; }
+      .scale-strip { justify-content: flex-start; }
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Inventario visual</h1>
+    <h1>Sistema visual modular</h1>
     <p class="note">
-      Hoja de modelo interna de Dani y Diego. Revisa silueta, contraste, integración de lentes,
-      legibilidad entre 42 y 64 px y diferencias de postura. No está enlazada desde la experiencia.
+      Hoja de modelo interna. Comprueba que Dani sea una curva felina y Diego un akita incluso
+      sin color ni lentes; después revisa gestos, legibilidad mínima y consecuencias sobre la planta.
     </p>
-    <div class="legend" aria-label="Gramática visual">
-      <span>Dani: curva, pregunta, observación</span>
-      <span>Diego: bloque, refugio, concentración</span>
-      <span>máximo tres tonos por figura</span>
-    </div>
+    <p class="contract">
+      Contrato de sustitución: viewBox y línea de suelo estables, poses en el SVG raíz,
+      anatomía marcada con <code>data-part</code> y masas con <code>data-silhouette</code>.
+      Las escenas consumen <code>daniArt</code>, <code>diegoArt</code> y <code>plantArt</code>.
+    </p>
   </header>
 
   <main>
-    <section aria-labelledby="views-title">
-      <h2 id="views-title">Vistas y siluetas</h2>
-      <div class="grid" id="views-grid"></div>
+    <section aria-labelledby="identity-title">
+      <h2 id="identity-title">Identidad y silueta real</h2>
+      <div class="grid" id="identity-grid"></div>
     </section>
 
     <section aria-labelledby="dani-title">
-      <h2 id="dani-title">Dani · estados</h2>
-      <div class="grid" id="dani-states"></div>
+      <h2 id="dani-title">Dani · poses</h2>
+      <div class="grid" id="dani-grid"></div>
     </section>
 
     <section aria-labelledby="diego-title">
-      <h2 id="diego-title">Diego · estados</h2>
-      <div class="grid" id="diego-states"></div>
+      <h2 id="diego-title">Diego · poses</h2>
+      <div class="grid" id="diego-grid"></div>
     </section>
 
-    <section aria-labelledby="detail-title">
-      <h2 id="detail-title">Escala, lentes y objetos</h2>
-      <div class="grid" id="detail-grid"></div>
+    <section aria-labelledby="scale-title">
+      <h2 id="scale-title">Escala 100 / 64 / 42 / 32</h2>
+      <div class="grid" id="scale-grid"></div>
     </section>
 
-    <section aria-labelledby="exports-title">
-      <h2 id="exports-title">Assets exportados</h2>
-      <div class="grid asset-row">
-        <figure><img src="/art/umbrella.svg" alt="Paraguas editorial" /><figcaption>paraguas</figcaption></figure>
-        <figure class="dark"><img src="/art/shadow-dani.svg" alt="Sombra vegetal de Dani" /><figcaption>sombra de Dani</figcaption></figure>
-        <figure class="dark"><img src="/art/shadow-diego.svg" alt="Sombra protectora de Diego" /><figcaption>sombra de Diego</figcaption></figure>
-      </div>
+    <section aria-labelledby="plant-title">
+      <h2 id="plant-title">Planta · matriz de estados</h2>
+      <div class="grid" id="plant-grid"></div>
     </section>
   </main>
 
   <script type="module">
     import {
-      akitaSVG,
-      catSVG,
-      characterShadowSVG,
-      umbrellaSVG,
-    } from "/src/art/svgLibrary.ts";
+      daniArt,
+      diegoArt,
+      plantArt,
+      PLANT_VISUAL_STATES,
+    } from "/src/art/artDirection.ts";
 
     const card = (art, label, className = "") => `
       <figure class="${className}">
@@ -128,39 +131,56 @@
         <figcaption>${label}</figcaption>
       </figure>`;
 
-    document.querySelector("#views-grid").innerHTML = [
-      card(catSVG("dani--idle dani--front"), "Dani · frontal"),
-      card(catSVG("dani--profile"), "Dani · lateral"),
-      card(characterShadowSVG("dani"), "Dani · silueta vegetal", "dark shadow-card"),
-      card(akitaSVG("diego--idle diego--front"), "Diego · frontal"),
-      card(akitaSVG("diego--profile"), "Diego · lateral"),
-      card(characterShadowSVG("diego"), "Diego · silueta refugio", "dark shadow-card"),
+    document.querySelector("#identity-grid").innerHTML = [
+      card(daniArt("observing"), "Dani · color"),
+      card(daniArt("observing", "character--silhouette"), "Dani · silueta negra"),
+      card(daniArt("profile"), "Dani · lateral"),
+      card(diegoArt("serious"), "Diego · color"),
+      card(diegoArt("serious", "character--silhouette"), "Diego · silueta negra"),
+      card(diegoArt("profile"), "Diego · lateral"),
     ].join("");
 
-    const daniStates = ["idle", "curious", "surprised", "hiding", "worried", "sleeping"];
-    document.querySelector("#dani-states").innerHTML = daniStates
-      .map((state) => card(catSVG(`dani--${state}`), state))
-      .join("");
-
-    const diegoStates = [
-      ["idle", "idle"],
-      ["serious", "serious"],
-      ["concerned", "concerned"],
-      ["protecting", "protecting"],
-      ["embarrassed", "embarrassed"],
-      ["recoveringGlasses", "recovering glasses"],
+    const daniPoses = [
+      "curious",
+      "surprised",
+      "worried",
+      "sleeping",
+      "delighted",
+      "observing",
     ];
-    document.querySelector("#diego-states").innerHTML = diegoStates
-      .map(([state, label]) => card(akitaSVG(`diego--${state}`), label))
+    document.querySelector("#dani-grid").innerHTML = daniPoses
+      .map((pose) => card(daniArt(pose), pose))
       .join("");
 
-    document.querySelector("#detail-grid").innerHTML = [
-      card(`${catSVG("dani--curious")}${catSVG("dani--idle")}`, "Dani · 64 / 42 px", "small-test"),
-      card(`${akitaSVG("diego--serious")}${akitaSVG("diego--idle")}`, "Diego · 64 / 42 px", "small-test"),
-      card(catSVG("dani--curious"), "lentes de Dani", "lens-study lens-study--dani"),
-      card(akitaSVG("diego--serious"), "lentes de Diego", "lens-study lens-study--diego"),
-      card(umbrellaSVG(), "paraguas · copa / refugio"),
+    const diegoPoses = [
+      "serious",
+      "protecting",
+      "concerned",
+      "embarrassed",
+      "recovering-glasses",
+      "proud",
+    ];
+    document.querySelector("#diego-grid").innerHTML = diegoPoses
+      .map((pose) => card(diegoArt(pose), pose))
+      .join("");
+
+    const scaleStrip = (render) => `
+      <div class="scale-strip">
+        ${[100, 64, 42, 32].map((size) => `
+          <span class="scale-sample">
+            ${render(size).replace('class="fig ', `style="width:${size}px" class="fig `)}
+            <small>${size}px</small>
+          </span>`).join("")}
+      </div>`;
+
+    document.querySelector("#scale-grid").innerHTML = [
+      `<figure class="scale-card">${scaleStrip((size) => daniArt("curious", size <= 42 ? "character--small" : ""))}<figcaption>Dani</figcaption></figure>`,
+      `<figure class="scale-card">${scaleStrip((size) => diegoArt("serious", size <= 42 ? "character--small" : ""))}<figcaption>Diego</figcaption></figure>`,
     ].join("");
+
+    document.querySelector("#plant-grid").innerHTML = PLANT_VISUAL_STATES
+      .map((state) => card(plantArt(state), state))
+      .join("");
   </script>
 </body>
 </html>

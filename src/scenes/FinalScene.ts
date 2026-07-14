@@ -1,15 +1,17 @@
 import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
+import { setSceneVisualState } from "../app/visualState";
+import { renderDani } from "../art/characters/DaniCharacter";
+import { renderDiego } from "../art/characters/DiegoCharacter";
 import {
-  akitaSVG,
-  branchShadowSVG,
-  catSVG,
-  leafSVG,
-  plantSVG,
-  seedCubeSVG,
-  thimbleSVG,
-  umbrellaSVG,
-} from "../art/svgLibrary";
+  renderSeed,
+  renderThimble,
+  renderUmbrella,
+  setInteractiveObjectState,
+} from "../art/objects/InteractiveObjects";
+import { renderPlantCharacter } from "../art/PlantCharacter";
+import { renderShadowSystem } from "../art/ShadowSystem";
+import { leafSVG } from "../art/svgLibrary";
 
 export class FinalScene implements Scene {
   readonly id = "final" as const;
@@ -30,26 +32,49 @@ export class FinalScene implements Scene {
       </header>
       <div class="scene-body">
         <div class="final-stage">
+          ${renderShadowSystem({
+            mode: "final",
+            className: "final-shadow-system",
+            progress: 1,
+            shelter: 1,
+            intensity: 0.7,
+            length: 0.82,
+            angle: 3,
+          })}
           <div class="final-glow" aria-hidden="true"></div>
-          <div class="final-branch final-branch--a" aria-hidden="true">${branchShadowSVG(1)}</div>
-          <div class="final-branch final-branch--b" aria-hidden="true">${branchShadowSVG(2)}</div>
           <div class="final-drifting-leaf" aria-hidden="true">${leafSVG(3)}</div>
           <div class="final-cat" aria-hidden="true">
-            ${catSVG("dani--sleeping")}
+            ${renderDani({
+              state: "sleeping",
+              angle: "three-quarter-right",
+              facing: "right",
+              reducedMotion: ctx.reducedMotion(),
+            })}
             <p class="thought thought--cat">${c.catThought}</p>
           </div>
-          <button class="final-plant plant-wrap plant--full" type="button" aria-label="${c.plantLabel}">
-            ${plantSVG()}
+          <button class="final-plant plant-wrap" type="button" aria-label="${c.plantLabel}">
+            ${renderPlantCharacter({ state: "healthy", decorative: true })}
           </button>
           <div class="final-akita" aria-hidden="true">
-            ${akitaSVG("diego--protecting")}
+            ${renderDiego({
+              state: "protecting",
+              angle: "three-quarter-left",
+              facing: "left",
+              reducedMotion: ctx.reducedMotion(),
+            })}
             <p class="thought thought--akita">${c.akitaThought}</p>
           </div>
-          <button class="final-cube" type="button" aria-label="${c.cubeLabel}">
-            ${seedCubeSVG()}
-          </button>
-          <div class="final-thimble" aria-hidden="true">${thimbleSVG()}</div>
-          <div class="final-umbrella" aria-hidden="true">${umbrellaSVG("umbrella--stored")}</div>
+          ${renderSeed({ label: c.cubeLabel, className: "final-cube" })}
+          ${renderThimble({
+            interactive: false,
+            decorative: true,
+            className: "final-thimble",
+          })}
+          ${renderUmbrella({
+            interactive: false,
+            decorative: true,
+            className: "final-umbrella umbrella--stored",
+          })}
         </div>
         <div class="final-text">
           ${c.lines.map((l, i) => `<p class="final-line" style="--i:${i}">${l}</p>`).join("")}
@@ -67,6 +92,26 @@ export class FinalScene implements Scene {
       </div>
     `;
     this.el = el;
+
+    setSceneVisualState(el, {
+      daniState: "sleeping",
+      diegoState: "protecting",
+      plantState: "healthy",
+      instruction: "",
+      interactionEnabled: true,
+      completed: true,
+    });
+    window.requestAnimationFrame(() => {
+      if (!this.el) return;
+      setSceneVisualState(this.el, {
+        daniState: "sleeping",
+        diegoState: "protecting",
+        plantState: "flowering",
+        instruction: "",
+        interactionEnabled: true,
+        completed: true,
+      });
+    });
 
     if (!ctx.state.finalReached) {
       ctx.state.finalReached = true;
@@ -92,6 +137,7 @@ export class FinalScene implements Scene {
     cube.addEventListener("click", () => {
       if (cube.classList.contains("is-spinning")) return;
       cube.classList.add("is-spinning");
+      setInteractiveObjectState(cube, "active");
       ctx.audio.woodTap();
       const akita = el.querySelector<HTMLElement>(".final-akita")!;
       this.timers.push(
@@ -100,6 +146,7 @@ export class FinalScene implements Scene {
           this.timers.push(
             window.setTimeout(() => {
               cube.classList.remove("is-spinning");
+              setInteractiveObjectState(cube, "idle");
               akita.classList.remove("is-fixing");
             }, 900)
           );

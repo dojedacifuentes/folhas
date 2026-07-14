@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg class="branch-shadow " viewBox="0 0 520 460" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-  <g fill="rgba(25, 31, 31, 0.22)">
+  <g fill="rgba(23, 29, 29, 0.28)">
     <path d="M40 470 C60 340 120 240 220 160 C300 96 400 60 510 50 L512 58 C406 70 310 106 234 168 C140 246 84 344 66 470 Z"/>
     <path d="M210 170 C180 150 168 116 178 88 C206 102 220 138 218 166 Z"/>
     <path d="M320 108 C306 78 314 44 336 26 C350 54 342 90 328 110 Z"/>

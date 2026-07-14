@@ -1,25 +1,27 @@
 import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
-import { ScratchReveal } from "../interactions/ScratchReveal";
-import { spawnLeafParticle } from "../art/particles";
+import { setSceneVisualState } from "../app/visualState";
+import { renderDani } from "../art/characters/DaniCharacter";
+import { renderDiego } from "../art/characters/DiegoCharacter";
 import {
-  akitaSVG,
-  catSVG,
-  leafButtonSVG,
-  plantSVG,
-  seedCubeSVG,
-  thimbleSVG,
-} from "../art/svgLibrary";
+  renderDryLeaves,
+  renderSeed,
+  renderThimble,
+  setInteractiveObjectState,
+} from "../art/objects/InteractiveObjects";
+import { renderPlantCharacter } from "../art/PlantCharacter";
+import { leafButtonSVG } from "../art/svgLibrary";
 
 export class ClearSpaceScene implements Scene {
   readonly id = "clear-space" as const;
   private el: HTMLElement | null = null;
   private ctx!: SceneContext;
-  private scratch: ScratchReveal | null = null;
+  private revealed = false;
   private timers: number[] = [];
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
+    this.revealed = false;
     const c = content.clearSpace;
     const el = document.createElement("section");
     el.className = "scene scene--clear";
@@ -31,16 +33,33 @@ export class ClearSpaceScene implements Scene {
         <p class="scene-lede">${c.lede}</p>
       </header>
       <div class="scene-body">
-        <div class="scratch-stage">
-          <div class="tableau plant-wrap plant--dormant" aria-hidden="true">
-            <div class="tableau-cat">${catSVG("dani--surprised")}</div>
-            <div class="tableau-plant">${plantSVG()}</div>
-            <div class="tableau-akita">${akitaSVG("diego--serious")}</div>
-            <div class="tableau-thimble">${thimbleSVG()}</div>
-            <div class="tableau-cube">${seedCubeSVG()}</div>
+        <div class="clear-stage">
+          <div class="clear-tableau" aria-hidden="true">
+            <div class="clear-dani">${renderDani({
+              state: "surprised",
+              angle: "front",
+              facing: "front",
+              reducedMotion: ctx.reducedMotion(),
+            })}</div>
+            <div class="clear-plant plant-wrap">${renderPlantCharacter({
+              state: "seed",
+              className: "plant-context--empty",
+              decorative: true,
+            })}</div>
+            <div class="clear-diego">${renderDiego({
+              state: "focused",
+              angle: "front",
+              facing: "front",
+              reducedMotion: ctx.reducedMotion(),
+            })}</div>
+            ${renderThimble({ interactive: false, decorative: true, className: "clear-thimble" })}
+            ${renderSeed({ interactive: false, decorative: true, className: "clear-cube" })}
           </div>
-          <canvas class="scratch-canvas" tabindex="0" aria-label="${c.canvasLabel}"></canvas>
-          <div class="particle-layer" aria-hidden="true"></div>
+          ${renderDryLeaves({
+            label: c.revealLabel,
+            className: "scene-action clear-leaf-button",
+            leafCount: 6,
+          })}
         </div>
         <div class="scene-after" hidden>
           <p class="speech speech--cat"><span class="speaker">${content.speakers.cat}</span>${c.catSays}</p>
@@ -51,69 +70,84 @@ export class ClearSpaceScene implements Scene {
       </div>
       <footer class="scene-foot">
         <p class="scene-instruction">${c.instruction}</p>
-        <button class="link-alt" type="button">${c.altReveal}</button>
       </footer>
     `;
     this.el = el;
-
-    const canvas = el.querySelector<HTMLCanvasElement>(".scratch-canvas")!;
-    const stage = el.querySelector<HTMLElement>(".scratch-stage")!;
-    const particles = el.querySelector<HTMLElement>(".particle-layer")!;
-
-    this.scratch = new ScratchReveal({
-      canvas,
-      container: stage,
-      threshold: 0.58,
-      onStroke: (x, y) => {
-        spawnLeafParticle(particles, x, y, ctx.reducedMotion());
-        ctx.audio.rustle(0.6 + Math.random() * 0.4);
-      },
-      onReveal: () => this.revealed(),
+    setSceneVisualState(el, {
+      daniState: "surprised",
+      diegoState: "focused",
+      plantState: "seed",
+      instruction: c.instruction,
+      interactionEnabled: true,
+      completed: false,
     });
-    // esperar a que la transición asiente el layout antes de medir
-    this.timers.push(window.setTimeout(() => this.scratch?.init(), 80));
-    if (ctx.state.leavesCleared) {
-      this.timers.push(window.setTimeout(() => this.scratch?.reveal(), 120));
-    }
 
-    el.querySelector<HTMLButtonElement>(".link-alt")!.addEventListener("click", () => {
-      this.scratch?.reveal();
-    });
+    el.querySelector<HTMLButtonElement>(".clear-leaf-button")!.addEventListener(
+      "click",
+      () => this.reveal(false)
+    );
     el.querySelector<HTMLButtonElement>(".btn-leaf")!.addEventListener("click", () => {
       ctx.goTo("offerings");
     });
+
+    if (ctx.state.leavesCleared) this.reveal(true);
     return el;
   }
 
-  private revealed(): void {
-    if (!this.el) return;
+  private reveal(restoring: boolean): void {
+    if (this.revealed || !this.el) return;
+    this.revealed = true;
     const c = content.clearSpace;
-    this.ctx.audio.rustle(1);
-    this.ctx.audio.woodTap();
-    this.el.classList.add("is-revealed");
-    this.ctx.state.leavesCleared = true;
-    this.ctx.save();
-    this.ctx.announce(c.revealedAnnouncement);
-
-    const after = this.el.querySelector<HTMLElement>(".scene-after")!;
+    const leafButton = this.el.querySelector<HTMLButtonElement>(".clear-leaf-button")!;
     const foot = this.el.querySelector<HTMLElement>(".scene-foot")!;
-    const delay = this.ctx.reducedMotion() ? 120 : 950;
-    this.timers.push(
-      window.setTimeout(() => {
-        foot.classList.add("is-hidden");
-        foot.inert = true;
-        foot.setAttribute("aria-hidden", "true");
-        after.hidden = false;
-        after.classList.add("is-visible");
-        after.querySelector<HTMLButtonElement>(".btn-leaf")?.focus({ preventScroll: true });
-      }, delay)
-    );
+
+    setInteractiveObjectState(leafButton, "completed");
+    leafButton.disabled = true;
+    if (restoring) this.el.classList.add("is-restored");
+    this.el.classList.add("is-revealed");
+    setSceneVisualState(this.el, {
+      daniState: "curious",
+      diegoState: "proud",
+      plantState: "seed",
+      instruction: "",
+      interactionEnabled: false,
+      completed: true,
+    });
+    foot.classList.add("is-hidden");
+    foot.inert = true;
+    foot.setAttribute("aria-hidden", "true");
+
+    if (!restoring) {
+      this.ctx.onFirstInteraction();
+      this.ctx.audio.rustle(1);
+      this.ctx.audio.woodTap();
+      this.ctx.state.leavesCleared = true;
+      this.ctx.save();
+      this.ctx.announce(c.revealedAnnouncement);
+    }
+
+    const showAfter = (): void => {
+      if (!this.el) return;
+      const after = this.el.querySelector<HTMLElement>(".scene-after")!;
+      after.hidden = false;
+      after.classList.add("is-visible");
+      if (!restoring) {
+        after
+          .querySelector<HTMLButtonElement>(".btn-leaf")
+          ?.focus({ preventScroll: true });
+      }
+    };
+
+    if (restoring) {
+      showAfter();
+    } else {
+      const delay = this.ctx.reducedMotion() ? 80 : 480;
+      this.timers.push(window.setTimeout(showAfter, delay));
+    }
   }
 
   destroy(): void {
-    this.scratch?.destroy();
-    this.scratch = null;
-    this.timers.forEach((t) => window.clearTimeout(t));
+    this.timers.forEach((timer) => window.clearTimeout(timer));
     this.timers = [];
     this.el = null;
   }

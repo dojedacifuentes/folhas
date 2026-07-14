@@ -1,0 +1,434 @@
+/* Objetos ilustrados compartidos. Cada wrapper conserva un hitbox mínimo de 44px. */
+.interactive-object {
+  --object-hitbox: var(--hit-target, 56px);
+  --object-size: 64px;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  inline-size: max(var(--object-hitbox), var(--object-size));
+  block-size: max(var(--object-hitbox), var(--object-size));
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding: 7px;
+  border: 1px solid color-mix(in srgb, var(--ink, #252521) 12%, transparent);
+  border-radius: 46% 54% 49% 51% / 52% 47% 53% 48%;
+  color: var(--ink, #252521);
+  background: color-mix(in srgb, var(--paper-light, #f8f1e5) 88%, transparent);
+  box-shadow:
+    0 10px 22px var(--shadow-soft, rgba(30, 35, 33, 0.16)),
+    0 1px 0 color-mix(in srgb, var(--paper-light, #f8f1e5) 94%, transparent)
+      inset;
+  appearance: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--dur-micro, 220ms) ease,
+    opacity var(--dur-micro, 220ms) ease,
+    border-color var(--dur-micro, 220ms) ease,
+    box-shadow var(--dur-micro, 220ms) ease,
+    filter var(--dur-micro, 220ms) ease;
+}
+
+.interactive-object__visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  transform-origin: 50% 72%;
+  transition: transform var(--dur-object, 420ms) var(--ease-page, ease);
+}
+
+.interactive-object__visual > svg,
+.interactive-object__source,
+.object-art {
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+
+.interactive-object__feedback {
+  position: absolute;
+  inset: 8%;
+  z-index: -1;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--sage, #77866e) 28%, transparent),
+    transparent 68%
+  );
+  transform: scale(0.7);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-micro, 220ms) ease,
+    transform var(--dur-object, 420ms) ease;
+}
+
+.interactive-object[data-interactive="true"]:not(:disabled):hover,
+.interactive-object:focus-visible,
+.interactive-object[data-state="hovered"] {
+  border-color: color-mix(in srgb, var(--leaf-dark, #63483c) 34%, transparent);
+  box-shadow:
+    0 15px 28px var(--shadow-soft, rgba(30, 35, 33, 0.16)),
+    0 1px 0 var(--paper-light, #f8f1e5) inset;
+  transform: translateY(-2px) rotate(-0.8deg);
+}
+
+.interactive-object[data-interactive="true"]:not(:disabled):hover
+  .interactive-object__visual,
+.interactive-object:focus-visible .interactive-object__visual,
+.interactive-object[data-state="hovered"] .interactive-object__visual {
+  transform: scale(1.045);
+}
+
+.interactive-object[data-interactive="true"]:not(:disabled):active,
+.interactive-object[data-state="active"] {
+  transform: translateY(1px) scale(0.975);
+  box-shadow: 0 5px 12px var(--shadow-soft, rgba(30, 35, 33, 0.16));
+}
+
+.interactive-object[data-state="active"] .interactive-object__feedback,
+.interactive-object[data-state="completed"] .interactive-object__feedback {
+  opacity: 1;
+  transform: scale(1.12);
+}
+
+.interactive-object[data-state="completed"] {
+  border-color: color-mix(in srgb, var(--green-new, #6f8f59) 38%, transparent);
+  box-shadow: 0 7px 16px var(--shadow-soft, rgba(30, 35, 33, 0.16));
+}
+
+.interactive-object:disabled,
+.interactive-object[data-state="disabled"] {
+  opacity: 0.38;
+  filter: saturate(0.45);
+  cursor: default;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.scene .interactive-object[data-interactive="false"] {
+  cursor: default;
+}
+
+/*
+ * Un objeto que sólo forma parte del tableau no hereda la tarjeta del control.
+ * Su clase de escena vuelve a decidir el tamaño; la lámina interna conserva la
+ * tarjeta de la página de referencia, no el SVG decorativo.
+ */
+.interactive-object[data-interactive="false"] {
+  inline-size: auto;
+  block-size: auto;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.scene .interactive-object[data-interactive="false"] .interactive-object__visual {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.scene .interactive-object[data-interactive="false"] .interactive-object__visual > svg,
+.scene .interactive-object[data-interactive="false"] .interactive-object__source,
+.scene .interactive-object[data-interactive="false"] .object-art {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.scene .interactive-object[data-interactive="false"] .interactive-object__feedback {
+  display: none;
+}
+
+/* Tamaños y gestos propios de cada objeto. */
+.interactive-object--seed,
+.interactive-object--thimble,
+.interactive-object--drop {
+  --object-size: 68px;
+}
+
+.interactive-object--watering-cup,
+.interactive-object--sun,
+.interactive-object--wind {
+  --object-size: 82px;
+}
+
+.interactive-object--umbrella {
+  --object-size: 96px;
+}
+
+.interactive-object--dry-leaves {
+  --object-size: 124px;
+  --object-hitbox: var(--hit-target-hero, 88px);
+  padding: 5px;
+}
+
+.interactive-object--seed[data-state="active"] .cube-solid {
+  transform: rotate(22deg) translateY(2px);
+}
+
+.interactive-object--seed[data-state="completed"] .cube-solid {
+  transform: rotate(90deg) scale(0.82) translateY(7px);
+}
+
+.interactive-object--thimble[data-state="active"] .interactive-object__visual {
+  transform: rotate(-12deg) translateY(2px);
+}
+
+.interactive-object--thimble[data-state="completed"] .interactive-object__visual {
+  transform: translateY(5px) scale(0.92);
+}
+
+.watering-cup__body,
+.watering-cup__held-drop {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform var(--dur-object, 420ms) var(--ease-page, ease),
+    opacity var(--dur-micro, 220ms) ease;
+}
+
+.interactive-object--watering-cup[data-state="active"] .watering-cup__body {
+  transform: rotate(-15deg) translate(-2px, 3px);
+}
+
+.interactive-object--watering-cup[data-state="active"] .watering-cup__held-drop,
+.interactive-object--watering-cup[data-state="completed"] .watering-cup__held-drop {
+  animation: objectDrop 520ms ease-in forwards;
+}
+
+.interactive-object--drop[data-state="active"] .drop__body {
+  animation: dropPulse 540ms ease-in-out infinite alternate;
+  transform-origin: center bottom;
+}
+
+.interactive-object--drop[data-state="completed"] .interactive-object__visual {
+  animation: objectDrop 520ms ease-in forwards;
+}
+
+.interactive-object--drop[data-state="completed"] .interactive-object__feedback {
+  inset: auto 12% 8%;
+  block-size: 20%;
+  transform: scaleX(1.2);
+  background: radial-gradient(
+    ellipse,
+    color-mix(in srgb, var(--rain, #708a99) 48%, transparent),
+    transparent 70%
+  );
+}
+
+.sun__rays,
+.sun__disc,
+.sun__wash {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.interactive-object--sun[data-state="hovered"] .sun__rays,
+.interactive-object--sun[data-interactive="true"]:hover .sun__rays {
+  transform: rotate(8deg) scale(1.04);
+}
+
+.interactive-object--sun[data-state="active"] .sun__rays {
+  animation: sunTurn 4s linear infinite;
+}
+
+.interactive-object--sun[data-state="active"] .sun__disc,
+.interactive-object--sun[data-state="completed"] .sun__disc {
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--sun, #e4b957) 70%, transparent));
+  transform: scale(1.06);
+}
+
+.interactive-object--umbrella .umbrella-body {
+  transform-box: fill-box;
+  transform-origin: 50% 90%;
+  transition: transform var(--dur-object, 420ms) var(--ease-page, ease);
+}
+
+.interactive-object--umbrella[data-state="active"] .umbrella-body {
+  transform: translateX(-3px) rotate(-5deg);
+}
+
+.interactive-object--umbrella[data-state="completed"] .umbrella-body {
+  transform: translateY(2px) scale(1.02);
+}
+
+/* Montón de hojas: las piezas se apartan al completar. */
+.interactive-object--dry-leaves .interactive-object__visual {
+  display: block;
+}
+
+.dry-leaves__leaf {
+  --leaf-x: 0px;
+  --leaf-y: 0px;
+  --leaf-r: 0deg;
+  position: absolute;
+  inline-size: 48%;
+  filter: drop-shadow(3px 5px 3px var(--shadow-soft, rgba(30, 35, 33, 0.16)));
+  transition:
+    transform 520ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    opacity 420ms ease;
+}
+
+.dry-leaves__leaf > svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.dry-leaves__leaf--1 {
+  top: 4%;
+  left: 4%;
+  transform: rotate(-28deg);
+  --leaf-x: -58px;
+  --leaf-y: -34px;
+  --leaf-r: -92deg;
+}
+
+.dry-leaves__leaf--2 {
+  top: -3%;
+  left: 28%;
+  transform: rotate(6deg);
+  --leaf-x: -16px;
+  --leaf-y: -66px;
+  --leaf-r: 62deg;
+}
+
+.dry-leaves__leaf--3 {
+  top: 5%;
+  right: 2%;
+  transform: rotate(33deg);
+  --leaf-x: 58px;
+  --leaf-y: -38px;
+  --leaf-r: 118deg;
+}
+
+.dry-leaves__leaf--4 {
+  bottom: -4%;
+  left: 8%;
+  transform: rotate(-48deg);
+  --leaf-x: -54px;
+  --leaf-y: 44px;
+  --leaf-r: -138deg;
+}
+
+.dry-leaves__leaf--5 {
+  bottom: -7%;
+  left: 32%;
+  transform: rotate(14deg);
+  --leaf-x: 8px;
+  --leaf-y: 60px;
+  --leaf-r: 104deg;
+}
+
+.dry-leaves__leaf--6 {
+  right: 5%;
+  bottom: -3%;
+  transform: rotate(50deg);
+  --leaf-x: 58px;
+  --leaf-y: 46px;
+  --leaf-r: 156deg;
+}
+
+.interactive-object--dry-leaves[data-state="completed"] .dry-leaves__leaf {
+  opacity: 0;
+  transform: translate(var(--leaf-x), var(--leaf-y)) rotate(var(--leaf-r))
+    scale(0.76);
+}
+
+/* Viento: líneas legibles y una sola hoja como consecuencia. */
+.interactive-object--wind .interactive-object__visual {
+  display: block;
+}
+
+.wind__currents {
+  position: absolute;
+  inset: 7% 5% 20%;
+}
+
+.wind__leaf {
+  position: absolute;
+  right: -1%;
+  bottom: 0;
+  inline-size: 34%;
+  transform: rotate(18deg);
+  transition:
+    transform var(--dur-object, 420ms) ease,
+    opacity var(--dur-object, 420ms) ease;
+}
+
+.wind__lines {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 0;
+}
+
+.interactive-object--wind[data-state="active"] .wind__lines {
+  animation: windTrace 760ms linear infinite;
+}
+
+.interactive-object--wind[data-state="completed"] .wind__leaf {
+  opacity: 0;
+  transform: translate(42px, -20px) rotate(94deg) scale(0.82);
+}
+
+@keyframes objectDrop {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  82% {
+    opacity: 0.9;
+    transform: translateY(28px) scale(0.88);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(34px) scaleY(0.5);
+  }
+}
+
+@keyframes dropPulse {
+  from {
+    transform: scale(0.96, 1.04);
+  }
+  to {
+    transform: scale(1.04, 0.96);
+  }
+}
+
+@keyframes sunTurn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes windTrace {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+html.reduced-motion .interactive-object,
+html.reduced-motion .interactive-object *,
+html.reduced-motion .interactive-object *::before,
+html.reduced-motion .interactive-object *::after {
+  animation: none !important;
+  transition-duration: 120ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-object,
+  .interactive-object *,
+  .interactive-object *::before,
+  .interactive-object *::after {
+    animation: none !important;
+    transition-duration: 120ms !important;
+  }
+}

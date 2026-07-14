@@ -180,6 +180,42 @@
 }
 
 /* ============ controles compartidos ============ */
+.scene-action {
+  display: grid;
+  place-items: center;
+  min-width: 88px;
+  min-height: 88px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  border-radius: 46% 54% 48% 52% / 52% 46% 54% 48%;
+  background: color-mix(in srgb, var(--paper-light) 88%, transparent);
+  box-shadow:
+    0 12px 26px var(--shadow-soft),
+    0 1px 0 color-mix(in srgb, var(--paper-light) 90%, transparent) inset;
+  transition:
+    transform var(--dur-micro) ease,
+    border-color var(--dur-micro) ease,
+    box-shadow var(--dur-micro) ease,
+    opacity var(--dur-micro) ease;
+}
+
+.scene-action:hover:not(:disabled),
+.scene-action:focus-visible:not(:disabled) {
+  transform: translateY(-3px) rotate(-1deg);
+  border-color: color-mix(in srgb, var(--leaf-dark) 34%, transparent);
+  box-shadow:
+    0 16px 32px var(--shadow-soft),
+    0 1px 0 color-mix(in srgb, var(--paper-light) 94%, transparent) inset;
+}
+
+.scene-action:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+.scene-action:disabled {
+  cursor: default;
+}
+
 .btn-leaf {
   display: inline-flex;
   align-items: center;

@@ -1,31 +1,67 @@
 import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
-import { createBotanicalShadows } from "../art/BotanicalShadows";
 import {
-  akitaSVG,
-  catSVG,
-  leafButtonSVG,
-  plantSVG,
-  umbrellaSVG,
-} from "../art/svgLibrary";
+  setSceneVisualState,
+  type SceneVisualState,
+} from "../app/visualState";
+import {
+  renderDani,
+  type DaniState,
+} from "../art/characters/DaniCharacter";
+import {
+  renderDiego,
+  type DiegoState,
+} from "../art/characters/DiegoCharacter";
+import {
+  renderSun,
+  renderThimble,
+  renderUmbrella,
+  renderWind,
+  setInteractiveObjectState,
+  type InteractiveObjectState,
+} from "../art/objects/InteractiveObjects";
+import {
+  renderPlantCharacter,
+  type PlantState,
+} from "../art/PlantCharacter";
+import {
+  renderShadowSystem,
+  setShadowLight,
+  setShadowProgress,
+} from "../art/ShadowSystem";
+import { leafButtonSVG, leafSVG } from "../art/svgLibrary";
 
-type CarePhase = "rain" | "wind" | "sun";
+type CarePhase = "water" | "wind" | "sun";
+
+type FailureAppearance = {
+  className: string;
+  plant: PlantState;
+  dani: DaniState;
+  diego: DiegoState;
+};
 
 /**
- * Tres gestos breves dentro de una sola sala. La escena no puntúa: comunica
- * la medida con postura, clima y consecuencias, y reinicia únicamente el
- * momento que recibió demasiado cuidado.
+ * Tres cuidados distintos, breves y táctiles. Cada momento tiene un único
+ * control grande; equivocarse produce una reacción dentro del tableau y
+ * reinicia solo ese momento, sin pantallas de error.
  */
 export class CareScene implements Scene {
   readonly id = "care" as const;
   private el: HTMLElement | null = null;
   private ctx!: SceneContext;
-  private phase: CarePhase = "rain";
-  private raf: number | null = null;
-  private lastFrame = 0;
-  private timers: number[] = [];
+  private phase: CarePhase = "water";
+  private timers = new Set<number>();
   private cleanups: Array<() => void> = [];
+  private raf: number | null = null;
   private settled = false;
+  private visualState: SceneVisualState = {
+    daniState: "watching",
+    diegoState: "watching",
+    plantState: "small",
+    instruction: "",
+    interactionEnabled: false,
+    completed: false,
+  };
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
@@ -43,19 +79,19 @@ export class CareScene implements Scene {
         <div class="care-stage"></div>
         <div class="scene-after care-after" hidden>
           <p class="after-main">${c.complete}</p>
-          <button class="btn-leaf" type="button">${leafButtonSVG()}<span>${c.next}</span></button>
+          <button class="btn-leaf" type="button">
+            ${leafButtonSVG()}<span>${c.next}</span>
+          </button>
         </div>
       </div>
       <footer class="scene-foot care-foot">
         <p class="scene-instruction"></p>
-        <button class="link-alt care-alternative" type="button"></button>
       </footer>
     `;
-    el.prepend(createBotanicalShadows("shadow-layer--care"));
     this.el = el;
 
     el.querySelector<HTMLButtonElement>(".btn-leaf")!.addEventListener("click", () => {
-      ctx.goTo("light");
+      ctx.goTo("final");
     });
 
     const phase = this.nextIncomplete();
@@ -65,7 +101,7 @@ export class CareScene implements Scene {
   }
 
   private nextIncomplete(): CarePhase | null {
-    if (!this.ctx.state.rainBalanced) return "rain";
+    if (!this.ctx.state.waterBalanced) return "water";
     if (!this.ctx.state.windBalanced) return "wind";
     if (!this.ctx.state.sunBalanced) return "sun";
     return null;
@@ -80,139 +116,319 @@ export class CareScene implements Scene {
 
     const stage = this.el.querySelector<HTMLElement>(".care-stage")!;
     const foot = this.el.querySelector<HTMLElement>(".care-foot")!;
-    const instruction = foot.querySelector<HTMLElement>(".scene-instruction")!;
-    const alternative = foot.querySelector<HTMLButtonElement>(".care-alternative")!;
     const after = this.el.querySelector<HTMLElement>(".care-after")!;
-    const copy = content.care[phase];
+    const instruction = foot.querySelector<HTMLElement>(".scene-instruction")!;
 
     stage.className = `care-stage care-stage--${phase}`;
     stage.removeAttribute("style");
     foot.classList.remove("is-hidden");
     foot.inert = false;
     foot.removeAttribute("aria-hidden");
-    instruction.textContent = copy.instruction;
-    alternative.textContent = copy.alternative;
-    alternative.hidden = false;
+    instruction.textContent = content.care[phase].instruction;
     after.hidden = true;
     after.classList.remove("is-visible");
 
-    if (phase === "rain") this.mountRain(stage, alternative);
-    if (phase === "wind") this.mountWind(stage, alternative);
-    if (phase === "sun") this.mountSun(stage, alternative);
+    if (phase === "water") this.mountWater(stage);
+    if (phase === "wind") this.mountWind(stage);
+    if (phase === "sun") this.mountSun(stage);
+
+    window.requestAnimationFrame(() => {
+      stage.querySelector<HTMLButtonElement>(".care-action")?.focus({ preventScroll: true });
+    });
   }
 
-  private commonTableau(
-    daniState: string,
-    diegoState: string,
-    plantState = "plant--sprout"
+  private tableau(
+    dani: DaniState,
+    diego: DiegoState,
+    plant: PlantState,
+    shadowProgress: number
   ): string {
     return `
-      <div class="care-character care-dani" aria-hidden="true">${catSVG(daniState)}</div>
-      <div class="care-plant plant-wrap ${plantState}" aria-hidden="true">${plantSVG()}</div>
-      <div class="care-character care-diego" aria-hidden="true">${akitaSVG(diegoState)}</div>
+      ${renderShadowSystem({
+        className: "care-shadow-system",
+        progress: shadowProgress,
+        intensity: 0.48,
+        length: 1.08,
+        angle: -4 + shadowProgress * 8,
+      })}
+      <div class="care-character care-dani" aria-hidden="true">${renderDani({
+        state: dani,
+        angle: "three-quarter-right",
+        facing: "right",
+        reducedMotion: this.ctx.reducedMotion(),
+      })}</div>
+      <div class="care-plant plant-wrap" aria-hidden="true">${renderPlantCharacter({
+        state: plant,
+        decorative: true,
+      })}</div>
+      <div class="care-character care-diego" aria-hidden="true">${renderDiego({
+        state: diego,
+        angle: "three-quarter-left",
+        facing: "left",
+        reducedMotion: this.ctx.reducedMotion(),
+      })}</div>
       <p class="weather-reaction" aria-hidden="true"></p>
     `;
   }
 
-  private mountRain(stage: HTMLElement, alternative: HTMLButtonElement): void {
-    const c = content.care.rain;
+  private mountWater(stage: HTMLElement): void {
+    const c = content.care.water;
     stage.innerHTML = `
-      <div class="rain-field" aria-hidden="true">
-        ${Array.from({ length: 16 }, (_, i) => `<i style="--i:${i}"></i>`).join("")}
-      </div>
-      ${this.commonTableau("dani--curious", "diego--protecting")}
-      <div class="care-umbrella" aria-hidden="true">${umbrellaSVG()}</div>
-      <div class="rain-puddle" aria-hidden="true"><span class="rain-fish">⌁</span></div>
-      <label class="weather-slider-label">
-        <span class="sr-only">${c.controlLabel}</span>
-        <input class="weather-range rain-range" type="range" min="0" max="100" value="50"
-          aria-label="${c.controlLabel}">
-      </label>
+      <div class="water-ripples" aria-hidden="true"><i></i><i></i><i></i></div>
+      ${this.tableau("watering", "watching", "small", 0.24)}
+      ${renderUmbrella({
+        interactive: false,
+        decorative: true,
+        className: "care-umbrella",
+      })}
+      <div class="care-drops" aria-hidden="true"><i></i><i></i><i></i></div>
+      <button class="care-action care-action--water" type="button" aria-label="${c.controlLabel}">
+        <span class="care-action-art" aria-hidden="true">${renderThimble({
+          interactive: false,
+          decorative: true,
+          className: "care-object-art",
+        })}</span>
+        <span class="dose-marks" aria-hidden="true"><i></i><i></i></span>
+      </button>
     `;
 
-    const range = stage.querySelector<HTMLInputElement>(".rain-range")!;
-    let good = 0;
-    let flood = 0;
-    let covered = 0;
-    let hinted = false;
-
-    const updatePosition = () => {
-      const position = Number(range.value);
-      const coverage = Math.max(0, 1 - Math.abs(position - 50) / 45);
-      stage.style.setProperty("--weather-control", String(position / 100));
-      stage.style.setProperty("--rain-coverage", coverage.toFixed(3));
-    };
-    const onInput = () => updatePosition();
-    range.addEventListener("input", onInput);
-    this.cleanups.push(() => range.removeEventListener("input", onInput));
-    this.bindRangeControl(range, updatePosition);
-    updatePosition();
-
-    const onAlternative = () => this.completePhase(c.announcement);
-    alternative.addEventListener("click", onAlternative);
-    this.cleanups.push(() => alternative.removeEventListener("click", onAlternative));
-
-    this.startFrame((dt) => {
-      const position = Number(range.value);
-      const coverage = Math.max(0, 1 - Math.abs(position - 50) / 45);
-      const balanced = coverage >= 0.3 && coverage <= 0.7;
-
-      good = balanced ? good + dt : Math.max(0, good - dt * 0.14);
-      flood = coverage < 0.22 ? flood + dt : Math.max(0, flood - dt * 0.3);
-      covered = coverage > 0.84 ? covered + dt : 0;
-      stage.style.setProperty(
-        "--moisture",
-        Math.min(1, flood / 2100 + good / 3000).toFixed(3)
-      );
-
-      if (!hinted && covered > 1800) {
-        hinted = true;
-        this.showHint(c.hint);
-      }
-      if (flood >= 2100) this.failPhase(c.failure, "is-flooded");
-      else if (good >= 1450) this.completePhase(c.announcement);
+    this.applyVisualState({
+      daniState: "watering",
+      diegoState: "watching",
+      plantState: "small",
+      instruction: c.instruction,
+      interactionEnabled: true,
+      completed: false,
     });
+
+    const button = stage.querySelector<HTMLButtonElement>(".care-action--water")!;
+    let drops = 0;
+    let completionTimer: number | null = null;
+
+    const onActivate = () => {
+      if (this.settled) return;
+      drops += 1;
+      stage.dataset.drops = String(drops);
+      this.ctx.audio.drop();
+      this.setCareObjectState("active");
+
+      if (drops === 1) {
+        stage.classList.add("has-one-drop");
+        this.applyVisualState({
+          daniState: "watering",
+          diegoState: "watching",
+          plantState: "small",
+        });
+        this.showReaction(c.firstDrop, true);
+        button.setAttribute("aria-label", `${c.controlLabel} ${c.hint}.`);
+        return;
+      }
+
+      if (drops === 2) {
+        stage.classList.remove("has-one-drop");
+        void stage.offsetWidth;
+        stage.classList.add("has-two-drops");
+        this.setCareObjectState("completed");
+        this.applyVisualState({
+          daniState: "happy",
+          diegoState: "proud",
+          plantState: "hydrated",
+        });
+        completionTimer = this.schedule(
+          () => this.completePhase(c.announcement, "hydrated"),
+          this.ctx.reducedMotion() ? 180 : 760
+        );
+        return;
+      }
+
+      if (completionTimer !== null) this.clearTimer(completionTimer);
+      this.failPhase(c.failure, c.retry, {
+        className: "is-water-failed",
+        plant: "drowned",
+        dani: "reactingToRain",
+        diego: "reactingToRain",
+      });
+    };
+
+    button.addEventListener("click", onActivate);
+    this.cleanups.push(() => button.removeEventListener("click", onActivate));
   }
 
-  private mountWind(stage: HTMLElement, alternative: HTMLButtonElement): void {
+  private mountWind(stage: HTMLElement): void {
     const c = content.care.wind;
     stage.innerHTML = `
       <div class="wind-lines" aria-hidden="true"><i></i><i></i><i></i></div>
-      ${this.commonTableau("dani--curious", "diego--serious")}
-      <div class="wind-leaves" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="diego-glasses-flight" aria-hidden="true"></div>
-      <button class="wind-pad" type="button" aria-label="${c.controlLabel}">
-        <span aria-hidden="true">≈</span>
+      ${this.tableau("watching", "protecting", "hydrated", 0.58)}
+      <div class="wind-leaves" aria-hidden="true">
+        ${leafSVG(2)}${leafSVG(4)}${leafSVG(6)}
+      </div>
+      <button class="care-action care-action--wind" type="button" aria-label="${c.controlLabel}">
+        ${renderWind({
+          interactive: false,
+          decorative: true,
+          className: "care-object-art",
+        })}
       </button>
     `;
-    const pad = stage.querySelector<HTMLButtonElement>(".wind-pad")!;
-    let strength = 0;
+
+    this.applyVisualState({
+      daniState: "watching",
+      diegoState: "protecting",
+      plantState: "hydrated",
+      instruction: c.instruction,
+      interactionEnabled: true,
+      completed: false,
+    });
+
+    const button = stage.querySelector<HTMLButtonElement>(".care-action--wind")!;
+    let gusts = 0;
+    let completionTimer: number | null = null;
+
+    const onActivate = () => {
+      if (this.settled) return;
+      gusts += 1;
+      this.ctx.audio.rustle(0.78);
+      this.setCareObjectState("active");
+      stage.classList.remove("is-gusting");
+      void stage.offsetWidth;
+      stage.classList.add("is-gusting");
+
+      if (gusts === 1) {
+        this.setCareObjectState("completed");
+        this.applyVisualState({
+          daniState: "happy",
+          diegoState: "protecting",
+          plantState: "growing",
+        });
+        completionTimer = this.schedule(
+          () => this.completePhase(c.announcement, "growing"),
+          this.ctx.reducedMotion() ? 180 : 820
+        );
+        return;
+      }
+
+      if (completionTimer !== null) this.clearTimer(completionTimer);
+      this.failPhase(c.failure, c.retry, {
+        className: "is-wind-failed",
+        plant: "windBent",
+        dani: "reactingToWind",
+        diego: "recoveringGlasses",
+      });
+    };
+
+    button.addEventListener("click", onActivate);
+    this.cleanups.push(() => button.removeEventListener("click", onActivate));
+  }
+
+  private mountSun(stage: HTMLElement): void {
+    const c = content.care.sun;
+    stage.innerHTML = `
+      <div class="sun-wash" aria-hidden="true"></div>
+      ${this.tableau("watching", "protecting", "growing", 0.82)}
+      <div class="sun-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="diego-manual" aria-hidden="true"></div>
+      <button class="care-action care-action--sun" type="button" aria-label="${c.controlLabel}">
+        ${renderSun({
+          interactive: false,
+          decorative: true,
+          className: "care-object-art",
+        })}
+        <span class="sun-ring" aria-hidden="true"></span>
+      </button>
+    `;
+
+    this.applyVisualState({
+      daniState: "watching",
+      diegoState: "protecting",
+      plantState: "growing",
+      instruction: c.instruction,
+      interactionEnabled: true,
+      completed: false,
+    });
+
+    const button = stage.querySelector<HTMLButtonElement>(".care-action--sun")!;
     let pressing = false;
+    let startedAt = 0;
     let pointerId: number | null = null;
+
+    const stopHolding = () => {
+      pressing = false;
+      pointerId = null;
+      this.cancelFrame();
+      button.classList.remove("is-pressing");
+      stage.classList.remove("is-sun-holding");
+    };
 
     const start = (event?: PointerEvent) => {
       if (this.settled || pressing) return;
       pressing = true;
-      pad.classList.add("is-pressing");
+      startedAt = performance.now();
+      button.classList.add("is-pressing");
+      stage.classList.add("is-sun-holding");
+      this.setCareObjectState("active");
       if (event) {
         pointerId = event.pointerId;
-        pad.setPointerCapture(event.pointerId);
+        button.setPointerCapture(event.pointerId);
       }
+
+      const frame = (now: number) => {
+        if (!pressing || this.settled) return;
+        const elapsed = now - startedAt;
+        stage.style.setProperty("--sun-progress", Math.min(1, elapsed / 1900).toFixed(3));
+        stage.style.setProperty("--heat", Math.min(1, elapsed / 2100).toFixed(3));
+        const lightProgress = Math.min(1, elapsed / 1900);
+        this.updateCareLight({
+          x: 38 + lightProgress * 24,
+          y: 13 + lightProgress * 8,
+          intensity: 0.46 + lightProgress * 0.38,
+          length: 1.28 - lightProgress * 0.5,
+          angle: -13 + lightProgress * 25,
+        });
+        if (elapsed >= 2100) {
+          stopHolding();
+          this.failPhase(c.failure, c.retry, {
+            className: "is-sun-failed",
+            plant: "burnt",
+            dani: "reactingToHeat",
+            diego: "reactingToHeat",
+          });
+          return;
+        }
+        this.raf = window.requestAnimationFrame(frame);
+      };
+      this.raf = window.requestAnimationFrame(frame);
     };
+
     const judge = () => {
       if (!pressing || this.settled) return;
-      pressing = false;
-      pointerId = null;
-      pad.classList.remove("is-pressing");
-      if (strength >= 0.34 && strength <= 0.72) {
-        this.completePhase(c.announcement);
-      } else if (strength > 0.78) {
-        this.failPhase(c.failure, "is-wind-failed");
-      } else {
-        strength *= 0.55;
-        stage.style.setProperty("--wind", strength.toFixed(3));
-        this.showHint(c.hint);
+      const elapsed = performance.now() - startedAt;
+      stopHolding();
+
+      if (elapsed < 480) {
+        stage.style.setProperty("--sun-progress", "0");
+        stage.style.setProperty("--heat", "0");
+        this.setCareObjectState("idle");
+        this.showReaction(c.hint, true);
+        return;
       }
+
+      if (elapsed <= 1800) {
+        this.setCareObjectState("completed");
+        this.applyVisualState({
+          daniState: "proud",
+          diegoState: "proud",
+          plantState: "healthy",
+        });
+        this.completePhase(c.announcement, "healthy");
+        return;
+      }
+
+      this.failPhase(c.failure, c.retry, {
+        className: "is-sun-failed",
+        plant: "overheated",
+        dani: "reactingToHeat",
+        diego: "reactingToHeat",
+      });
     };
 
     const onPointerDown = (event: PointerEvent) => {
@@ -223,8 +439,15 @@ export class CareScene implements Scene {
       if (pointerId !== null && event.pointerId !== pointerId) return;
       judge();
     };
+    const onPointerCancel = (event: PointerEvent) => {
+      if (pointerId !== null && event.pointerId !== pointerId) return;
+      stopHolding();
+      stage.style.setProperty("--sun-progress", "0");
+      stage.style.setProperty("--heat", "0");
+      this.setCareObjectState("idle");
+    };
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== " " && event.key !== "Enter") return;
+      if ((event.key !== " " && event.key !== "Enter") || event.repeat) return;
       event.preventDefault();
       start();
     };
@@ -233,194 +456,101 @@ export class CareScene implements Scene {
       event.preventDefault();
       judge();
     };
-    pad.addEventListener("pointerdown", onPointerDown);
-    pad.addEventListener("pointerup", onPointerUp);
-    pad.addEventListener("pointercancel", onPointerUp);
-    pad.addEventListener("keydown", onKeyDown);
-    pad.addEventListener("keyup", onKeyUp);
+
+    button.addEventListener("pointerdown", onPointerDown);
+    button.addEventListener("pointerup", onPointerUp);
+    button.addEventListener("pointercancel", onPointerCancel);
+    button.addEventListener("keydown", onKeyDown);
+    button.addEventListener("keyup", onKeyUp);
     this.cleanups.push(() => {
-      pad.removeEventListener("pointerdown", onPointerDown);
-      pad.removeEventListener("pointerup", onPointerUp);
-      pad.removeEventListener("pointercancel", onPointerUp);
-      pad.removeEventListener("keydown", onKeyDown);
-      pad.removeEventListener("keyup", onKeyUp);
-    });
-
-    const onAlternative = () => this.completePhase(c.announcement);
-    alternative.addEventListener("click", onAlternative);
-    this.cleanups.push(() => alternative.removeEventListener("click", onAlternative));
-
-    this.startFrame((dt) => {
-      if (!pressing) return;
-      strength = Math.min(1.05, strength + dt / 2100);
-      stage.style.setProperty("--wind", strength.toFixed(3));
-      if (strength >= 1) this.failPhase(c.failure, "is-wind-failed");
+      button.removeEventListener("pointerdown", onPointerDown);
+      button.removeEventListener("pointerup", onPointerUp);
+      button.removeEventListener("pointercancel", onPointerCancel);
+      button.removeEventListener("keydown", onKeyDown);
+      button.removeEventListener("keyup", onKeyUp);
     });
   }
 
-  private mountSun(stage: HTMLElement, alternative: HTMLButtonElement): void {
-    const c = content.care.sun;
-    stage.innerHTML = `
-      ${this.commonTableau("dani--worried", "diego--serious")}
-      <div class="care-sun" aria-hidden="true"><span></span></div>
-      <div class="sun-smoke" aria-hidden="true">?</div>
-      <div class="diego-manual" aria-hidden="true"></div>
-      <label class="weather-slider-label">
-        <span class="sr-only">${c.controlLabel}</span>
-        <input class="weather-range sun-range" type="range" min="0" max="100" value="18"
-          aria-label="${c.controlLabel}">
-      </label>
-    `;
-    const range = stage.querySelector<HTMLInputElement>(".sun-range")!;
-    let good = 0;
-    let burn = 0;
-    let cool = 0;
-    let hinted = false;
-
-    const updateLevel = () => {
-      stage.style.setProperty("--sun-level", String(Number(range.value) / 100));
-    };
-    const onInput = () => updateLevel();
-    range.addEventListener("input", onInput);
-    this.cleanups.push(() => range.removeEventListener("input", onInput));
-    this.bindRangeControl(range, updateLevel);
-    updateLevel();
-
-    const onAlternative = () => this.completePhase(c.announcement);
-    alternative.addEventListener("click", onAlternative);
-    this.cleanups.push(() => alternative.removeEventListener("click", onAlternative));
-
-    this.startFrame((dt) => {
-      const level = Number(range.value) / 100;
-      const balanced = level >= 0.36 && level <= 0.64;
-      good = balanced ? good + dt : Math.max(0, good - dt * 0.16);
-      burn = level > 0.8 ? burn + dt : Math.max(0, burn - dt * 0.35);
-      cool = level < 0.3 ? cool + dt : 0;
-      stage.style.setProperty("--heat", Math.min(1, burn / 1850).toFixed(3));
-
-      if (!hinted && cool > 1800) {
-        hinted = true;
-        this.showHint(c.hint);
-      }
-      if (burn >= 1850) this.failPhase(c.failure, "is-sun-failed");
-      else if (good >= 1500) this.completePhase(c.announcement);
-    });
-  }
-
-  private showHint(message: string): void {
-    if (!this.el || this.settled) return;
-    const reaction = this.el.querySelector<HTMLElement>(".weather-reaction")!;
-    reaction.textContent = message;
-    reaction.classList.add("is-visible");
-    this.timers.push(
-      window.setTimeout(() => reaction.classList.remove("is-visible"), 1400)
-    );
-  }
-
-  /**
-   * Hace que toda la superficie del clima sea una pista tolerante. Conserva el
-   * input range nativo para lectores de pantalla y añade arrastre/teclado
-   * deterministas, incluso cuando el pulgar visual es el paraguas o el sol.
-   */
-  private bindRangeControl(
-    range: HTMLInputElement,
-    update: () => void
+  private completePhase(
+    announcement: string,
+    plantState: PlantState
   ): void {
-    let pointerId: number | null = null;
-    const setFromPointer = (event: PointerEvent) => {
-      const rect = range.getBoundingClientRect();
-      const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-      range.value = String(Math.round(ratio * 100));
-      update();
-    };
-    const onPointerDown = (event: PointerEvent) => {
-      pointerId = event.pointerId;
-      range.setPointerCapture(event.pointerId);
-      setFromPointer(event);
-      event.preventDefault();
-    };
-    const onPointerMove = (event: PointerEvent) => {
-      if (event.pointerId !== pointerId) return;
-      setFromPointer(event);
-      event.preventDefault();
-    };
-    const onPointerUp = (event: PointerEvent) => {
-      if (event.pointerId !== pointerId) return;
-      pointerId = null;
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      const current = Number(range.value);
-      let next = current;
-      if (event.key === "ArrowLeft" || event.key === "ArrowDown") next -= 4;
-      else if (event.key === "ArrowRight" || event.key === "ArrowUp") next += 4;
-      else if (event.key === "PageDown") next -= 10;
-      else if (event.key === "PageUp") next += 10;
-      else if (event.key === "Home") next = 0;
-      else if (event.key === "End") next = 100;
-      else return;
-      event.preventDefault();
-      range.value = String(Math.max(0, Math.min(100, next)));
-      update();
-    };
-
-    range.addEventListener("pointerdown", onPointerDown);
-    range.addEventListener("pointermove", onPointerMove);
-    range.addEventListener("pointerup", onPointerUp);
-    range.addEventListener("pointercancel", onPointerUp);
-    range.addEventListener("keydown", onKeyDown);
-    this.cleanups.push(() => {
-      range.removeEventListener("pointerdown", onPointerDown);
-      range.removeEventListener("pointermove", onPointerMove);
-      range.removeEventListener("pointerup", onPointerUp);
-      range.removeEventListener("pointercancel", onPointerUp);
-      range.removeEventListener("keydown", onKeyDown);
-    });
-  }
-
-  private failPhase(message: string, className: string): void {
-    if (!this.el || this.settled) return;
-    this.settled = true;
-    this.cancelFrame();
-    const stage = this.el.querySelector<HTMLElement>(".care-stage")!;
-    const reaction = stage.querySelector<HTMLElement>(".weather-reaction")!;
-    stage.classList.add("is-failure", className);
-    reaction.textContent = message;
-    reaction.classList.add("is-visible");
-    stage
-      .querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button")
-      .forEach((control) => (control.disabled = true));
-    this.ctx.announce(message);
-    this.timers.push(
-      window.setTimeout(
-        () => this.renderPhase(this.phase),
-        this.ctx.reducedMotion() ? 500 : 2100
-      )
-    );
-  }
-
-  private completePhase(announcement: string): void {
     if (!this.el || this.settled) return;
     this.settled = true;
     this.cancelFrame();
     const stage = this.el.querySelector<HTMLElement>(".care-stage")!;
     const foot = this.el.querySelector<HTMLElement>(".care-foot")!;
     stage.classList.add("is-balanced");
+    this.applyVisualState({
+      plantState,
+      instruction: "",
+      interactionEnabled: false,
+      completed: true,
+    });
+    const progress = this.phase === "water" ? 0.45 : this.phase === "wind" ? 0.76 : 1;
+    this.updateCareShadowProgress(progress, this.phase === "sun" ? 0.55 : 0);
     foot.classList.add("is-hidden");
     foot.inert = true;
     foot.setAttribute("aria-hidden", "true");
-    this.ctx.announce(announcement);
+    stage.querySelectorAll<HTMLButtonElement>("button").forEach((control) => {
+      control.disabled = true;
+    });
 
-    if (this.phase === "rain") this.ctx.state.rainBalanced = true;
+    if (this.phase === "water") this.ctx.state.waterBalanced = true;
     if (this.phase === "wind") this.ctx.state.windBalanced = true;
     if (this.phase === "sun") this.ctx.state.sunBalanced = true;
     this.ctx.save();
+    this.ctx.announce(announcement);
 
-    this.timers.push(
-      window.setTimeout(() => {
+    this.schedule(
+      () => {
         const next = this.nextIncomplete();
         if (next) this.renderPhase(next);
         else this.renderComplete();
-      }, this.ctx.reducedMotion() ? 260 : 1050)
+      },
+      this.ctx.reducedMotion() ? 220 : 1020
+    );
+  }
+
+  private failPhase(
+    message: string,
+    retry: string,
+    appearance: FailureAppearance
+  ): void {
+    if (!this.el || this.settled) return;
+    this.settled = true;
+    this.cancelFrame();
+    const stage = this.el.querySelector<HTMLElement>(".care-stage")!;
+    const instruction = this.el.querySelector<HTMLElement>(".care-foot .scene-instruction")!;
+    stage.classList.add("is-failure", appearance.className);
+    this.setCareObjectState("disabled");
+    this.applyVisualState({
+      daniState: appearance.dani,
+      diegoState: appearance.diego,
+      plantState: appearance.plant,
+      instruction: retry,
+      interactionEnabled: false,
+      completed: false,
+    });
+    if (this.phase === "water") {
+      this.updateCareLight({ intensity: 0.34, length: 1.42, angle: -10, shelter: 0.42 });
+    }
+    if (this.phase === "wind") {
+      this.updateCareLight({ intensity: 0.58, length: 1.3, angle: 22, shelter: 0 });
+    }
+    if (this.phase === "sun") {
+      this.updateCareLight({ intensity: 0.82, length: 0.68, angle: 14, shelter: 0.18 });
+    }
+    this.showReaction(message, false);
+    instruction.textContent = retry;
+    stage.querySelectorAll<HTMLButtonElement>("button").forEach((control) => {
+      control.disabled = true;
+    });
+    this.ctx.announce(`${message}. ${retry}`);
+
+    this.schedule(
+      () => this.renderPhase(this.phase),
+      this.ctx.reducedMotion() ? 520 : 1750
     );
   }
 
@@ -428,41 +558,91 @@ export class CareScene implements Scene {
     if (!this.el) return;
     this.stopPhase();
     this.settled = true;
+    this.el.dataset.carePhase = "complete";
     const stage = this.el.querySelector<HTMLElement>(".care-stage")!;
     const foot = this.el.querySelector<HTMLElement>(".care-foot")!;
     const after = this.el.querySelector<HTMLElement>(".care-after")!;
-    this.el.dataset.carePhase = "complete";
+
     stage.className = "care-stage care-stage--complete";
     stage.removeAttribute("style");
     stage.innerHTML = `
-      <div class="weather-shelter" aria-hidden="true"></div>
-      ${this.commonTableau("dani--curious", "diego--protecting", "plant--full")}
-      <div class="stored-umbrella" aria-hidden="true">${umbrellaSVG("umbrella--stored")}</div>
+      <div class="care-complete-glow" aria-hidden="true"></div>
+      ${this.tableau("proud", "proud", "healthy", 1)}
+      ${renderUmbrella({
+        interactive: false,
+        decorative: true,
+        className: "stored-umbrella umbrella--stored",
+      })}
     `;
+    this.applyVisualState({
+      daniState: "proud",
+      diegoState: "proud",
+      plantState: "healthy",
+      instruction: "",
+      interactionEnabled: false,
+      completed: true,
+    });
+    this.updateCareShadowProgress(1, 0.65);
     foot.classList.add("is-hidden");
     foot.inert = true;
     foot.setAttribute("aria-hidden", "true");
     after.hidden = false;
-    requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
       after.classList.add("is-visible");
       after.querySelector<HTMLButtonElement>(".btn-leaf")?.focus({ preventScroll: true });
     });
   }
 
-  private startFrame(update: (delta: number) => void): void {
-    this.lastFrame = performance.now();
-    const frame = (now: number) => {
-      if (this.settled) return;
-      const delta = document.hidden ? 0 : Math.min(48, now - this.lastFrame);
-      this.lastFrame = now;
-      update(delta);
-      if (!this.settled) this.raf = requestAnimationFrame(frame);
-    };
-    this.raf = requestAnimationFrame(frame);
+  private applyVisualState(patch: Partial<SceneVisualState>): void {
+    if (!this.el) return;
+    this.visualState = { ...this.visualState, ...patch };
+    setSceneVisualState(this.el, this.visualState);
+  }
+
+  private setCareObjectState(state: InteractiveObjectState): void {
+    const object = this.el?.querySelector<HTMLElement>(
+      ".care-action .interactive-object"
+    );
+    if (object) setInteractiveObjectState(object, state);
+  }
+
+  private updateCareLight(
+    light: Parameters<typeof setShadowLight>[1]
+  ): void {
+    const shadows = this.el?.querySelector<HTMLElement>("[data-shadow-system]");
+    if (shadows) setShadowLight(shadows, light);
+  }
+
+  private updateCareShadowProgress(progress: number, shelter = 0): void {
+    const shadows = this.el?.querySelector<HTMLElement>("[data-shadow-system]");
+    if (shadows) setShadowProgress(shadows, progress, shelter);
+  }
+
+  private showReaction(message: string, announce: boolean): void {
+    const reaction = this.el?.querySelector<HTMLElement>(".weather-reaction");
+    if (!reaction) return;
+    reaction.textContent = message;
+    reaction.classList.add("is-visible");
+    if (announce) this.ctx.announce(message);
+    this.schedule(() => reaction.classList.remove("is-visible"), 1050);
+  }
+
+  private schedule(callback: () => void, delay: number): number {
+    const timer = window.setTimeout(() => {
+      this.timers.delete(timer);
+      callback();
+    }, delay);
+    this.timers.add(timer);
+    return timer;
+  }
+
+  private clearTimer(timer: number): void {
+    window.clearTimeout(timer);
+    this.timers.delete(timer);
   }
 
   private cancelFrame(): void {
-    if (this.raf !== null) cancelAnimationFrame(this.raf);
+    if (this.raf !== null) window.cancelAnimationFrame(this.raf);
     this.raf = null;
   }
 
@@ -475,7 +655,7 @@ export class CareScene implements Scene {
   destroy(): void {
     this.stopPhase();
     this.timers.forEach((timer) => window.clearTimeout(timer));
-    this.timers = [];
+    this.timers.clear();
     this.el = null;
   }
 }
