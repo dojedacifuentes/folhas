@@ -56,6 +56,13 @@ export class PointerTracker {
     el.removeEventListener("pointermove", this.move);
     el.removeEventListener("pointerup", this.up);
     el.removeEventListener("pointercancel", this.up);
+    if (this.activeId !== null) {
+      try {
+        if (el.hasPointerCapture(this.activeId)) el.releasePointerCapture(this.activeId);
+      } catch {
+        // la captura pudo liberarse al terminar el gesto
+      }
+    }
     this.activeId = null;
   }
 }

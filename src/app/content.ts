@@ -1,24 +1,29 @@
 /**
  * Toda la microcopy de la experiencia vive aquí.
  * Una escena puede cambiar de momento, pero solo expone una instrucción a la vez.
+ *
+ * Voces: Dani piensa y habla en portugués; Diego, en español.
+ * Las instrucciones y la voz editorial permanecen en español.
  */
 export const content = {
   cover: {
     title: "Herbario de lo que cuidamos",
     subtitle: "Una historia pequeña sobre cuidar en compañía",
-    instruction: "toca la hoja",
-    whisper: "había algo respirando aquí",
-    leafLabel: "Hoja seca que cubre el herbario. Tócala para abrir.",
+    instruction: "aparta la hoja",
+    whisper: "tinha algo respirando aqui",
+    leafLabel:
+      "Hoja seca que cubre el herbario. Arrástrala hacia un lado, o pulsa Enter, para abrir.",
   },
 
   clearSpace: {
     number: "I",
     heading: "Hacer lugar",
     lede: "A veces cuidar empieza por despejar un poco.",
-    instruction: "toca las hojas",
+    instruction: "aparta las hojas",
     revealLabel:
-      "Montoncito de hojas secas. Tócalo para apartarlo y descubrir quién espera debajo.",
-    catSays: "yo traje agua.",
+      "Capa de hojas secas. Frótala con el dedo o el ratón para despejarla, o pulsa Enter.",
+    altReveal: "dejar pasar la luz",
+    catSays: "eu trouxe água.",
     akitaSays: "yo traje una semilla cuadrada.",
     editorial: "La botánica decidió no hacer preguntas.",
     next: "seguir",
@@ -30,12 +35,13 @@ export const content = {
     number: "II",
     heading: "Traer lo que tenemos",
     lede: "Dani observa. Diego ya hizo un plan diminuto.",
-    waterInstruction: "deja una gota",
-    seedInstruction: "acomoda la semilla",
-    waterLabel: "Dedal de Dani. Tócalo para dejar una gota en la tierra.",
+    waterInstruction: "acerca el dedal a la maceta",
+    seedInstruction: "acerca la semilla a la maceta",
+    waterLabel:
+      "Dedal de Dani. Arrástralo hasta la maceta, o pulsa Enter para colocarlo.",
     seedLabel:
-      "Semilla cuadrada de Diego. Tócala para que encuentre su lugar en la maceta.",
-    catThought: "una gota. exactamente una.",
+      "Semilla cuadrada de Diego. Arrástrala hasta la maceta, o pulsa Enter para colocarla.",
+    catThought: "uma gota. exatamente uma.",
     akitaThought: "procedimiento: semilla, centro, dignidad.",
     afterMain: "Algo despierta cuando cada uno acerca lo suyo.",
     afterNotes: [
@@ -67,9 +73,9 @@ export const content = {
         "Dos gotas humedecieron la tierra y una hoja amarilla se desperezó.",
     },
     wind: {
-      instruction: "da un soplo corto",
+      instruction: "desliza un soplo corto",
       controlLabel:
-        "Soplo suave. Actívalo una vez para apartar las hojas secas.",
+        "Soplo suave. Desliza el dedo por el aire una vez, o toca el control, para apartar las hojas secas.",
       hint: "uno basta",
       failure: "eso fue viento con currículum",
       retry: "Diego recuperó sus lentes. Otra vez, suave.",
@@ -77,15 +83,17 @@ export const content = {
         "Un soplo acomodó el tallo y apareció una hoja turquesa.",
     },
     sun: {
-      instruction: "mantén el sol un instante",
+      instruction: "lleva el sol junto a la planta",
       controlLabel:
-        "Sol tibio. Mantén pulsado un instante y suelta antes de calentarlo demasiado.",
+        "Sol tibio. Arrástralo cerca de la planta y déjalo un instante; demasiado cerca, la calienta. También puedes mantenerlo pulsado.",
       hint: "un poquito más",
       failure: "salió humo. el concepto de «instante» era importante",
       retry: "la maceta respiró. probemos con una luz más corta",
       announcement:
         "La luz fue suficiente. La planta creció y conservó todas sus hojas.",
     },
+    catAside: "isso conta como arquitetura?",
+    akitaAside: "sí.",
     complete: "La planta creció sin que nadie tuviera que salvarla del entusiasmo.",
     next: "ver lo que creció",
   },
@@ -96,6 +104,7 @@ export const content = {
     lines: [
       "No sé si las plantas entienden de promesas.",
       "Esta aprendió nuestros gestos: hacer lugar, aportar distinto y encontrar la medida.",
+      "as estações passam; a gente volta.",
     ],
     dedication: [
       "Para Dani.",
@@ -103,7 +112,7 @@ export const content = {
     ],
     portuguese: "a gente cuida do que quer ver crescer.",
     signature: "D + D",
-    catThought: "la sombra quedó bonita.",
+    catThought: "a sombra ficou bonita.",
     akitaThought: "turno de guardia voluntariamente serio.",
     plantLabel:
       "La planta florecida conserva hojas ocres, turquesas y verdes. Tócala si quieres.",

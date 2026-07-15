@@ -238,6 +238,15 @@ export class ScratchReveal {
     c.removeEventListener("pointerup", this.onUp);
     c.removeEventListener("pointercancel", this.onUp);
     c.removeEventListener("keydown", this.onKey);
+    if (this.activeId !== null) {
+      try {
+        if (c.hasPointerCapture(this.activeId)) c.releasePointerCapture(this.activeId);
+      } catch {
+        // la captura pudo liberarse al terminar el gesto
+      }
+      this.activeId = null;
+    }
+    this.last = null;
     this.ro?.disconnect();
     this.ro = null;
   }

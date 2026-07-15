@@ -31,6 +31,11 @@ export class LightAligner {
   private onUp = (e: PointerEvent) => this.pointerUp(e);
   private onKey = (e: KeyboardEvent) => this.keyMove(e);
 
+  /** true mientras un puntero mantiene sujeta la luz (no aplica al teclado). */
+  get isHeld(): boolean {
+    return this.activeId !== null;
+  }
+
   constructor(options: LightAlignerOptions) {
     this.opts = { targetX: 0.52, targetY: 0.26, radius: 0.34, ...options };
     const lamp = options.lamp;
@@ -61,7 +66,7 @@ export class LightAligner {
     if (this.destroyed || e.pointerId !== this.activeId) return;
     this.activeId = null;
     this.opts.lamp.classList.remove("is-held");
-    if (!this.aligned && this.alignment() >= 0.86) this.settle();
+    if (!this.aligned && this.alignment() >= 0.78) this.settle();
   }
 
   private keyMove(e: KeyboardEvent): void {

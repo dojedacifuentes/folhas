@@ -1,0 +1,486 @@
+/* ============================================================
+   Gestos táctiles reintegrados + pasada de game-feel.
+   Cargado después de scenes/weather, así que gana en cascada.
+   ============================================================ */
+
+/* -------- I. Hacer lugar: raspado sobre el tableau -------- */
+
+/* el tableau vive a plena opacidad bajo el lienzo raspable */
+.scene--clear .clear-tableau {
+  opacity: 1;
+  filter: none;
+  transform: scale(1);
+}
+
+.scene--clear .clear-stage {
+  cursor: grab;
+}
+
+.scene--clear.is-revealed .clear-stage {
+  cursor: default;
+}
+
+.scratch-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  border-radius: inherit;
+  transition: opacity 900ms var(--ease-page);
+}
+
+.scratch-canvas:active {
+  cursor: grabbing;
+}
+
+.scratch-canvas.scratch-done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene--clear .particle-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.leaf-particle {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  animation: particleFall 1.35s ease-in forwards;
+}
+
+.leaf-particle svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes particleFall {
+  0% {
+    opacity: 0.95;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--pdx, 40px), var(--pdy, 120px)) rotate(var(--pspin, 120deg));
+  }
+}
+
+/* pequeñas reacciones cuando el elenco aparece */
+.scene--clear.is-revealed .clear-dani {
+  animation: peekBounce 720ms var(--ease-page) both;
+}
+
+.scene--clear.is-revealed .clear-diego {
+  animation: peekBounce 720ms var(--ease-page) 120ms both;
+}
+
+@keyframes peekBounce {
+  0% {
+    transform: translateY(10px) scale(0.94);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-3px) scale(1.02);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* -------- II. Traer lo que tenemos: arrastre -------- */
+
+/* el escenario es el marco de coordenadas de todo lo que se arrastra */
+.scene--offerings .offer-stage {
+  position: relative;
+  min-height: clamp(330px, 46vh, 460px);
+  transition: min-height 640ms var(--ease-page);
+}
+
+/* al aparecer el texto, el escenario se recoge para dejar sitio */
+.scene--offerings.sprout-born .offer-stage {
+  min-height: clamp(220px, 30vh, 320px);
+}
+
+.scene--offerings .scene-after {
+  margin-bottom: 1.6rem;
+}
+
+/* composición explícita: maceta al centro, criaturas abajo, ofrendas a media altura */
+.scene--offerings .offer-plant {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.scene--offerings .offer-dani {
+  left: 4%;
+  bottom: 5%;
+}
+
+.scene--offerings .offer-diego {
+  right: 4%;
+  bottom: 5%;
+}
+
+/* el objeto arrastrable no lleva tarjeta: es la ofrenda desnuda */
+.offer-drag.interactive-object {
+  position: absolute;
+  z-index: 6;
+  padding: 4px;
+  border: none;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  touch-action: none;
+  cursor: grab;
+  filter: drop-shadow(3px 8px 7px var(--shadow-soft));
+  transition: filter var(--dur-micro) ease;
+}
+
+/* ningún estado del objeto vuelve a dibujar la tarjeta ni su anillo */
+.scene--offerings .offer-drag.interactive-object[data-state] {
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+
+.offer-drag .interactive-object__feedback {
+  display: none;
+}
+
+.offer-drag .interactive-object__visual,
+.offer-drag .object-art {
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.offer-drag--water {
+  left: 15%;
+  bottom: 26%;
+  width: clamp(52px, 13vw, 70px);
+}
+
+.offer-drag--seed {
+  right: 15%;
+  bottom: 25%;
+  width: clamp(54px, 14vw, 74px);
+}
+
+.offer-drag[disabled],
+.offer-drag[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.offer-drag.is-dragging {
+  cursor: grabbing;
+  z-index: 9;
+  filter: drop-shadow(6px 14px 12px var(--shadow-medium));
+}
+
+.offer-drag.is-dragging .interactive-object__visual {
+  transform: scale(1.08);
+}
+
+.offer-drag.is-returning {
+  transition: transform 600ms var(--ease-page);
+}
+
+.offer-drag.is-placing {
+  transition: transform var(--dur-object) cubic-bezier(0.2, 0.7, 0.3, 1.05);
+}
+
+.offer-drag.is-placed {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* el dedal vertió: se desvanece tras encajar */
+.offer-drag--water.is-placed {
+  transition: opacity 460ms ease 420ms, transform var(--dur-object) var(--ease-page);
+  opacity: 0;
+}
+
+/* nacido el brote, la planta representa ambas ofrendas: se retiran las crudas */
+.scene--offerings.sprout-born .offer-drag {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+
+/* halo de invitación bajo la maceta */
+.offer-plant {
+  position: relative;
+}
+
+.offer-halo {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  width: 128%;
+  aspect-ratio: 1.7;
+  transform: translateX(-50%) scale(0.8);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--green-new) 34%, transparent), transparent 72%);
+  opacity: 0;
+  transition: opacity 320ms ease, transform 320ms var(--ease-page);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.offer-plant.is-inviting .offer-halo {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.offer-plant.is-inviting .offer-plant-art {
+  transform: translateX(-50%) rotate(-1.5deg);
+}
+
+/* la tierra se oscurece al recibir la gota */
+.offer-stage.water-done .offer-plant-art .plant-soil,
+.offer-stage.water-done .offer-plant-art [data-part="soil"] {
+  filter: brightness(0.82) saturate(1.1);
+}
+
+/* brote: pequeño squash de nacimiento */
+.offer-stage.sprout-born .offer-plant-art {
+  animation: sproutPop 620ms var(--ease-page);
+}
+
+@keyframes sproutPop {
+  0% {
+    transform: translateX(-50%) scaleY(0.9) scaleX(1.04);
+  }
+  45% {
+    transform: translateX(-50%) scaleY(1.06) scaleX(0.97);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* -------- III. Encontrar la medida -------- */
+
+/* la superficie del soplo recibe el deslizamiento como puntero, no como scroll */
+.care-stage--wind {
+  touch-action: none;
+}
+
+/* soplo: un rastro sigue el dedo por el aire */
+.wind-trail {
+  position: absolute;
+  left: var(--wind-x, 50%);
+  top: var(--wind-y, 40%);
+  z-index: 7;
+  width: 84px;
+  height: 12px;
+  transform: translate(-90%, -50%);
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--rain) 42%, transparent));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.care-stage--wind.is-gusting .wind-trail {
+  animation: windTrail 520ms ease-out;
+}
+
+@keyframes windTrail {
+  0% {
+    opacity: 0;
+    transform: translate(-140%, -50%) scaleX(0.5);
+  }
+  40% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(30%, -50%) scaleX(1.3);
+  }
+}
+
+.wind-swipe-hint {
+  position: absolute;
+  inset: auto 0 -18px 0;
+  height: 2px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--rain) 50%, transparent) 0 8px,
+    transparent 8px 16px
+  );
+  opacity: 0.5;
+  animation: swipeHint 1.8s linear infinite;
+  transition: opacity 300ms ease;
+}
+
+/* una vez que soplas, la pista se retira */
+.care-stage--wind.is-gusting .wind-swipe-hint {
+  opacity: 0;
+}
+
+@keyframes swipeHint {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 32px;
+  }
+}
+
+/* sol: luz que se arrastra por el cielo */
+.scene--care .care-action--sun {
+  top: 72%;
+  left: 28%;
+  transform: translate(-50%, -50%);
+  transition: filter var(--dur-micro) ease;
+  cursor: grab;
+  touch-action: none;
+}
+
+.scene--care .care-action--sun:hover,
+.scene--care .care-action--sun:focus-visible,
+.scene--care .care-action--sun:active {
+  transform: translate(-50%, -50%);
+}
+
+.scene--care .care-action--sun.is-held {
+  cursor: grabbing;
+}
+
+.scene--care .care-action--sun.is-too-close {
+  filter: drop-shadow(0 0 16px color-mix(in srgb, var(--terracotta) 70%, transparent));
+}
+
+/* banda templada objetivo, arriba */
+.sun-safe-zone {
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  z-index: 1;
+  width: clamp(150px, 46%, 260px);
+  aspect-ratio: 2.4;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1.5px dashed color-mix(in srgb, var(--sun) 55%, transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--sun) 20%, transparent), transparent 74%);
+  opacity: calc(0.5 - var(--sun-progress) * 0.5);
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+/* el humo del calor crece con --heat */
+.care-stage--sun .sun-smoke {
+  opacity: 0;
+}
+
+.care-stage--sun.is-sun-holding .sun-smoke {
+  opacity: var(--heat);
+}
+
+/* -------- game-feel: entradas escalonadas -------- */
+
+.scene-heading,
+.scene-lede,
+.scene-instruction {
+  animation: riseIn 620ms var(--ease-page) both;
+}
+
+.scene-lede {
+  animation-delay: 80ms;
+}
+
+.scene-instruction {
+  animation-delay: 160ms;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* respiración ambiental muy leve del escenario de cada escena */
+.clear-stage,
+.offer-stage,
+.care-stage {
+  animation: ambientBreath 14s ease-in-out infinite alternate;
+}
+
+@keyframes ambientBreath {
+  from {
+    filter: saturate(1) brightness(1);
+  }
+  to {
+    filter: saturate(1.04) brightness(1.012);
+  }
+}
+
+/* squash de aterrizaje cuando una ofrenda encaja en la maceta */
+.offer-drag.is-placing .interactive-object__visual {
+  animation: landSquash 420ms var(--ease-page);
+}
+
+@keyframes landSquash {
+  0% {
+    transform: scale(1.08);
+  }
+  40% {
+    transform: scaleX(1.12) scaleY(0.9);
+  }
+  70% {
+    transform: scaleX(0.97) scaleY(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* foco más suave y consistente en los controles jugables */
+.offer-drag:focus-visible,
+.scratch-canvas:focus-visible,
+.care-action:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ink) 55%, transparent);
+  outline-offset: 3px;
+}
+
+/* respeto a quien prefiere menos movimiento */
+html.reduced-motion .scratch-canvas,
+html.reduced-motion .clear-stage,
+html.reduced-motion .offer-stage,
+html.reduced-motion .care-stage,
+html.reduced-motion .scene-heading,
+html.reduced-motion .scene-lede,
+html.reduced-motion .scene-instruction,
+html.reduced-motion .wind-swipe-hint,
+html.reduced-motion .wind-trail,
+html.reduced-motion .offer-stage.sprout-born .offer-plant-art,
+html.reduced-motion .offer-drag.is-placing .interactive-object__visual,
+html.reduced-motion .scene--clear.is-revealed .clear-dani,
+html.reduced-motion .scene--clear.is-revealed .clear-diego {
+  animation: none !important;
+}
+
+html.reduced-motion .scratch-canvas.scratch-done {
+  transition-duration: 200ms;
+}

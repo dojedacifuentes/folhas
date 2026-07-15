@@ -30,6 +30,8 @@ import {
   setShadowProgress,
 } from "../art/ShadowSystem";
 import { leafButtonSVG, leafSVG } from "../art/svgLibrary";
+import { LightAligner } from "../interactions/LightAligner";
+import { PointerTracker } from "../interactions/PointerTracker";
 
 type CarePhase = "water" | "wind" | "sun";
 
@@ -79,6 +81,8 @@ export class CareScene implements Scene {
         <div class="care-stage"></div>
         <div class="scene-after care-after" hidden>
           <p class="after-main">${c.complete}</p>
+          <p class="speech speech--cat"><span class="speaker">${content.speakers.cat}</span><span lang="pt">${c.catAside}</span></p>
+          <p class="speech speech--akita"><span class="speaker">${content.speakers.akita}</span>${c.akitaAside}</p>
           <button class="btn-leaf" type="button">
             ${leafButtonSVG()}<span>${c.next}</span>
           </button>
@@ -133,6 +137,7 @@ export class CareScene implements Scene {
     if (phase === "sun") this.mountSun(stage);
 
     window.requestAnimationFrame(() => {
+      if (!this.el) return;
       stage.querySelector<HTMLButtonElement>(".care-action")?.focus({ preventScroll: true });
     });
   }
@@ -262,12 +267,14 @@ export class CareScene implements Scene {
       <div class="wind-leaves" aria-hidden="true">
         ${leafSVG(2)}${leafSVG(4)}${leafSVG(6)}
       </div>
+      <div class="wind-trail" aria-hidden="true"></div>
       <button class="care-action care-action--wind" type="button" aria-label="${c.controlLabel}">
         ${renderWind({
           interactive: false,
           decorative: true,
           className: "care-object-art",
         })}
+        <span class="wind-swipe-hint" aria-hidden="true"></span>
       </button>
     `;
 
@@ -282,12 +289,18 @@ export class CareScene implements Scene {
 
     const button = stage.querySelector<HTMLButtonElement>(".care-action--wind")!;
     let gusts = 0;
+    let lastGustAt = 0;
     let completionTimer: number | null = null;
 
-    const onActivate = () => {
+    // Un soplo: deslizar por el aire (o tocar/Enter en el control).
+    const gust = (strength: number) => {
       if (this.settled) return;
+      const now = performance.now();
+      // colapsa el mismo gesto físico (swipe que además dispara click)
+      if (now - lastGustAt < 260) return;
+      lastGustAt = now;
       gusts += 1;
-      this.ctx.audio.rustle(0.78);
+      this.ctx.audio.rustle(0.6 + Math.min(0.5, strength));
       this.setCareObjectState("active");
       stage.classList.remove("is-gusting");
       void stage.offsetWidth;
@@ -316,6 +329,33 @@ export class CareScene implements Scene {
       });
     };
 
+    // gesto de soplo: un deslizamiento horizontal por el escenario
+    let swipeStart: { x: number; y: number; t: number } | null = null;
+    const tracker = new PointerTracker({
+      el: stage,
+      onStart: (p) => {
+        swipeStart = { x: p.x, y: p.y, t: performance.now() };
+        stage.style.setProperty("--wind-x", `${p.x}px`);
+      },
+      onMove: (p) => {
+        if (!swipeStart) return;
+        stage.style.setProperty("--wind-x", `${p.x}px`);
+        stage.style.setProperty("--wind-y", `${p.y}px`);
+        const dx = p.x - swipeStart.x;
+        if (Math.abs(dx) > 96) {
+          const dt = Math.max(1, performance.now() - swipeStart.t);
+          swipeStart = null;
+          gust(Math.min(1, Math.abs(dx) / dt / 0.9));
+        }
+      },
+      onEnd: () => {
+        swipeStart = null;
+      },
+    });
+    this.cleanups.push(() => tracker.destroy());
+
+    // respaldo accesible: tocar o Enter/Espacio sobre el control
+    const onActivate = () => gust(0.5);
     button.addEventListener("click", onActivate);
     this.cleanups.push(() => button.removeEventListener("click", onActivate));
   }
@@ -326,7 +366,7 @@ export class CareScene implements Scene {
       <div class="sun-wash" aria-hidden="true"></div>
       ${this.tableau("watching", "protecting", "growing", 0.82)}
       <div class="sun-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="diego-manual" aria-hidden="true"></div>
+      <div class="sun-safe-zone" aria-hidden="true"></div>
       <button class="care-action care-action--sun" type="button" aria-label="${c.controlLabel}">
         ${renderSun({
           interactive: false,
@@ -346,73 +386,87 @@ export class CareScene implements Scene {
       completed: false,
     });
 
-    const button = stage.querySelector<HTMLButtonElement>(".care-action--sun")!;
-    let pressing = false;
-    let startedAt = 0;
-    let pointerId: number | null = null;
+    const lamp = stage.querySelector<HTMLButtonElement>(".care-action--sun")!;
 
-    const stopHolding = () => {
-      pressing = false;
-      pointerId = null;
-      this.cancelFrame();
-      button.classList.remove("is-pressing");
-      stage.classList.remove("is-sun-holding");
+    // La luz se mueve por el cielo. Colocarla en la banda templada, en alto,
+    // completa el momento; arrastrarla sobre la planta la recalienta.
+    let heat = 0;
+    let lastFrame = 0;
+    let danger = false;
+    let hintShown = false;
+    let curX = 0.28;
+    let curY = 0.72;
+
+    const positionLamp = (x: number, y: number): void => {
+      lamp.style.left = `${(x * 100).toFixed(2)}%`;
+      lamp.style.top = `${(y * 100).toFixed(2)}%`;
     };
+    positionLamp(curX, curY);
 
-    const start = (event?: PointerEvent) => {
-      if (this.settled || pressing) return;
-      pressing = true;
-      startedAt = performance.now();
-      button.classList.add("is-pressing");
-      stage.classList.add("is-sun-holding");
-      this.setCareObjectState("active");
-      if (event) {
-        pointerId = event.pointerId;
-        button.setPointerCapture(event.pointerId);
-      }
-
-      const frame = (now: number) => {
-        if (!pressing || this.settled) return;
-        const elapsed = now - startedAt;
-        stage.style.setProperty("--sun-progress", Math.min(1, elapsed / 1900).toFixed(3));
-        stage.style.setProperty("--heat", Math.min(1, elapsed / 2100).toFixed(3));
-        const lightProgress = Math.min(1, elapsed / 1900);
-        this.updateCareLight({
-          x: 38 + lightProgress * 24,
-          y: 13 + lightProgress * 8,
-          intensity: 0.46 + lightProgress * 0.38,
-          length: 1.28 - lightProgress * 0.5,
-          angle: -13 + lightProgress * 25,
-        });
-        if (elapsed >= 2100) {
-          stopHolding();
-          this.failPhase(c.failure, c.retry, {
-            className: "is-sun-failed",
-            plant: "burnt",
-            dani: "reactingToHeat",
-            diego: "reactingToHeat",
-          });
-          return;
-        }
-        this.raf = window.requestAnimationFrame(frame);
-      };
-      this.raf = window.requestAnimationFrame(frame);
-    };
-
-    const judge = () => {
-      if (!pressing || this.settled) return;
-      const elapsed = performance.now() - startedAt;
-      stopHolding();
-
-      if (elapsed < 480) {
-        stage.style.setProperty("--sun-progress", "0");
-        stage.style.setProperty("--heat", "0");
-        this.setCareObjectState("idle");
-        this.showReaction(c.hint, true);
+    const heatLoop = (now: number): void => {
+      if (this.settled) {
+        this.raf = null;
         return;
       }
+      const dt = lastFrame ? Math.min(64, now - lastFrame) : 16;
+      lastFrame = now;
+      // solo recalienta mientras se sostiene la luz sobre la planta;
+      // al soltar (o alejarla) se enfría, aunque «danger» siga marcado
+      const heating = danger && aligner.isHeld;
+      heat = Math.max(0, Math.min(1, heat + (heating ? dt / 1250 : -dt / 850)));
+      stage.style.setProperty("--heat", heat.toFixed(3));
+      stage.classList.toggle("is-sun-holding", heat > 0.05);
+      if (heat >= 1) {
+        this.cancelFrame();
+        this.failPhase(c.failure, c.retry, {
+          className: "is-sun-failed",
+          plant: "burnt",
+          dani: "reactingToHeat",
+          diego: "reactingToHeat",
+        });
+        return;
+      }
+      // el bucle descansa cuando ya no hay calor que integrar
+      if (heat <= 0 && !heating) {
+        lastFrame = 0;
+        this.raf = null;
+        return;
+      }
+      this.raf = window.requestAnimationFrame(heatLoop);
+    };
 
-      if (elapsed <= 1800) {
+    const aligner = new LightAligner({
+      lamp,
+      stage,
+      targetX: 0.5,
+      targetY: 0.22,
+      radius: 0.4,
+      onUpdate: (alignment, x, y) => {
+        if (this.settled) return;
+        curX = x;
+        curY = y;
+        positionLamp(x, y);
+        stage.style.setProperty("--sun-progress", alignment.toFixed(3));
+        // demasiado cerca de la planta: solo la banda baja y central
+        danger = y > 0.58 && Math.abs(x - 0.5) < 0.17;
+        lamp.classList.toggle("is-too-close", danger);
+        this.setCareObjectState(alignment > 0.55 ? "active" : "idle");
+        this.updateCareLight({
+          x: x * 100,
+          y: y * 100,
+          intensity: 0.42 + alignment * 0.4,
+          length: 1.5 - alignment * 0.7,
+          angle: (x - 0.5) * 46,
+        });
+        if (!hintShown && alignment > 0.2 && alignment < 0.6) {
+          hintShown = true;
+          this.showReaction(c.hint, true);
+        }
+        if (this.raf === null) this.raf = window.requestAnimationFrame(heatLoop);
+      },
+      onAligned: () => {
+        if (this.settled) return;
+        this.cancelFrame();
         this.setCareObjectState("completed");
         this.applyVisualState({
           daniState: "proud",
@@ -420,55 +474,18 @@ export class CareScene implements Scene {
           plantState: "healthy",
         });
         this.completePhase(c.announcement, "healthy");
-        return;
-      }
-
-      this.failPhase(c.failure, c.retry, {
-        className: "is-sun-failed",
-        plant: "overheated",
-        dani: "reactingToHeat",
-        diego: "reactingToHeat",
-      });
-    };
-
-    const onPointerDown = (event: PointerEvent) => {
-      event.preventDefault();
-      start(event);
-    };
-    const onPointerUp = (event: PointerEvent) => {
-      if (pointerId !== null && event.pointerId !== pointerId) return;
-      judge();
-    };
-    const onPointerCancel = (event: PointerEvent) => {
-      if (pointerId !== null && event.pointerId !== pointerId) return;
-      stopHolding();
-      stage.style.setProperty("--sun-progress", "0");
-      stage.style.setProperty("--heat", "0");
-      this.setCareObjectState("idle");
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if ((event.key !== " " && event.key !== "Enter") || event.repeat) return;
-      event.preventDefault();
-      start();
-    };
-    const onKeyUp = (event: KeyboardEvent) => {
-      if (event.key !== " " && event.key !== "Enter") return;
-      event.preventDefault();
-      judge();
-    };
-
-    button.addEventListener("pointerdown", onPointerDown);
-    button.addEventListener("pointerup", onPointerUp);
-    button.addEventListener("pointercancel", onPointerCancel);
-    button.addEventListener("keydown", onKeyDown);
-    button.addEventListener("keyup", onKeyUp);
-    this.cleanups.push(() => {
-      button.removeEventListener("pointerdown", onPointerDown);
-      button.removeEventListener("pointerup", onPointerUp);
-      button.removeEventListener("pointercancel", onPointerCancel);
-      button.removeEventListener("keydown", onKeyDown);
-      button.removeEventListener("keyup", onKeyUp);
+      },
     });
+    this.cleanups.push(() => aligner.destroy());
+
+    // atajo accesible: Enter o Espacio deslizan la luz hasta su sitio
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      if (!this.settled) aligner.align();
+    };
+    lamp.addEventListener("keydown", onKey);
+    this.cleanups.push(() => lamp.removeEventListener("keydown", onKey));
   }
 
   private completePhase(
@@ -588,6 +605,7 @@ export class CareScene implements Scene {
     foot.setAttribute("aria-hidden", "true");
     after.hidden = false;
     window.requestAnimationFrame(() => {
+      if (!this.el) return;
       after.classList.add("is-visible");
       after.querySelector<HTMLButtonElement>(".btn-leaf")?.focus({ preventScroll: true });
     });

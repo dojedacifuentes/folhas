@@ -81,9 +81,45 @@ La fachada `artDirection.ts` conserva aliases narrativos anteriores, pero las nu
 - Más holgura inferior en pantallas bajas y margen bajo los controles
   de avance para reducir la superposición.
 
+## Reintegración de gestos táctiles (2026-07-15)
+
+Se recuperaron los gestos del recorrido original sobre la base Folhas,
+sin perder la máquina de momentos, el bloqueo de progresión ni la
+persistencia. Nueva hoja `src/styles/gestures.css` para todo esto más
+la pasada de game-feel.
+
+- **Hacer lugar**: raspado real con `ScratchReveal` (lienzo de hojas
+  procedural, pincel suave, umbral 58 %, partículas, sonido) sobre el
+  tableau a plena opacidad; alternativa accesible «dejar pasar la luz»
+  tras 12 s. Verificado en navegador (raspar cruza el umbral y revela).
+- **Traer lo que tenemos**: `DraggableOffering` con imán suave; secuencia
+  dedal → semilla que no expone la acción futura; el escenario se recoge
+  al nacer el brote; las ofrendas crudas se retiran (la planta las
+  representa). Verificado arrastre, colocación, restauración.
+- **Encontrar la medida**: agua = dos toques (sin cambios); viento =
+  deslizamiento horizontal (`PointerTracker`) con respaldo de toque/Enter
+  y antirrebote de 260 ms; sol = **luz móvil** (`LightAligner`) que se
+  arrastra por el cielo, gobierna las sombras (`ShadowSystem`) y quema la
+  planta si se demora sobre ella (bucle de calor con `requestAnimationFrame`).
+  Verificados en navegador los caminos de éxito de los tres momentos.
+- **Voces bilingües**: Dani piensa y habla en portugués; Diego en español.
+  Nueva línea final «as estações passam; a gente volta.» y la broma
+  «isso conta como arquitetura? / sí.» reintegrada. Verificado.
+- **Cubierta**: la hoja vuelve a arrastrarse (con toque/Enter de respaldo).
+
+### Ajustes durante la verificación en navegador
+
+- El objeto arrastrable no dibuja la tarjeta del hitbox ni su anillo.
+- Composición de «Traer lo que tenemos» reanclada al escenario.
+- Umbral de asentamiento de la luz relajado (0.78) y radio ampliado
+  (0.40) para que el arrastre táctil no sea frustrante; zona de calor
+  estrechada al centro para no quemar al partir junto a Dani.
+
 ## Validación manual pendiente
 
 - [ ] Teclado completo (Tab/Enter/flechas) en las cinco escenas.
-- [ ] Umbrales del sol en un dispositivo táctil real.
+- [ ] Quemadura del sol en dispositivo real (el bucle de calor usa rAF,
+      congelado cuando la pestaña de vista previa está en segundo plano;
+      comparte `failPhase` ya verificado con agua/viento).
 - [ ] Movimiento reducido y contraste en navegador real.
 - [ ] Una pasada con sonido activado (altavoces).

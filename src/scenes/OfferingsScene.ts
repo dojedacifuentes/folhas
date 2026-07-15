@@ -12,6 +12,7 @@ import {
 } from "../art/objects/InteractiveObjects";
 import { renderPlantCharacter } from "../art/PlantCharacter";
 import { leafButtonSVG } from "../art/svgLibrary";
+import { DraggableOffering } from "../interactions/DraggableOffering";
 
 type OfferingPhase =
   | "water"
@@ -26,6 +27,8 @@ export class OfferingsScene implements Scene {
   private ctx!: SceneContext;
   private phase: OfferingPhase = "water";
   private timers: number[] = [];
+  private waterDrag: DraggableOffering | null = null;
+  private seedDrag: DraggableOffering | null = null;
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
@@ -49,11 +52,12 @@ export class OfferingsScene implements Scene {
               facing: "right",
               reducedMotion: ctx.reducedMotion(),
             })}
-            <p class="thought thought--dani">${c.catThought}</p>
+            <p class="thought thought--dani" lang="pt">${c.catThought}</p>
           </div>
-          <div class="offer-plant" aria-hidden="true">
-            <div class="water-drop"></div>
-            <div class="offer-plant-art plant-wrap">${renderPlantCharacter({
+          <div class="offer-plant">
+            <div class="offer-halo" aria-hidden="true"></div>
+            <div class="water-drop" aria-hidden="true"></div>
+            <div class="offer-plant-art plant-wrap" aria-hidden="true">${renderPlantCharacter({
               state: "seed",
               className: "plant-context--empty",
               decorative: true,
@@ -70,12 +74,12 @@ export class OfferingsScene implements Scene {
           </div>
           ${renderThimble({
             label: c.waterLabel,
-            className: "scene-action offering-action offering-action--water",
+            className: "offer-drag offer-drag--water",
           })}
           ${renderSeed({
             state: "disabled",
             label: c.seedLabel,
-            className: "scene-action offering-action offering-action--seed",
+            className: "offer-drag offer-drag--seed",
           })}
         </div>
         <div class="scene-after" hidden>
@@ -91,14 +95,6 @@ export class OfferingsScene implements Scene {
     el.prepend(createBotanicalShadows("shadow-layer--edges"));
     this.el = el;
 
-    el.querySelector<HTMLButtonElement>(".offering-action--water")!.addEventListener(
-      "click",
-      () => this.placeWater()
-    );
-    el.querySelector<HTMLButtonElement>(".offering-action--seed")!.addEventListener(
-      "click",
-      () => this.placeSeed()
-    );
     el.querySelector<HTMLButtonElement>(".btn-leaf")!.addEventListener("click", () => {
       ctx.goTo("care");
     });
@@ -107,6 +103,7 @@ export class OfferingsScene implements Scene {
       this.restoreComplete();
     } else if (ctx.state.waterPlaced) {
       el.classList.add("water-done");
+      this.setObjectState(".offer-drag--water", "completed");
       this.activateSeed(false);
     } else {
       this.activateWater();
@@ -114,8 +111,24 @@ export class OfferingsScene implements Scene {
     return el;
   }
 
+  private stageParts(): {
+    stage: HTMLElement;
+    plant: HTMLElement;
+    water: HTMLElement;
+    seed: HTMLElement;
+  } | null {
+    if (!this.el) return null;
+    return {
+      stage: this.el.querySelector<HTMLElement>(".offer-stage")!,
+      plant: this.el.querySelector<HTMLElement>(".offer-plant")!,
+      water: this.el.querySelector<HTMLElement>(".offer-drag--water")!,
+      seed: this.el.querySelector<HTMLElement>(".offer-drag--seed")!,
+    };
+  }
+
   private activateWater(): void {
-    if (!this.el) return;
+    const parts = this.stageParts();
+    if (!parts) return;
     this.phase = "water";
     this.setVisualState(
       "watering",
@@ -125,17 +138,26 @@ export class OfferingsScene implements Scene {
       true,
       false
     );
-    this.setActionAvailable(".offering-action--water", true);
-    this.setActionAvailable(".offering-action--seed", false);
+    this.setObjectState(".offer-drag--water", "idle");
+    parts.water.tabIndex = 0;
+    parts.water.removeAttribute("aria-hidden");
+
+    this.waterDrag?.destroy();
+    this.waterDrag = new DraggableOffering({
+      el: parts.water,
+      target: parts.plant,
+      surface: parts.stage,
+      magnetRadius: 130,
+      onNear: (near) => this.setObjectState(".offer-drag--water", near ? "active" : "idle"),
+      onPlaced: () => this.placeWater(),
+    });
   }
 
   private placeWater(): void {
     if (!this.el || this.phase !== "water") return;
     this.phase = "water-feedback";
     this.ctx.onFirstInteraction();
-    this.setActionAvailable(".offering-action--water", false);
-    this.setObjectState(".offering-action--water", "completed");
-    this.el.querySelector<HTMLButtonElement>(".offering-action--water")!.disabled = true;
+    this.setObjectState(".offer-drag--water", "completed");
     this.el.classList.add("water-done", "water-feedback");
     this.setVisualState("happy", "watching", "seed", "", false, false);
     this.ctx.audio.drop();
@@ -147,7 +169,7 @@ export class OfferingsScene implements Scene {
       this.ctx.save();
     }
 
-    const delay = this.ctx.reducedMotion() ? 60 : 260;
+    const delay = this.ctx.reducedMotion() ? 60 : 320;
     this.timers.push(
       window.setTimeout(() => {
         if (this.ctx.state.seedPlaced) {
@@ -160,7 +182,8 @@ export class OfferingsScene implements Scene {
   }
 
   private activateSeed(focus: boolean): void {
-    if (!this.el) return;
+    const parts = this.stageParts();
+    if (!parts) return;
     this.phase = "seed";
     this.setVisualState(
       "watching",
@@ -170,17 +193,26 @@ export class OfferingsScene implements Scene {
       true,
       false
     );
-    this.setActionAvailable(".offering-action--water", false);
-    const seed = this.setActionAvailable(".offering-action--seed", true);
-    if (focus) seed?.focus({ preventScroll: true });
+    this.setObjectState(".offer-drag--seed", "idle");
+    parts.seed.tabIndex = 0;
+    parts.seed.removeAttribute("aria-hidden");
+
+    this.seedDrag?.destroy();
+    this.seedDrag = new DraggableOffering({
+      el: parts.seed,
+      target: parts.plant,
+      surface: parts.stage,
+      magnetRadius: 130,
+      onNear: (near) => this.setObjectState(".offer-drag--seed", near ? "active" : "idle"),
+      onPlaced: () => this.placeSeed(),
+    });
+    if (focus) parts.seed.focus({ preventScroll: true });
   }
 
   private placeSeed(): void {
     if (!this.el || this.phase !== "seed") return;
     this.phase = "seed-feedback";
-    this.setActionAvailable(".offering-action--seed", false, false);
-    this.setObjectState(".offering-action--seed", "completed");
-    this.el.querySelector<HTMLButtonElement>(".offering-action--seed")!.disabled = true;
+    this.setObjectState(".offer-drag--seed", "completed");
     this.hideInstruction();
     this.el.classList.add("seed-done", "seed-feedback");
     this.el
@@ -196,7 +228,7 @@ export class OfferingsScene implements Scene {
       this.ctx.save();
     }
 
-    const delay = this.ctx.reducedMotion() ? 60 : 420;
+    const delay = this.ctx.reducedMotion() ? 60 : 460;
     this.timers.push(window.setTimeout(() => this.growPlant(true), delay));
   }
 
@@ -205,7 +237,6 @@ export class OfferingsScene implements Scene {
     this.phase = "complete";
     this.hideInstruction();
     this.el.classList.add("seed-done", "sprout-born");
-    this.setActionAvailable(".offering-action--seed", false);
     this.setVisualState("happy", "proud", "sprout", "", false, true);
 
     if (announce) {
@@ -213,7 +244,7 @@ export class OfferingsScene implements Scene {
       this.ctx.announce(content.offerings.sproutAnnouncement);
     }
 
-    const delay = this.ctx.reducedMotion() ? 80 : 280;
+    const delay = this.ctx.reducedMotion() ? 80 : 320;
     this.timers.push(window.setTimeout(() => this.showAfter(true), delay));
   }
 
@@ -221,32 +252,14 @@ export class OfferingsScene implements Scene {
     if (!this.el) return;
     this.phase = "complete";
     this.el.classList.add("water-done", "seed-done", "sprout-born", "is-restored");
-    this.setActionAvailable(".offering-action--water", false);
-    this.setActionAvailable(".offering-action--seed", false);
+    this.setObjectState(".offer-drag--water", "completed");
+    this.setObjectState(".offer-drag--seed", "completed");
     this.el
       .querySelector<SVGSVGElement>('.offer-plant svg[data-character="plant"]')
       ?.classList.remove("plant-context--empty");
     this.setVisualState("happy", "proud", "sprout", "", false, true);
     this.hideInstruction();
     this.showAfter(false);
-  }
-
-  private setActionAvailable(
-    selector: string,
-    available: boolean,
-    hideWhenUnavailable = true
-  ): HTMLButtonElement | null {
-    const action = this.el?.querySelector<HTMLButtonElement>(selector) ?? null;
-    if (!action) return null;
-    action.disabled = !available;
-    action.tabIndex = available ? 0 : -1;
-    setInteractiveObjectState(action, available ? "idle" : "disabled");
-    if (available) {
-      action.removeAttribute("aria-hidden");
-    } else if (hideWhenUnavailable) {
-      action.setAttribute("aria-hidden", "true");
-    }
-    return action;
   }
 
   private hideInstruction(): void {
@@ -289,7 +302,7 @@ export class OfferingsScene implements Scene {
     if (!thought) return;
     thought.classList.add("is-visible");
     this.timers.push(
-      window.setTimeout(() => thought.classList.remove("is-visible"), 1400)
+      window.setTimeout(() => thought.classList.remove("is-visible"), 2000)
     );
   }
 
@@ -306,6 +319,10 @@ export class OfferingsScene implements Scene {
   }
 
   destroy(): void {
+    this.waterDrag?.destroy();
+    this.seedDrag?.destroy();
+    this.waterDrag = null;
+    this.seedDrag = null;
     this.timers.forEach((timer) => window.clearTimeout(timer));
     this.timers = [];
     this.el = null;

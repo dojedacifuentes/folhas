@@ -5,6 +5,7 @@ import "./styles/scenes.css";
 import "./styles/interactions.css";
 import "./styles/characters.css";
 import "./styles/weather.css";
+import "./styles/gestures.css";
 import "./styles/responsive.css";
 
 import { AppController } from "./app/AppController";
