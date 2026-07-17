@@ -223,3 +223,92 @@ export function sunSprite(): SpriteDef {
     fps: 3,
   };
 }
+
+// ============================ NUBE ============================
+
+function buildCloud(squeeze: number): PixelGrid {
+  const g = new PixelGrid(38, 26);
+  const cy = 12 + squeeze * 2;
+  // masa esponjosa: varios bultos
+  g.disc(12, cy, 6, PIX.sky);
+  g.disc(20, cy - 3, 7, PIX.sky);
+  g.disc(28, cy, 6, PIX.sky);
+  g.rect(9, cy, 22, 6 - squeeze, PIX.sky);
+  // sombra inferior
+  g.disc(12, cy + 2, 5, PIX.skyDeep);
+  g.disc(28, cy + 2, 5, PIX.skyDeep);
+  g.rect(9, cy + 3, 22, 3, PIX.skyDeep);
+  // luz arriba
+  g.disc(20, cy - 5, 4, PIX.snow);
+  g.disc(14, cy - 2, 2, PIX.snow);
+  g.outline(PIX.ink);
+  // carita
+  g.disc(16, cy, 1, PIX.ink);
+  g.disc(24, cy, 1, PIX.ink);
+  if (squeeze > 0) {
+    g.set(20, cy + 2, PIX.ink);
+    g.set(19, cy + 1, PIX.ink);
+    g.set(21, cy + 1, PIX.ink);
+  } else {
+    g.line(18, cy + 2, 22, cy + 2, PIX.ink);
+  }
+  g.disc(13, cy + 1, 1, PIX.coral);
+  g.disc(27, cy + 1, 1, PIX.coral);
+  // gotas al exprimir
+  if (squeeze > 0) {
+    g.set(14, 22, PIX.water); g.set(14, 24, PIX.waterL);
+    g.set(20, 23, PIX.water); g.set(20, 25, PIX.waterL);
+    g.set(26, 22, PIX.water); g.set(26, 24, PIX.waterL);
+  }
+  return g;
+}
+
+export function cloudSprite(state = "idle"): SpriteDef {
+  if (state === "squeeze") {
+    return { width: 38, height: 26, frames: [buildCloud(1).grid(), buildCloud(2).grid()], fps: 6 };
+  }
+  // idle: flota (dos fotogramas casi iguales)
+  const a = buildCloud(0).grid();
+  const b: ColorGrid = [a[0].map(() => null), ...a.slice(0, a.length - 1)];
+  return { width: 38, height: 26, frames: [a, b], fps: 1.5 };
+}
+
+// ============================ GIRASOL ============================
+
+export function sunflowerSprite(small = false): SpriteDef {
+  const w = small ? 20 : 30;
+  const h = small ? 30 : 46;
+  const g = new PixelGrid(w, h);
+  const cx = Math.round(w / 2);
+  const headY = small ? 8 : 12;
+  const headR = small ? 6 : 9;
+  // tallo
+  g.rect(cx - 1, headY, 2, h - headY - 2, PIX.stem);
+  // hojas del tallo
+  if (!small) {
+    for (let i = 0; i <= 6; i++) {
+      g.set(cx - 2 - i * 0.6, 30 - i, PIX.leafG);
+      g.set(cx + 2 + i * 0.6, 26 - i, PIX.leafG);
+    }
+  }
+  // pétalos
+  const petals = small ? 8 : 12;
+  for (let i = 0; i < petals; i++) {
+    const a = (i / petals) * Math.PI * 2;
+    const px = cx + Math.cos(a) * (headR + 2);
+    const py = headY + Math.sin(a) * (headR + 2);
+    g.disc(px, py, small ? 1.4 : 2.2, PIX.bloom);
+  }
+  // centro
+  g.disc(cx, headY, headR, PIX.leafDry);
+  g.disc(cx, headY, headR - 2, PIX.leafDark);
+  g.outline(PIX.ink);
+  // carita
+  if (!small) {
+    g.disc(cx - 3, headY, 1, PIX.ink);
+    g.disc(cx + 3, headY, 1, PIX.ink);
+    g.line(cx - 2, headY + 3, cx, headY + 4, PIX.ink);
+    g.line(cx, headY + 4, cx + 2, headY + 3, PIX.ink);
+  }
+  return { width: w, height: h, frames: [g.grid()] };
+}

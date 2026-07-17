@@ -222,6 +222,99 @@
   transition: opacity 500ms ease;
 }
 
+/* nube que se exprime sobre la maceta */
+.offer-cloud {
+  position: absolute;
+  left: 50%;
+  top: 14%;
+  transform: translateX(-50%);
+  z-index: 7;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: var(--hit-target);
+  min-height: var(--hit-target);
+  padding: 6px;
+  border: none;
+  background: none;
+  touch-action: none;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 0 rgba(35, 45, 42, 0.12));
+}
+
+.offer-cloud[hidden] {
+  display: none;
+}
+
+.offer-cloud-art {
+  width: clamp(74px, 20vw, 104px);
+  height: auto;
+  transition: transform 140ms var(--ease-page);
+}
+
+.offer-cloud:hover .offer-cloud-art,
+.offer-cloud:focus-visible .offer-cloud-art {
+  transform: translateY(-2px);
+}
+
+.offer-cloud.is-squeezing .offer-cloud-art {
+  animation: cloudSqueeze 260ms var(--ease-page);
+}
+
+@keyframes cloudSqueeze {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scaleX(1.14) scaleY(0.72) translateY(3px); }
+}
+
+/* medidor de tres gotas */
+.cloud-meter {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.cloud-meter i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--rain) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+.offer-cloud[data-squeezes="1"] .cloud-meter i:nth-child(1),
+.offer-cloud[data-squeezes="2"] .cloud-meter i:nth-child(-n + 2),
+.offer-cloud[data-squeezes="3"] .cloud-meter i {
+  background: var(--rain);
+}
+
+/* lluvia que cae de la nube hacia la maceta */
+.offer-rain {
+  position: absolute;
+  left: 50%;
+  top: 24%;
+  width: 80px;
+  height: 120px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 6;
+}
+
+.offer-rain i {
+  position: absolute;
+  left: calc(50% + var(--rx, 0px));
+  top: 0;
+  width: 3px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--rain);
+  animation: rainFall 0.8s ease-in forwards;
+  animation-delay: var(--rd, 0ms);
+}
+
+@keyframes rainFall {
+  from { opacity: 0.9; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(96px); }
+}
+
 /* halo de invitación bajo la maceta */
 .offer-plant {
   position: relative;

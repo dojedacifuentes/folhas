@@ -1,6 +1,11 @@
 import { paintPixelSprite, type SpriteDef } from "./engine";
 import { daniSprite, diegoSprite } from "./characters";
-import { plantSprite, sunSprite } from "./world";
+import {
+  cloudSprite,
+  plantSprite,
+  sunflowerSprite,
+  sunSprite,
+} from "./world";
 import { objectSprite } from "./objects";
 
 /** Resuelve familia + estado a una definición de sprite. */
@@ -14,6 +19,12 @@ export function pixelSpriteFor(family: string, state: string): SpriteDef {
       return plantSprite(state);
     case "sun":
       return sunSprite();
+    case "cloud":
+      return cloudSprite(state);
+    case "sunflower":
+      return sunflowerSprite(false);
+    case "sunflower-small":
+      return sunflowerSprite(true);
     default:
       return objectSprite(family, state);
   }

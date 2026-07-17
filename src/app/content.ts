@@ -35,13 +35,13 @@ export const content = {
     number: "II",
     heading: "Traer lo que tenemos",
     lede: "Dani observa. Diego ya hizo un plan diminuto.",
-    waterInstruction: "acerca el dedal a la maceta",
+    waterInstruction: "exprime la nube sobre la maceta",
     seedInstruction: "acerca la semilla a la maceta",
     waterLabel:
-      "Dedal de Dani. Arrástralo hasta la maceta, o pulsa Enter para colocarlo.",
+      "Nube de Dani. Pulsa para exprimirla sobre la maceta (tres veces), o pulsa Enter.",
     seedLabel:
       "Semilla cuadrada de Diego. Arrástrala hasta la maceta, o pulsa Enter para colocarla.",
-    catThought: "uma gota. exatamente uma.",
+    catThought: "chuva pequena. só o suficiente.",
     akitaThought: "procedimiento: semilla, centro, dignidad.",
     afterMain: "Algo despierta cuando cada uno acerca lo suyo.",
     afterNotes: [
@@ -50,7 +50,7 @@ export const content = {
     ],
     next: "cuidarlo",
     waterAnnouncement:
-      "Una gota oscureció la tierra. Dani movió la cola, satisfecha.",
+      "La nube llovió sobre la tierra. Dani movió la cola, satisfecha.",
     seedAnnouncement:
       "La semilla hizo un giro pequeño y encajó en la tierra.",
     sproutAnnouncement:
@@ -117,6 +117,13 @@ export const content = {
     plantLabel:
       "La planta florecida conserva hojas ocres, turquesas y verdes. Tócala si quieres.",
     cubeLabel: "La semilla cuadrada, medio enterrada. Tócala si quieres.",
+    daniLabel: "Dani, dormitando. Tócala para arrullarla.",
+    diegoLabel: "Diego, de guardia. Tócalo para el abrazo.",
+    bloomAnnouncement: "La planta se abrió en un girasol. Y luego, en muchos.",
+    nanai: "nanai…",
+    abrazo: "juntos.",
+    frio: "una mantita.",
+    sunflowerLine: "Se abrió en un girasol. Y luego en muchos.",
   },
 
   chrome: {

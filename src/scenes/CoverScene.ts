@@ -2,6 +2,8 @@ import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
 import { createBotanicalShadows } from "../art/BotanicalShadows";
 import { renderSeed } from "../art/objects/InteractiveObjects";
+import { renderDani } from "../art/characters/DaniCharacter";
+import { renderDiego } from "../art/characters/DiegoCharacter";
 import { pixelPlaceholder } from "../art/pixel/engine";
 
 export class CoverScene implements Scene {
@@ -28,11 +30,18 @@ export class CoverScene implements Scene {
     el.className = "scene scene--cover";
     el.setAttribute("aria-label", c.title);
     el.innerHTML = `
+      ${pixelPlaceholder("sun", "idle", { decorative: true, className: "cover-sun" })}
       ${renderSeed({
         interactive: false,
         decorative: true,
         className: "cover-cube",
       })}
+      <div class="cover-peek cover-peek--dani" aria-hidden="true">
+        ${renderDani({ state: "surprised", facing: "right", reducedMotion: ctx.reducedMotion() })}
+      </div>
+      <div class="cover-peek cover-peek--diego" aria-hidden="true">
+        ${renderDiego({ state: "concerned", facing: "left", reducedMotion: ctx.reducedMotion() })}
+      </div>
       <header class="cover-titles">
         <h1 class="cover-title">${c.title}</h1>
         <p class="cover-subtitle">${c.subtitle}</p>
@@ -43,6 +52,7 @@ export class CoverScene implements Scene {
           ${pixelPlaceholder("leaf", "idle", { className: "cover-leaf-svg", decorative: true })}
         </button>
       </div>
+      <div class="cover-sparkles" aria-hidden="true"></div>
       <p class="scene-instruction">${c.instruction}</p>
     `;
     el.prepend(createBotanicalShadows("shadow-layer--cover"));
@@ -55,8 +65,30 @@ export class CoverScene implements Scene {
     leaf.addEventListener("pointerup", this.onUp);
     leaf.addEventListener("pointercancel", this.onUp);
     leaf.addEventListener("click", this.onClick);
+
+    // chispas que siguen el cursor (juguetón)
+    if (!ctx.reducedMotion()) {
+      el.addEventListener("pointermove", this.onSparkle);
+    }
     return el;
   }
+
+  private lastSparkle = 0;
+  private onSparkle = (e: PointerEvent): void => {
+    const now = performance.now();
+    if (now - this.lastSparkle < 90 || !this.el) return;
+    this.lastSparkle = now;
+    const host = this.el.querySelector<HTMLElement>(".cover-sparkles");
+    if (!host) return;
+    const rect = this.el.getBoundingClientRect();
+    const s = document.createElement("i");
+    s.style.left = `${e.clientX - rect.left}px`;
+    s.style.top = `${e.clientY - rect.top}px`;
+    s.style.setProperty("--sx", `${(Math.random() * 20 - 10).toFixed(0)}px`);
+    host.appendChild(s);
+    s.addEventListener("animationend", () => s.remove(), { once: true });
+    window.setTimeout(() => s.isConnected && s.remove(), 900);
+  };
 
   // toque limpio o Enter/Espacio: abrir sin exigir el gesto
   private onClick = (): void => {
@@ -158,6 +190,7 @@ export class CoverScene implements Scene {
         }
       }
     }
+    this.el?.removeEventListener("pointermove", this.onSparkle);
     this.activeId = null;
     this.timers.forEach((timer) => window.clearTimeout(timer));
     this.timers = [];

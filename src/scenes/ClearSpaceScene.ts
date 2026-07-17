@@ -88,7 +88,8 @@ export class ClearSpaceScene implements Scene {
     this.scratch = new ScratchReveal({
       canvas,
       container: stage,
-      threshold: 0.58,
+      threshold: 0.4,
+      brushSize: 52,
       onStroke: (x, y) => {
         spawnLeafParticle(particles, x, y, ctx.reducedMotion());
         ctx.audio.rustle(0.55 + Math.random() * 0.4);
@@ -98,7 +99,7 @@ export class ClearSpaceScene implements Scene {
 
     // la alternativa accesible aparece con calma, no como atajo
     const alt = el.querySelector<HTMLButtonElement>(".link-alt")!;
-    this.timers.push(window.setTimeout(() => (alt.hidden = false), 12000));
+    this.timers.push(window.setTimeout(() => (alt.hidden = false), 6000));
     alt.addEventListener("click", () => this.scratch?.reveal());
 
     el.querySelector<HTMLButtonElement>(".btn-leaf")!.addEventListener("click", () => {

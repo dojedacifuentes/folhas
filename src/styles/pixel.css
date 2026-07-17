@@ -15,6 +15,314 @@
   filter: drop-shadow(0 3px 0 rgba(35, 45, 42, 0.16));
 }
 
+/* la planta se inclina hacia el cursor y menea al hablar */
+.plant-character.pixel-sprite {
+  transform: rotate(var(--plant-lean, 0deg));
+  transform-origin: 50% 92%;
+  transition: transform 320ms var(--ease-page);
+}
+
+.plant-character.is-wiggling {
+  animation: plantWiggle 620ms var(--ease-page);
+}
+
+@keyframes plantWiggle {
+  0%, 100% { transform: rotate(var(--plant-lean, 0deg)); }
+  30% { transform: rotate(-6deg) translateY(-2px); }
+  65% { transform: rotate(5deg); }
+}
+
+/* burbuja de habla de la planta */
+.plant-bubble {
+  position: absolute;
+  left: 50%;
+  top: -6%;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  transform: translate(-50%, 6px) scale(0.7);
+  opacity: 0;
+  pointer-events: none;
+  background: var(--paper-light);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 rgba(43, 38, 32, 0.18);
+  font-family: var(--font-interface);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: opacity 220ms ease, transform 260ms var(--ease-page);
+}
+
+/* piquito de la burbuja */
+.plant-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%);
+  background: var(--paper-light);
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  rotate: 45deg;
+}
+
+.plant-bubble.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.plant-bubble__emote {
+  width: 18px;
+  height: 18px;
+}
+
+html.reduced-motion .plant-character.pixel-sprite,
+html.reduced-motion .plant-character.is-wiggling {
+  transition: none;
+  animation: none;
+}
+
+/* ============ epílogo final: girasol, juntos, mantita ============ */
+
+.final-tap {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* la maceta pasa a un envoltorio posicionado; la planta lo llena */
+.final-plant-wrap {
+  position: absolute;
+  bottom: 7%;
+  left: 48%;
+  transform: translateX(-50%);
+  width: clamp(124px, 27vw, 190px);
+  z-index: 4;
+}
+
+.scene--final .final-plant {
+  position: static;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: 100%;
+}
+
+/* el girasol grande emerge sobre la maceta al florecer */
+.final-sunflower.pixel-sprite {
+  position: absolute;
+  left: 50%;
+  bottom: 24%;
+  width: 84%;
+  height: auto;
+  transform: translate(-50%, 8px) scale(0.4);
+  opacity: 0;
+  transform-origin: 50% 100%;
+  transition: opacity 700ms ease, transform 900ms cubic-bezier(0.2, 0.8, 0.3, 1.1);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.final-stage.is-blooming .final-sunflower.pixel-sprite {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.final-stage.is-blooming .final-plant .plant-character {
+  opacity: 0.9;
+}
+
+/* jardín de girasoles que brotan escalonados */
+.final-garden {
+  position: absolute;
+  inset: auto 0 3% 0;
+  height: 40%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.garden-flower {
+  position: absolute;
+  bottom: 0;
+  width: clamp(26px, 7vw, 44px);
+  height: var(--gh, 60%);
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+  animation: flowerRise 700ms cubic-bezier(0.2, 0.8, 0.3, 1.12) both;
+}
+
+.garden-flower canvas {
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  display: block;
+}
+
+@keyframes flowerRise {
+  from { transform: translateX(-50%) translateY(40%) scaleY(0.3); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0) scaleY(1); opacity: 1; }
+}
+
+/* Dani y Diego se juntan alrededor de la planta */
+.scene--final .final-cat,
+.scene--final .final-akita {
+  transition: transform 900ms var(--ease-page);
+}
+
+.final-stage.together .final-cat {
+  transform: translateX(46%);
+}
+
+.final-stage.together .final-akita {
+  transform: translateX(-46%);
+}
+
+/* mantita que los cubre del frío */
+.final-mantita {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: 210%;
+  height: 42%;
+  transform: translate(-50%, 40%);
+  opacity: 0;
+  border-radius: 40% 40% 18% 18%;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      var(--berry) 0 8px,
+      var(--coral) 8px 16px
+    );
+  border: 2px solid var(--ink);
+  box-shadow: 0 -2px 0 rgba(43, 38, 32, 0.2) inset;
+  transition: opacity 500ms ease, transform 800ms var(--ease-page);
+  pointer-events: none;
+  z-index: 6;
+}
+
+.final-stage.tucked .final-mantita {
+  opacity: 0.96;
+  transform: translate(-50%, 0);
+}
+
+/* emoticón flotante */
+.float-emote {
+  position: absolute;
+  z-index: 14;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: floatEmote 2s ease-out forwards;
+}
+
+.float-emote__art {
+  width: 26px;
+  height: 26px;
+}
+
+@keyframes floatEmote {
+  0% { opacity: 0; transform: translate(-50%, -30%) scale(0.5); }
+  20% { opacity: 1; transform: translate(-50%, -60%) scale(1.1); }
+  70% { opacity: 1; transform: translate(-50%, -120%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -170%) scale(0.9); }
+}
+
+html.reduced-motion .garden-flower,
+html.reduced-motion .float-emote {
+  animation-duration: 0.01ms;
+}
+
+/* ============ portada ============ */
+
+.cover-leaf-svg.pixel-sprite {
+  width: 100%;
+  height: auto;
+}
+
+.cover-sun.pixel-sprite {
+  position: absolute;
+  top: 7%;
+  right: 8%;
+  width: clamp(52px, 15vw, 84px);
+  height: auto;
+  z-index: 2;
+  animation: coverSunBob 6s ease-in-out infinite alternate;
+}
+
+@keyframes coverSunBob {
+  from { transform: translateY(0) rotate(-2deg); }
+  to { transform: translateY(-6px) rotate(2deg); }
+}
+
+.cover-peek {
+  position: absolute;
+  bottom: 0;
+  width: clamp(78px, 22vw, 128px);
+  z-index: 3;
+}
+
+.cover-peek .character.pixel-sprite {
+  width: 100%;
+}
+
+.cover-peek--dani {
+  left: 3%;
+  transform: translateY(34%);
+  animation: peekUp 5s ease-in-out infinite alternate;
+}
+
+.cover-peek--diego {
+  right: 3%;
+  transform: translateY(40%);
+  animation: peekUp 5.6s ease-in-out infinite alternate;
+}
+
+@keyframes peekUp {
+  from { transform: translateY(40%); }
+  to { transform: translateY(28%); }
+}
+
+.cover-sparkles {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cover-sparkles i {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--sun);
+  box-shadow: 0 0 0 1px var(--ink);
+  transform: translate(-50%, -50%);
+  animation: coverSpark 0.85s ease-out forwards;
+}
+
+@keyframes coverSpark {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--sx, 0px)), -140%) scale(0.4) rotate(45deg);
+  }
+}
+
+html.reduced-motion .cover-sun.pixel-sprite,
+html.reduced-motion .cover-peek {
+  animation: none;
+}
+
 /* mirar a la izquierda: se voltea el sprite */
 .character.facing--left {
   transform: scaleX(-1);

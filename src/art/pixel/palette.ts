@@ -22,10 +22,19 @@ export const PIX = {
   // acentos comunes
   clay: "var(--terracotta-light)",
   clayD: "var(--terracotta)",
-  nose: "#d98a6a",
-  cheek: "#e79b78",
-  lens: "#eaf3f2",
-  white: "#fbf4e4",
+  nose: "#e28a5f",
+  cheek: "#f2986f",
+  lens: "#ecf6f4",
+  white: "#fdf6e6",
+
+  // acentos vivos (emoticones, chispas, cielo/frío)
+  coral: "var(--coral)",
+  berry: "var(--berry)",
+  plum: "var(--plum)",
+  sky: "var(--sky)",
+  skyDeep: "var(--sky-deep)",
+  mint: "var(--mint)",
+  snow: "var(--snow)",
 
   // hojas secas / follaje seco
   sage: "var(--sage)",
@@ -40,12 +49,12 @@ export const PIX = {
   stem: "var(--green-new)",
   leafY: "var(--dani-yellow)",
   leafT: "var(--diego-turquoise)",
-  leafG: "#6f9150",
-  leafGD: "#557038",
-  bloom: "#f2d06a",
-  bloomC: "#e78b63",
-  burnt: "#3a352c",
-  smoke: "#efe7d4",
+  leafG: "#7fbb43",
+  leafGD: "#5a8a2f",
+  bloom: "#ffd451",
+  bloomC: "var(--coral)",
+  burnt: "#332e28",
+  smoke: "#f2ecdc",
 
   // sol
   sun: "var(--sun)",
@@ -55,7 +64,7 @@ export const PIX = {
 
   // agua / sombra
   water: "var(--rain)",
-  waterL: "#93b7b6",
+  waterL: "#a6e0ea",
   shadow: "rgba(35,45,42,0.34)",
   shadowD: "rgba(24,34,32,0.5)",
 } satisfies Record<string, string>;

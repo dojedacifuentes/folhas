@@ -6,12 +6,13 @@ import { renderDani } from "../art/characters/DaniCharacter";
 import { renderDiego } from "../art/characters/DiegoCharacter";
 import {
   renderSeed,
-  renderThimble,
   setInteractiveObjectState,
   type InteractiveObjectState,
 } from "../art/objects/InteractiveObjects";
 import { renderPlantCharacter } from "../art/PlantCharacter";
 import { leafButtonSVG } from "../art/svgLibrary";
+import { pixelPlaceholder } from "../art/pixel/engine";
+import { LivingPlant } from "../art/pixel/LivingPlant";
 import { DraggableOffering } from "../interactions/DraggableOffering";
 
 type OfferingPhase =
@@ -27,8 +28,9 @@ export class OfferingsScene implements Scene {
   private ctx!: SceneContext;
   private phase: OfferingPhase = "water";
   private timers: number[] = [];
-  private waterDrag: DraggableOffering | null = null;
   private seedDrag: DraggableOffering | null = null;
+  private cloudCleanup: (() => void) | null = null;
+  private living: LivingPlant | null = null;
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
@@ -72,10 +74,11 @@ export class OfferingsScene implements Scene {
             })}
             <p class="thought thought--diego">${c.akitaThought}</p>
           </div>
-          ${renderThimble({
-            label: c.waterLabel,
-            className: "offer-drag offer-drag--water",
-          })}
+          <button class="offer-cloud" type="button" aria-label="${c.waterLabel}">
+            ${pixelPlaceholder("cloud", "idle", { decorative: true, className: "offer-cloud-art" })}
+            <span class="cloud-meter" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
+          <div class="offer-rain" aria-hidden="true"></div>
           ${renderSeed({
             state: "disabled",
             label: c.seedLabel,
@@ -103,7 +106,7 @@ export class OfferingsScene implements Scene {
       this.restoreComplete();
     } else if (ctx.state.waterPlaced) {
       el.classList.add("water-done");
-      this.setObjectState(".offer-drag--water", "completed");
+      this.hideCloud();
       this.activateSeed(false);
     } else {
       this.activateWater();
@@ -114,21 +117,23 @@ export class OfferingsScene implements Scene {
   private stageParts(): {
     stage: HTMLElement;
     plant: HTMLElement;
-    water: HTMLElement;
     seed: HTMLElement;
   } | null {
     if (!this.el) return null;
     return {
       stage: this.el.querySelector<HTMLElement>(".offer-stage")!,
       plant: this.el.querySelector<HTMLElement>(".offer-plant")!,
-      water: this.el.querySelector<HTMLElement>(".offer-drag--water")!,
       seed: this.el.querySelector<HTMLElement>(".offer-drag--seed")!,
     };
   }
 
+  private hideCloud(): void {
+    const cloud = this.el?.querySelector<HTMLElement>(".offer-cloud");
+    if (cloud) cloud.hidden = true;
+  }
+
   private activateWater(): void {
-    const parts = this.stageParts();
-    if (!parts) return;
+    if (!this.el) return;
     this.phase = "water";
     this.setVisualState(
       "watering",
@@ -138,26 +143,60 @@ export class OfferingsScene implements Scene {
       true,
       false
     );
-    this.setObjectState(".offer-drag--water", "idle");
-    parts.water.tabIndex = 0;
-    parts.water.removeAttribute("aria-hidden");
+    const cloud = this.el.querySelector<HTMLButtonElement>(".offer-cloud")!;
+    let squeezes = 0;
+    const rainOnce = (): void => {
+      if (this.phase !== "water") return;
+      squeezes += 1;
+      cloud.dataset.squeezes = String(squeezes);
+      cloud.classList.remove("is-squeezing");
+      void cloud.offsetWidth;
+      cloud.classList.add("is-squeezing");
+      this.spawnRain();
+      this.ctx.onFirstInteraction();
+      this.ctx.audio.drop();
+      // la planta agradece cada chorrito
+      if (squeezes >= 3) this.placeWater();
+    };
+    const onDown = (e: PointerEvent) => {
+      e.preventDefault();
+      rainOnce();
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        rainOnce();
+      }
+    };
+    cloud.addEventListener("pointerdown", onDown);
+    cloud.addEventListener("keydown", onKey);
+    this.cloudCleanup = () => {
+      cloud.removeEventListener("pointerdown", onDown);
+      cloud.removeEventListener("keydown", onKey);
+    };
+    cloud.focus({ preventScroll: true });
+  }
 
-    this.waterDrag?.destroy();
-    this.waterDrag = new DraggableOffering({
-      el: parts.water,
-      target: parts.plant,
-      surface: parts.stage,
-      magnetRadius: 130,
-      onNear: (near) => this.setObjectState(".offer-drag--water", near ? "active" : "idle"),
-      onPlaced: () => this.placeWater(),
-    });
+  private spawnRain(): void {
+    const rain = this.el?.querySelector<HTMLElement>(".offer-rain");
+    if (!rain || this.ctx.reducedMotion()) return;
+    for (let i = 0; i < 4; i++) {
+      const drop = document.createElement("i");
+      drop.style.setProperty("--rx", `${(Math.random() * 60 - 30).toFixed(0)}px`);
+      drop.style.setProperty("--rd", `${(120 + Math.random() * 80).toFixed(0)}ms`);
+      rain.appendChild(drop);
+      drop.addEventListener("animationend", () => drop.remove(), { once: true });
+      window.setTimeout(() => drop.isConnected && drop.remove(), 900);
+    }
   }
 
   private placeWater(): void {
     if (!this.el || this.phase !== "water") return;
     this.phase = "water-feedback";
     this.ctx.onFirstInteraction();
-    this.setObjectState(".offer-drag--water", "completed");
+    this.cloudCleanup?.();
+    this.cloudCleanup = null;
+    this.hideCloud();
     this.el.classList.add("water-done", "water-feedback");
     this.setVisualState("happy", "watching", "seed", "", false, false);
     this.ctx.audio.drop();
@@ -244,6 +283,7 @@ export class OfferingsScene implements Scene {
       this.ctx.announce(content.offerings.sproutAnnouncement);
     }
 
+    this.startLivingPlant();
     const delay = this.ctx.reducedMotion() ? 80 : 320;
     this.timers.push(window.setTimeout(() => this.showAfter(true), delay));
   }
@@ -252,14 +292,30 @@ export class OfferingsScene implements Scene {
     if (!this.el) return;
     this.phase = "complete";
     this.el.classList.add("water-done", "seed-done", "sprout-born", "is-restored");
-    this.setObjectState(".offer-drag--water", "completed");
+    this.hideCloud();
     this.setObjectState(".offer-drag--seed", "completed");
     this.el
       .querySelector<HTMLCanvasElement>(".offer-plant canvas[data-character=\"plant\"]")
       ?.classList.remove("plant-context--empty");
     this.setVisualState("happy", "proud", "sprout", "", false, true);
     this.hideInstruction();
+    this.startLivingPlant();
     this.showAfter(false);
+  }
+
+  private startLivingPlant(): void {
+    if (this.living || !this.el) return;
+    const canvas = this.el.querySelector<HTMLElement>(
+      '.offer-plant canvas[data-character="plant"]'
+    );
+    const container = this.el.querySelector<HTMLElement>(".offer-plant");
+    if (!canvas || !container) return;
+    this.living = new LivingPlant({
+      plant: canvas,
+      container,
+      reducedMotion: this.ctx.reducedMotion(),
+    });
+    this.living.start();
   }
 
   private hideInstruction(): void {
@@ -319,9 +375,11 @@ export class OfferingsScene implements Scene {
   }
 
   destroy(): void {
-    this.waterDrag?.destroy();
+    this.cloudCleanup?.();
+    this.cloudCleanup = null;
+    this.living?.destroy();
+    this.living = null;
     this.seedDrag?.destroy();
-    this.waterDrag = null;
     this.seedDrag = null;
     this.timers.forEach((timer) => window.clearTimeout(timer));
     this.timers = [];

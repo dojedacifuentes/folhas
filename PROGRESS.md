@@ -1,5 +1,29 @@
 # Progreso
 
+## Más juego y vida (v4, 2026-07-17)
+
+Ronda centrada en hacerlo más divertido, gracioso e inesperado, con más
+storytelling e interactividad.
+
+- **Paleta más vibrante y artística**: tokens re-mapeados (amarillo/turquesa más
+  saturados, verde girasol, coral, baya, ciruela, cielo, menta, nieve). El pixel
+  art hereda los tokens, así que todo el arte se aviva a la vez.
+- **Nube exprimible** en Offerings: reemplaza el dedal. La nube (con carita)
+  flota sobre la maceta; se exprime pulsándola tres veces (medidor de tres
+  gotas), llueve, y luego se cuida la semilla. Accesible con Enter.
+- **Despeje de hojas más rápido**: pincel mayor (52) y umbral más bajo (0.4); se
+  limpia en ~3 trazos. El atajo accesible aparece a los 6 s (antes 12 s).
+- **Portada nueva**: sol pixel con carita, Dani y Diego asomándose por las
+  esquinas, y **chispas que siguen el cursor**. Título y susurro conservados.
+- **Planta viva** (`LivingPlant`): mientras juegas, la planta pide agua/comida/
+  nanai/sol con **emoticones pixel** (`emote.ts`: corazón, gota, sueño, frío,
+  chispa, hambre, nota, sol) y frases cortas en una burbuja; **se inclina hacia
+  el cursor** y suelta un corazón si te acercas. Activa en Offerings y Final.
+- **Epílogo final interactivo**: la planta florece en **girasol** y luego brotan
+  **muchos girasoles** escalonados por el jardín; **Dani y Diego se juntan** con
+  un corazón; una **mantita** los cubre del frío. Toques: Dani → nanai, Diego →
+  abrazo, cubo que gira, planta que se inclina.
+
 ## Pixel art (v3, 2026-07-16)
 
 Rediseño completo del arte a **pixel art dibujado en Canvas** (sin imágenes

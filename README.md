@@ -9,11 +9,14 @@ Dani (gata amarilla) piensa en portugués; Diego (akita turquesa), en español.
 
 | Escena | Propósito | Acción principal |
 | --- | --- | --- |
-| `cover` | Entrar en la historia | Arrastrar la hoja |
-| `clear-space` | Hacer lugar | Raspar la capa de hojas |
-| `offerings` | Aportar algo distinto | Arrastrar el dedal y la semilla a la maceta |
+| `cover` | Entrar en la historia | Arrastrar la hoja (sol y personajes reaccionan) |
+| `clear-space` | Hacer lugar | Raspar la capa de hojas (rápido, ~3 trazos) |
+| `offerings` | Aportar algo distinto | Exprimir la nube y acomodar la semilla |
 | `care` | Encontrar la medida | Dos gotas, un soplo deslizado y llevar el sol a la planta |
-| `final` | Contemplar lo construido | Interacciones opcionales |
+| `final` | Contemplar lo construido | Girasoles, abrazo, nanai y mantita |
+
+Mientras juegas, la planta cobra vida: pide agua, comida o nanai con emoticones
+pixel y frases cortas, y se inclina hacia el cursor.
 
 `care` contiene tres momentos consecutivos. Un exceso de agua, viento o sol produce una reacción breve y reinicia solamente ese momento; los hitos anteriores permanecen guardados.
 

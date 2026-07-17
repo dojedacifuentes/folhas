@@ -1,37 +1,46 @@
 :root {
-  /* Paleta interpretada de las láminas de dirección, no muestreada como asset. */
-  --paper: #f0e5d1;
-  --paper-light: #faf3e5;
-  --paper-shadow: #d9c7aa;
+  /* Paleta v4: más vibrante y artística, conservando la calidez de papel. */
+  --paper: #f6ecd6;
+  --paper-light: #fdf5e4;
+  --paper-shadow: #e0cba4;
 
-  --ink: #29291f;
-  --ink-soft: #4a4739;
-  --night: #21383a;
-  --night-deep: #172a2e;
+  --ink: #2b2620;
+  --ink-soft: #574d3c;
+  --night: #143240;
+  --night-deep: #0e2531;
 
-  --dani-yellow: #d99d29;
-  --dani-light: #e8b83f;
-  --dani-shadow: #a86a22;
-  --dani-cream: #f1d9a2;
-  --diego-turquoise: #3f776f;
-  --diego-light: #6e9991;
-  --diego-shadow: #285451;
-  --diego-cream: #ece6c9;
+  --dani-yellow: #f2b02f;
+  --dani-light: #ffd061;
+  --dani-shadow: #c67c17;
+  --dani-cream: #ffe6ab;
+  --diego-turquoise: #17a597;
+  --diego-light: #67cdbe;
+  --diego-shadow: #0d7368;
+  --diego-cream: #eae7c8;
 
-  --leaf-dry: #97623a;
-  --leaf-dark: #5e4932;
-  --sage: #85865a;
-  --green-moss: #56643a;
-  --green-new: #657c45;
-  --rain: #6c9696;
-  --sun: #e6b748;
-  --burnt: #39362b;
-  --soil-dry: #7b5234;
-  --soil-wet: #4b382c;
-  --terracotta: #9d5e2d;
-  --terracotta-light: #bd7740;
+  --leaf-dry: #b06a33;
+  --leaf-dark: #6a4526;
+  --sage: #93a05e;
+  --green-moss: #5a7a34;
+  --green-new: #7fbb43;
+  --rain: #4fb0c4;
+  --sun: #ffc233;
+  --burnt: #35302a;
+  --soil-dry: #8a5a2e;
+  --soil-wet: #47321f;
+  --terracotta: #c26a2e;
+  --terracotta-light: #ef8f46;
   --plant-pot: var(--terracotta);
   --plant-stem: var(--green-new);
+
+  /* Acentos artísticos nuevos (pops de color, emoticones, cielo/noche). */
+  --sky: #a6dce8;
+  --sky-deep: #66b8cf;
+  --coral: #f47a54;
+  --berry: #d95f8c;
+  --plum: #6f5bad;
+  --mint: #8fdcae;
+  --snow: #dff2f6;
 
   /* Estados narrativos: una futura referencia puede retocar el mundo aquí. */
   --state-awake: #819b68;
