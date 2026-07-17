@@ -9,7 +9,17 @@ export const content = {
   cover: {
     title: "Herbario de lo que cuidamos",
     subtitle: "Una historia pequeña sobre cuidar en compañía",
-    annotation: "ficha n.º 1 — recolectada con cuidado",
+    // sello de archivo: se elige una al azar, sin repetir de inmediato
+    annotations: [
+      "ejemplar todavía no clasificado.",
+      "se ruega no apurar el crecimiento.",
+      "archivo sensible a la lluvia.",
+      "esta hoja apareció sin autorización.",
+      "todo parece bajo control. es una estimación.",
+      "herbario abierto por causas afectivas.",
+      "algunas hojas requieren paciencia.",
+      "registro provisional de cosas vivas.",
+    ],
     instruction: "aparta la hoja",
     whisper: "tinha algo respirando aqui",
     leafLabel:
@@ -36,6 +46,35 @@ export const content = {
     number: "II",
     heading: "Traer lo que tenemos",
     lede: "Diego trae un plan diminuto. Dani trae el clima.",
+    prepareInstruction: "retira las piedritas de la tierra",
+    stoneLabel: "Piedrita en la tierra. Tócala para retirarla.",
+    prepareDone: "La tierra quedó lista. La maceta, aproximadamente.",
+    potPrepLines: [
+      "más al centro. tengo reputación estructural.",
+      "la tierra está lista. yo no.",
+      "no cuestiono el método. todavía.",
+      "procedamos sin entusiasmo excesivo.",
+    ],
+    chooseInstruction: "encuentra la semilla verdadera",
+    trayLabel: "Bandeja de candidatos a semilla.",
+    stoneTryLines: [
+      "aprecio la confianza, pero soy geología.",
+      "puedo quedarme. no prometo brotar.",
+      "mi crecimiento es considerablemente más lento.",
+    ],
+    buttonTryLines: [
+      "tengo agujeros. eso no me vuelve semilla.",
+      "pertenezco a otra clase de reparación.",
+    ],
+    seedFoundLines: [
+      "finalmente. la selección natural estaba tardando.",
+      "soy pequeña, no decorativa.",
+      "acepto participar bajo condiciones razonables de humedad.",
+      "considero adecuado este domicilio.",
+    ],
+    stoneObjectLabel: "Una piedra que se hace pasar por semilla.",
+    buttonObjectLabel: "Un botón con intenciones de semilla.",
+    seedObjectLabel: "La semilla verdadera. Tócala para elegirla.",
     seedInstruction: "acerca la semilla a la maceta",
     waterInstruction: "exprime la nube sobre la semilla",
     waterLabel:
@@ -139,6 +178,22 @@ export const content = {
       "todo brote implica riesgos administrativos.",
       "la naturaleza revisará su solicitud.",
     ],
+    postBurn: [
+      "sobreviví. mi confianza, menos.",
+      "añadiremos esto al expediente térmico.",
+      "crecimiento con antecedentes.",
+      "estoy viva, pero presentaré observaciones.",
+    ],
+    postFlood: [
+      "no soy una embarcación.",
+      "el drenaje presentó su renuncia.",
+      "estamos cultivando un pantano con ambiciones.",
+    ],
+    escapeFeint: [
+      "no estoy huyendo. estoy redistribuyendo mi presencia.",
+      "mi abogado recomendó moverme.",
+      "¡el contrato decía planta pequeña!",
+    ],
   },
 
   final: {
@@ -167,6 +222,31 @@ export const content = {
     abrazo: "juntos.",
     frio: "una mantita.",
     sunflowerLine: "Se abrió en un girasol. Y luego en muchos.",
+    // etiqueta botánica del ejemplar, con datos reales de la partida
+    label: {
+      species: "Helianthus annuus",
+      keeper: "ejemplar cuidado por D + D",
+      waterOk: "agua: en su medida",
+      waterIncidents: "agua: suficiente, con incidentes",
+      lightOk: "luz: aprendida",
+      lightIncidents: "luz: aprendida, con antecedentes",
+      windIncidents: "viento: uno con currículum",
+      seedIncidents: "semilla: hallada tras varias entrevistas",
+      status: "estado: todavía creciendo",
+    },
+    closingLines: [
+      "No quedó perfecto. Quedó vivo.",
+      "Algunas cosas crecen porque alguien volvió.",
+      "El archivo permanece abierto.",
+      "Todavía necesita agua. Por suerte.",
+      "Nada concluye del todo en un jardín.",
+      "Ainda crescendo.",
+    ],
+    closingMemoryLines: {
+      flooded: "Desarrolló una relación compleja con la lluvia.",
+      burned: "Creció orientándose prudentemente lejos del sol.",
+      clean: "El cuidado fue sospechosamente competente.",
+    },
   },
 
   chrome: {

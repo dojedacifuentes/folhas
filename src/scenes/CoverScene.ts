@@ -1,5 +1,6 @@
 import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
+import { pickLine } from "../app/speech";
 import { createBotanicalShadows } from "../art/BotanicalShadows";
 import { renderDani } from "../art/characters/DaniCharacter";
 import { renderDiego } from "../art/characters/DiegoCharacter";
@@ -43,7 +44,7 @@ export class CoverScene implements Scene {
       <header class="cover-titles">
         <h1 class="cover-title">${c.title}</h1>
         <p class="cover-subtitle">${c.subtitle}</p>
-        <p class="cover-annotation" aria-hidden="true">${c.annotation}</p>
+        <p class="cover-annotation" aria-hidden="true">${pickLine(c.annotations)}</p>
       </header>
       <div class="cover-leaf-area">
         <p class="cover-whisper" aria-hidden="true" lang="pt">${c.whisper}</p>
@@ -73,6 +74,7 @@ export class CoverScene implements Scene {
   }
 
   private lastSparkle = 0;
+  private daniHideTimer: number | null = null;
   private onSparkle = (e: PointerEvent): void => {
     const now = performance.now();
     if (now - this.lastSparkle < 90 || !this.el) return;
@@ -87,6 +89,42 @@ export class CoverScene implements Scene {
     host.appendChild(s);
     s.addEventListener("animationend", () => s.remove(), { once: true });
     window.setTimeout(() => s.isConnected && s.remove(), 900);
+
+    // Dani se esconde si intentas mirarla de cerca
+    const dani = this.el.querySelector<HTMLElement>(".cover-peek--dani");
+    if (dani) {
+      const dr = dani.getBoundingClientRect();
+      const dist = Math.hypot(
+        e.clientX - (dr.left + dr.width / 2),
+        e.clientY - (dr.top + dr.height / 2)
+      );
+      if (dist < 130) {
+        dani.classList.add("is-hiding");
+        if (this.daniHideTimer !== null) window.clearTimeout(this.daniHideTimer);
+        this.daniHideTimer = window.setTimeout(
+          () => dani.classList.remove("is-hiding"),
+          1400
+        );
+      }
+    }
+
+    // las motas de polvo se apartan del cursor
+    this.el.querySelectorAll<HTMLElement>(".cover-motes i").forEach((mote) => {
+      const mr = mote.getBoundingClientRect();
+      const mx = mr.left + mr.width / 2;
+      const my = mr.top + mr.height / 2;
+      const d = Math.hypot(e.clientX - mx, e.clientY - my);
+      if (d < 70 && d > 0) {
+        const push = 26 / Math.max(12, d);
+        mote.style.setProperty(
+          "--mote-push",
+          `${((mx - e.clientX) * push).toFixed(0)}px, ${((my - e.clientY) * push).toFixed(0)}px`
+        );
+        mote.classList.add("is-pushed");
+      } else {
+        mote.classList.remove("is-pushed");
+      }
+    });
   };
 
   // toque limpio o Enter/Espacio: abrir sin exigir el gesto
@@ -190,6 +228,8 @@ export class CoverScene implements Scene {
       }
     }
     this.el?.removeEventListener("pointermove", this.onSparkle);
+    if (this.daniHideTimer !== null) window.clearTimeout(this.daniHideTimer);
+    this.daniHideTimer = null;
     this.activeId = null;
     this.timers.forEach((timer) => window.clearTimeout(timer));
     this.timers = [];

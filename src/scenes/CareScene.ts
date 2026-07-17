@@ -228,14 +228,33 @@ export class CareScene implements Scene {
       const dir = lastX > 0.5 ? -1 : 1;
       const x = 0.5 + dir * (0.18 + Math.random() * 0.24);
       const y = 0.34 + Math.random() * 0.3;
-      lastX = x;
       const speed = Math.max(200, 320 - caught * 45);
+
+      // finta: a veces amaga un pasito y de inmediato sale disparada
+      if (Math.random() < 0.3) {
+        const feintX = lastX + dir * 0.07;
+        place(feintX, y, 140);
+        this.showQuip(content.quips.escapeFeint, "escape");
+        dartTimer = this.schedule(() => {
+          if (this.settled || caught >= needed) return;
+          lastX = x;
+          place(x, y, speed);
+          pot.classList.remove("is-darting");
+          void pot.offsetWidth;
+          pot.classList.add("is-darting");
+          this.ctx.audio.woodTap();
+          dartTimer = this.schedule(dart, speed + 240 + Math.random() * 320);
+        }, 190);
+        return;
+      }
+
+      lastX = x;
       place(x, y, speed);
       pot.classList.remove("is-darting");
       void pot.offsetWidth;
       pot.classList.add("is-darting");
       this.ctx.audio.woodTap();
-      if (Math.random() < 0.45) this.showQuip(c.lines, "escape");
+      if (Math.random() < 0.4) this.showQuip(c.lines, "escape");
       // pausa corta e irregular entre dardos: ventana de reacción pequeña
       dartTimer = this.schedule(dart, speed + 240 + Math.random() * 320);
     };
@@ -671,6 +690,13 @@ export class CareScene implements Scene {
     if (!this.el || this.settled) return;
     this.settled = true;
     this.cancelFrame();
+
+    // el mundo recuerda los incidentes (y los comenta al final)
+    if (this.phase === "water") this.ctx.state.memory.flooded = true;
+    if (this.phase === "wind") this.ctx.state.memory.gusted = true;
+    if (this.phase === "sun") this.ctx.state.memory.burned = true;
+    this.ctx.save();
+
     const stage = this.el.querySelector<HTMLElement>(".care-stage")!;
     const instruction = this.el.querySelector<HTMLElement>(".care-foot .scene-instruction")!;
     stage.classList.add("is-failure", appearance.className);
@@ -699,9 +725,17 @@ export class CareScene implements Scene {
     });
     this.ctx.announce(`${message}. ${retry}`);
 
+    // la planta deja constancia del incidente, con dignidad
+    if (this.phase === "sun") {
+      this.schedule(() => this.showQuip(content.quips.postBurn, "fail"), 650);
+    }
+    if (this.phase === "water") {
+      this.schedule(() => this.showQuip(content.quips.postFlood, "fail"), 650);
+    }
+
     this.schedule(
       () => this.renderPhase(this.phase),
-      this.ctx.reducedMotion() ? 520 : 1750
+      this.ctx.reducedMotion() ? 520 : 1900
     );
   }
 

@@ -5,6 +5,14 @@ export type SceneId =
   | "care"
   | "final";
 
+/** Memoria narrativa: incidentes que el mundo recuerda y comenta después. */
+export type ExperienceMemory = {
+  flooded: boolean; // hubo exceso de agua en los cuidados
+  gusted: boolean; // hubo viento con currículum
+  burned: boolean; // la planta llegó a quemarse
+  wrongSeeds: number; // objetos que no eran la semilla
+};
+
 export type ExperienceState = {
   currentScene: SceneId;
   coverOpened: boolean;
@@ -17,6 +25,7 @@ export type ExperienceState = {
   sunBalanced: boolean;
   finalReached: boolean;
   audioEnabled: boolean;
+  memory: ExperienceMemory;
 };
 
 export const SCENE_ORDER: readonly SceneId[] = [
@@ -42,6 +51,7 @@ export function defaultState(): ExperienceState {
     sunBalanced: false,
     finalReached: false,
     audioEnabled: false,
+    memory: { flooded: false, gusted: false, burned: false, wrongSeeds: 0 },
   };
 }
 
@@ -128,6 +138,19 @@ export function sanitizeState(value: unknown): ExperienceState {
 
   const state = defaultState();
   state.audioEnabled = isTrue(value, "audioEnabled");
+
+  // La memoria narrativa es anecdótica: se restaura con tolerancia y sin
+  // poder desbloquear nada (solo cambia comentarios y la etiqueta final).
+  if (isRecord(value.memory)) {
+    state.memory.flooded = value.memory.flooded === true;
+    state.memory.gusted = value.memory.gusted === true;
+    state.memory.burned = value.memory.burned === true;
+    const wrong = value.memory.wrongSeeds;
+    state.memory.wrongSeeds =
+      typeof wrong === "number" && Number.isFinite(wrong)
+        ? Math.max(0, Math.min(9, Math.floor(wrong)))
+        : 0;
+  }
 
   // Cada hito solo puede existir en su propia sala o en una posterior.
   state.coverOpened = isTrue(value, "coverOpened");

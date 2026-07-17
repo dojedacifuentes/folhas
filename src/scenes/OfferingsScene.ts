@@ -1,5 +1,6 @@
 import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
+import { pickLine } from "../app/speech";
 import { setSceneVisualState } from "../app/visualState";
 import { createBotanicalShadows } from "../art/BotanicalShadows";
 import { renderDani } from "../art/characters/DaniCharacter";
@@ -16,6 +17,8 @@ import { LivingPlant } from "../art/pixel/LivingPlant";
 import { DraggableOffering } from "../interactions/DraggableOffering";
 
 type OfferingPhase =
+  | "prepare"
+  | "choose"
   | "water"
   | "water-feedback"
   | "seed"
@@ -64,7 +67,28 @@ export class OfferingsScene implements Scene {
               className: "plant-context--empty",
               decorative: true,
             })}</div>
+            <button class="soil-stone soil-stone--1" type="button" aria-label="${c.stoneLabel}" hidden>
+              ${pixelPlaceholder("stone", "idle", { decorative: true })}
+            </button>
+            <button class="soil-stone soil-stone--2" type="button" aria-label="${c.stoneLabel}" hidden>
+              ${pixelPlaceholder("stone", "idle", { decorative: true })}
+            </button>
+            <button class="soil-stone soil-stone--3" type="button" aria-label="${c.stoneLabel}" hidden>
+              ${pixelPlaceholder("stone", "idle", { decorative: true })}
+            </button>
           </div>
+          <div class="seed-tray" role="group" aria-label="${c.trayLabel}" hidden>
+            <button class="tray-item tray-item--stone" type="button" aria-label="${c.stoneObjectLabel}">
+              ${pixelPlaceholder("stone", "idle", { decorative: true })}
+            </button>
+            <button class="tray-item tray-item--seed" type="button" aria-label="${c.seedObjectLabel}">
+              ${pixelPlaceholder("seed", "idle", { decorative: true })}
+            </button>
+            <button class="tray-item tray-item--button" type="button" aria-label="${c.buttonObjectLabel}">
+              ${pixelPlaceholder("button", "idle", { decorative: true })}
+            </button>
+          </div>
+          <div class="quip-bubble quip-bubble--offer" aria-hidden="true"></div>
           <div class="offer-diego" aria-hidden="true">
             ${renderDiego({
               state: "watching",
@@ -113,9 +137,97 @@ export class OfferingsScene implements Scene {
       )?.classList.remove("plant-context--empty");
       this.activateWater(false);
     } else {
-      this.activateSeed(false);
+      this.startPrepare();
     }
     return el;
+  }
+
+  /** Paso 1 del ritual: la tierra trae piedritas; se retiran a mano. */
+  private startPrepare(): void {
+    if (!this.el) return;
+    this.phase = "prepare";
+    const c = content.offerings;
+    this.setVisualState("curious", "watching", "seed", c.prepareInstruction, true, false);
+    const stones = Array.from(
+      this.el.querySelectorAll<HTMLButtonElement>(".soil-stone")
+    );
+    let removed = 0;
+    stones.forEach((stone) => {
+      stone.hidden = false;
+      const onTap = (): void => {
+        if (stone.disabled) return;
+        stone.disabled = true;
+        removed += 1;
+        this.ctx.onFirstInteraction();
+        this.ctx.audio.woodTap();
+        stone.classList.add("is-flicked");
+        this.timers.push(window.setTimeout(() => (stone.hidden = true), 480));
+        if (removed === 1) {
+          this.showOfferQuip(pickLine(c.potPrepLines));
+        }
+        if (removed === stones.length) {
+          this.ctx.announce(c.prepareDone);
+          const delay = this.ctx.reducedMotion() ? 120 : 620;
+          this.timers.push(window.setTimeout(() => this.startChoose(), delay));
+        }
+      };
+      stone.addEventListener("click", onTap);
+    });
+  }
+
+  /** Paso 2: entre los candidatos, solo una es semilla de verdad. */
+  private startChoose(): void {
+    if (!this.el) return;
+    this.phase = "choose";
+    const c = content.offerings;
+    this.setVisualState("watching", "planting", "seed", c.chooseInstruction, true, false);
+    const tray = this.el.querySelector<HTMLElement>(".seed-tray")!;
+    tray.hidden = false;
+
+    const wrong = (button: HTMLButtonElement, lines: readonly string[]): void => {
+      this.ctx.audio.woodTap();
+      this.ctx.state.memory.wrongSeeds += 1;
+      this.ctx.save();
+      button.classList.remove("is-rejected");
+      void button.offsetWidth;
+      button.classList.add("is-rejected");
+      this.showOfferQuip(pickLine(lines));
+    };
+
+    const stoneBtn = tray.querySelector<HTMLButtonElement>(".tray-item--stone")!;
+    const buttonBtn = tray.querySelector<HTMLButtonElement>(".tray-item--button")!;
+    const seedBtn = tray.querySelector<HTMLButtonElement>(".tray-item--seed")!;
+    stoneBtn.addEventListener("click", () => wrong(stoneBtn, c.stoneTryLines));
+    buttonBtn.addEventListener("click", () => wrong(buttonBtn, c.buttonTryLines));
+    seedBtn.addEventListener(
+      "click",
+      () => {
+        this.ctx.audio.sprout();
+        this.showOfferQuip(pickLine(c.seedFoundLines));
+        seedBtn.classList.add("is-chosen");
+        const delay = this.ctx.reducedMotion() ? 160 : 700;
+        this.timers.push(
+          window.setTimeout(() => {
+            tray.hidden = true;
+            this.activateSeed(true);
+          }, delay)
+        );
+      },
+      { once: true }
+    );
+  }
+
+  /** Burbuja de habla del ritual (macetero, piedra, botón, semilla). */
+  private showOfferQuip(line: string): void {
+    const bubble = this.el?.querySelector<HTMLElement>(".quip-bubble--offer");
+    if (!bubble || !line) return;
+    bubble.textContent = line;
+    bubble.classList.remove("is-visible");
+    void bubble.offsetWidth;
+    bubble.classList.add("is-visible");
+    this.timers.push(
+      window.setTimeout(() => bubble.classList.remove("is-visible"), 2400)
+    );
   }
 
   private stageParts(): {

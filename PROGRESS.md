@@ -1,5 +1,37 @@
 # Progreso
 
+## Comedia botánica íntima (v6, 2026-07-17)
+
+Auditoría integral sobre el concepto rector: "una comedia botánica íntima
+dentro de un herbario vivo". Cada etapa gana descubrimiento, interacción,
+transformación, reacción, una línea graciosa y una consecuencia que
+reaparece.
+
+- **Portada viva**: sello de archivo rotativo (8 frases, sin repetición
+  inmediata, `pickLine`), Dani se esconde si el cursor se le acerca, las
+  motas de polvo se apartan del cursor, la hoja-emblema se ilumina al
+  tocarla.
+- **Ritual de siembra completo** en Traer lo que tenemos: retirar tres
+  piedritas de la tierra (el macetero comenta) → bandeja de candidatos
+  (piedra y botón impostores con réplicas dignas; la semilla acepta "bajo
+  condiciones razonables de humedad") → plantar → lluvia → brote.
+- **Sistema de voces** (`speech.ts` + pools en `content.ts`): líneas por
+  personaje y momento, sin repetición inmediata. Nada de frases incrustadas
+  en componentes.
+- **Memoria narrativa** (`state.memory`): inundación, viento, quema y
+  semillas equivocadas se registran en los fallos y reaparecen en:
+  réplicas post-incidente ("sobreviví. mi confianza, menos."), la finta del
+  escape, y la **etiqueta botánica final** con datos reales — *Helianthus
+  annuus*, "agua: suficiente, con incidentes", "luz: aprendida, con
+  antecedentes", "semilla: hallada tras varias entrevistas". Frase de
+  cierre que recuerda la partida ("Creció orientándose prudentemente lejos
+  del sol.").
+- **Escape con fintas**: 30% de amagues (pasito corto + arranque súbito)
+  con línea legal ("mi abogado recomendó moverme.").
+- **Entreactos teatrales**: las réplicas de los cierres de escena entran
+  escalonadas (gata primero, akita ~0.9 s después), no en bloque.
+- Verificado en móvil (375×812) y escritorio (1440×900), consola limpia.
+
 ## Dirección estética coherente (v5, 2026-07-17)
 
 Decisión asumida: **herbario poético interactivo con humor vegetal y

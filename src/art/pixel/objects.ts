@@ -165,6 +165,35 @@ function leafSmall(): PixelGrid {
   return g;
 }
 
+function stonePebble(): PixelGrid {
+  // piedrita digna: gris cálido con una veta y luz arriba
+  const g = new PixelGrid(16, 12);
+  g.ellipse(8, 7, 6, 4, "#8d8578");
+  g.ellipse(7, 6, 4, 2, "#a49b8b");
+  g.ellipse(10, 8, 3, 2, "#6f685d");
+  g.line(5, 8, 11, 6, "#6f685d");
+  g.set(5, 4, "#bfb6a4");
+  g.outline(PIX.ink);
+  return g;
+}
+
+function sewingButton(): PixelGrid {
+  // botón de hueso con sus agujeros delatores
+  const g = new PixelGrid(14, 14);
+  g.disc(7, 7, 5, "#d9c9a8");
+  g.disc(6, 6, 3, "#e8dcc0");
+  for (let a = 0; a < 8; a++) {
+    const ang = (a / 8) * Math.PI * 2;
+    g.set(7 + Math.cos(ang) * 5, 7 + Math.sin(ang) * 5, "#b3a180");
+  }
+  g.set(5, 6, PIX.ink);
+  g.set(9, 6, PIX.ink);
+  g.set(5, 9, PIX.ink);
+  g.set(9, 9, PIX.ink);
+  g.outline(PIX.ink);
+  return g;
+}
+
 function botanicalTag(): PixelGrid {
   // etiqueta de herbario: papel con ojal, cordel y líneas de escritura
   const g = new PixelGrid(30, 20);
@@ -212,6 +241,8 @@ const BUILDERS: Record<string, () => PixelGrid> = {
   leaf: leafObject,
   "leaf-small": leafSmall,
   tag: botanicalTag,
+  stone: stonePebble,
+  button: sewingButton,
 };
 
 const SIZES: Record<string, [number, number]> = {
@@ -227,6 +258,8 @@ const SIZES: Record<string, [number, number]> = {
   leaf: [36, 46],
   "leaf-small": [18, 22],
   tag: [30, 20],
+  stone: [16, 12],
+  button: [14, 14],
 };
 
 export function objectSprite(kind: string, _state = "idle"): SpriteDef {

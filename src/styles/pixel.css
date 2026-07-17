@@ -565,6 +565,226 @@ html.reduced-motion .final-cloud.pixel-sprite {
   animation: none;
 }
 
+/* ============ portada reactiva ============ */
+
+/* Dani se esconde si intentas mirarla */
+.cover-peek--dani {
+  transition: transform 420ms var(--ease-page);
+}
+
+.cover-peek--dani.is-hiding {
+  transform: translateY(96%) !important;
+  animation: none;
+}
+
+/* las motas se apartan del cursor */
+.cover-motes i {
+  transition: translate 380ms ease-out;
+}
+
+.cover-motes i.is-pushed {
+  translate: var(--mote-push, 0px, 0px);
+}
+
+/* la hoja se ilumina al pasar el cursor: nervaduras despiertas */
+.cover-leaf .cover-leaf-svg {
+  transition: filter 320ms ease, transform 320ms var(--ease-page);
+}
+
+.cover-leaf:hover .cover-leaf-svg,
+.cover-leaf:focus-visible .cover-leaf-svg {
+  filter: brightness(1.14) drop-shadow(0 0 7px rgba(255, 194, 51, 0.4));
+}
+
+/* ============ ritual: piedritas en la tierra ============ */
+
+.soil-stone {
+  position: absolute;
+  z-index: 9;
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: transform 420ms var(--ease-page), opacity 420ms ease;
+}
+
+.soil-stone canvas {
+  width: clamp(26px, 7vw, 36px);
+  image-rendering: pixelated;
+}
+
+.soil-stone--1 { left: 8%; bottom: 4%; }
+.soil-stone--2 { left: 38%; bottom: -7%; }
+.soil-stone--3 { right: 6%; bottom: 2%; }
+
+.soil-stone.is-flicked {
+  transform: translate(38px, -46px) rotate(40deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.soil-stone:focus-visible {
+  outline: 2px dashed var(--ink);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ============ ritual: bandeja de candidatos ============ */
+
+.seed-tray {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: clamp(10px, 3vw, 20px);
+  padding: 10px 14px;
+  background: var(--paper-light);
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 rgba(43, 38, 32, 0.16);
+}
+
+.seed-tray[hidden] {
+  display: none;
+}
+
+.tray-item {
+  min-width: 48px;
+  min-height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  border: 1px dashed color-mix(in srgb, var(--ink) 30%, transparent);
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  transition: transform 180ms var(--ease-page), background 180ms ease;
+}
+
+.tray-item canvas {
+  width: clamp(22px, 6vw, 30px);
+  image-rendering: pixelated;
+}
+
+.tray-item:hover,
+.tray-item:focus-visible {
+  background: color-mix(in srgb, var(--sun) 16%, transparent);
+  transform: translateY(-2px);
+}
+
+.tray-item.is-rejected {
+  animation: trayNo 420ms var(--ease-page);
+}
+
+@keyframes trayNo {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px) rotate(-4deg); }
+  65% { transform: translateX(5px) rotate(3deg); }
+}
+
+.tray-item.is-chosen {
+  background: color-mix(in srgb, var(--mint) 30%, transparent);
+  border-style: solid;
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* burbuja del ritual, sobre la maceta */
+.quip-bubble--offer {
+  top: 34%;
+}
+
+/* ============ entreactos teatrales: réplicas escalonadas ============ */
+
+.scene-after .speech {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 460ms ease, transform 460ms var(--ease-page);
+}
+
+.scene-after.is-visible .speech--cat {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 160ms;
+}
+
+.scene-after.is-visible .speech--akita {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 1050ms;
+}
+
+html.reduced-motion .scene-after .speech {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+/* ============ etiqueta botánica del final ============ */
+
+.final-label {
+  position: absolute;
+  top: 5%;
+  right: 3.5%;
+  z-index: 9;
+  max-width: min(46%, 210px);
+  padding: 8px 11px;
+  background: var(--paper-light);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  box-shadow: 4px 4px 0 rgba(14, 37, 49, 0.5);
+  transform: rotate(-1.6deg);
+}
+
+.final-label::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: -7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--paper-shadow);
+  border: 2px solid var(--ink);
+}
+
+.final-label__species {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.86rem;
+  letter-spacing: 0.03em;
+  margin: 0 0 2px;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+  padding-bottom: 2px;
+}
+
+.final-label__line {
+  font-family: var(--font-interface);
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.86;
+}
+
+.final-label__keeper {
+  font-style: italic;
+  opacity: 0.66;
+  margin-bottom: 3px;
+}
+
+.final-line--closing {
+  font-style: italic;
+  opacity: 0.85;
+  margin-top: 1.1em;
+}
+
 /* mirar a la izquierda: se voltea el sprite */
 .character.facing--left {
   transform: scaleX(-1);

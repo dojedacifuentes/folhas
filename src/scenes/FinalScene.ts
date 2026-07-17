@@ -1,5 +1,6 @@
 import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
+import { pickLine } from "../app/speech";
 import { setSceneVisualState } from "../app/visualState";
 import { renderDani } from "../art/characters/DaniCharacter";
 import { renderDiego } from "../art/characters/DiegoCharacter";
@@ -25,6 +26,23 @@ export class FinalScene implements Scene {
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
     const c = content.final;
+
+    // la etiqueta usa lo que de verdad pasó en esta partida
+    const mem = ctx.state.memory;
+    const labelLines = [
+      mem.flooded ? c.label.waterIncidents : c.label.waterOk,
+      mem.burned ? c.label.lightIncidents : c.label.lightOk,
+      ...(mem.gusted ? [c.label.windIncidents] : []),
+      ...(mem.wrongSeeds > 0 ? [c.label.seedIncidents] : []),
+      c.label.status,
+    ];
+    const memoryLine = mem.burned
+      ? c.closingMemoryLines.burned
+      : mem.flooded
+        ? c.closingMemoryLines.flooded
+        : c.closingMemoryLines.clean;
+    const closing = Math.random() < 0.5 ? memoryLine : pickLine(c.closingLines);
+
     const el = document.createElement("section");
     el.className = "scene scene--final";
     el.setAttribute("aria-label", `${c.number}. ${c.heading}`);
@@ -77,10 +95,11 @@ export class FinalScene implements Scene {
             decorative: true,
             className: "final-cloud",
           })}
-          ${pixelPlaceholder("tag", "idle", {
-            decorative: true,
-            className: "final-tag",
-          })}
+          <div class="final-label" aria-label="Etiqueta botánica del ejemplar">
+            <p class="final-label__species">${c.label.species}</p>
+            <p class="final-label__line final-label__keeper">${c.label.keeper}</p>
+            ${labelLines.map((line) => `<p class="final-label__line">${line}</p>`).join("")}
+          </div>
         </div>
         <div class="final-text">
           ${c.lines.map((l, i) => `<p class="final-line" style="--i:${i}">${l}</p>`).join("")}
@@ -94,6 +113,7 @@ export class FinalScene implements Scene {
           </div>
           <p class="final-line final-line--pt" style="--i:${c.lines.length + c.dedication.length}" lang="pt">${c.portuguese}</p>
           <p class="final-line final-line--signature" style="--i:${c.lines.length + c.dedication.length + 1}">${c.signature}</p>
+          <p class="final-line final-line--closing" style="--i:${c.lines.length + c.dedication.length + 2}">${closing}</p>
         </div>
       </div>
     `;
