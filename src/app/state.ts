@@ -26,6 +26,8 @@ export type ExperienceState = {
   finalReached: boolean;
   audioEnabled: boolean;
   memory: ExperienceMemory;
+  /** Fecha (epoch ms) en que se abrió el herbario por primera vez. */
+  startedAt: number;
 };
 
 export const SCENE_ORDER: readonly SceneId[] = [
@@ -52,6 +54,7 @@ export function defaultState(): ExperienceState {
     finalReached: false,
     audioEnabled: false,
     memory: { flooded: false, gusted: false, burned: false, wrongSeeds: 0 },
+    startedAt: Date.now(),
   };
 }
 
@@ -138,6 +141,15 @@ export function sanitizeState(value: unknown): ExperienceState {
 
   const state = defaultState();
   state.audioEnabled = isTrue(value, "audioEnabled");
+
+  // la fecha del espécimen sobrevive entre visitas
+  if (
+    typeof value.startedAt === "number" &&
+    Number.isFinite(value.startedAt) &&
+    value.startedAt > 0
+  ) {
+    state.startedAt = value.startedAt;
+  }
 
   // La memoria narrativa es anecdótica: se restaura con tolerancia y sin
   // poder desbloquear nada (solo cambia comentarios y la etiqueta final).

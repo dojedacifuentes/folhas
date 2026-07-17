@@ -16,8 +16,50 @@ function seedCube(): PixelGrid {
   g.triangle(18, 7, 11, 11, 11, 19, PIX.turD);
   g.triangle(18, 7, 18, 15, 11, 19, PIX.turD);
   g.outline(PIX.ink);
-  // brillo
+  // brillo + arista turquesa viva (la línea que conecta)
   g.line(6, 8, 9, 6, PIX.lens);
+  g.line(11, 3, 18, 7, PIX.mint);
+  // carita dormida: aún está considerando brotar
+  g.line(6, 13, 8, 13, PIX.ink);
+  g.line(6, 14, 6, 13, PIX.ink);
+  g.set(9, 16, PIX.ink);
+  g.set(8, 16, PIX.ink);
+  return g;
+}
+
+function lantern(): PixelGrid {
+  // la lámpara que se queda encendida: farol de latón con llama tibia
+  const g = new PixelGrid(20, 28);
+  // asa
+  g.ring(10, 4, 3, PIX.leafDark);
+  // tapa
+  g.triangle(4, 9, 16, 9, 10, 5, PIX.potDD);
+  g.rect(4, 9, 12, 2, PIX.leafDark);
+  // vidrio
+  g.rect(5, 11, 10, 11, PIX.cream);
+  g.rect(6, 12, 3, 9, PIX.white);
+  // llama
+  g.disc(10, 17, 2, PIX.sun);
+  g.set(10, 15, PIX.bloomC);
+  g.set(10, 16, PIX.sunL);
+  g.disc(10, 18, 1, PIX.sunL);
+  // marcos del vidrio
+  g.rect(5, 11, 1, 11, PIX.leafDark);
+  g.rect(14, 11, 1, 11, PIX.leafDark);
+  // base
+  g.rect(4, 22, 12, 2, PIX.potDD);
+  g.rect(5, 24, 10, 1, PIX.leafDark);
+  g.outline(PIX.ink);
+  return g;
+}
+
+function pawPrint(): PixelGrid {
+  // la firma que no firma: una huella de gata
+  const g = new PixelGrid(14, 14);
+  g.ellipse(7, 9, 3, 2, PIX.clayD);
+  g.disc(3, 5, 1, PIX.clayD);
+  g.disc(7, 4, 1, PIX.clayD);
+  g.disc(11, 5, 1, PIX.clayD);
   return g;
 }
 
@@ -134,6 +176,9 @@ function leafObject(): PixelGrid {
     g.line(cx, y, cx - 5, y - 4, PIX.olive);
     g.line(cx, y, cx + 4, y - 3, PIX.olive);
   }
+  // nervadura reparada en turquesa: la marca no se borra, se integra
+  g.line(cx, tipY + 20, cx + 5, tipY + 16, PIX.tur);
+  g.set(cx + 6, tipY + 15, PIX.turL);
   // gota de rocío turquesa cerca de la base
   g.disc(cx + 5, baseY - 8, 1, PIX.tur);
   g.set(cx + 4, baseY - 9, PIX.lens);
@@ -243,6 +288,8 @@ const BUILDERS: Record<string, () => PixelGrid> = {
   tag: botanicalTag,
   stone: stonePebble,
   button: sewingButton,
+  lamp: lantern,
+  paw: pawPrint,
 };
 
 const SIZES: Record<string, [number, number]> = {
@@ -260,6 +307,8 @@ const SIZES: Record<string, [number, number]> = {
   tag: [30, 20],
   stone: [16, 12],
   button: [14, 14],
+  lamp: [20, 28],
+  paw: [14, 14],
 };
 
 export function objectSprite(kind: string, _state = "idle"): SpriteDef {

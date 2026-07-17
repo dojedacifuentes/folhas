@@ -87,6 +87,7 @@ export const content = {
     afterNotes: [
       "Dani mira el brote de cerca.",
       "Diego confirma que la semilla sigue razonablemente cuadrada.",
+      "No parecía una semilla. Eso no impidió que quisiera crecer.",
     ],
     next: "cuidarlo",
     seedAnnouncement:
@@ -226,13 +227,16 @@ export const content = {
     label: {
       species: "Helianthus annuus",
       keeper: "ejemplar cuidado por D + D",
+      foundPrefix: "encontrado: ",
       waterOk: "agua: en su medida",
       waterIncidents: "agua: suficiente, con incidentes",
       lightOk: "luz: aprendida",
       lightIncidents: "luz: aprendida, con antecedentes",
       windIncidents: "viento: uno con currículum",
       seedIncidents: "semilla: hallada tras varias entrevistas",
-      status: "estado: todavía creciendo",
+      status: "estado: todavía vivo",
+      signature: "firma: una huella",
+      ainda: "ainda crescendo",
     },
     closingLines: [
       "No quedó perfecto. Quedó vivo.",
@@ -240,7 +244,7 @@ export const content = {
       "El archivo permanece abierto.",
       "Todavía necesita agua. Por suerte.",
       "Nada concluye del todo en un jardín.",
-      "Ainda crescendo.",
+      "El gato no firmó. Se quedó.",
     ],
     closingMemoryLines: {
       flooded: "Desarrolló una relación compleja con la lluvia.",

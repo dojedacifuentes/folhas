@@ -5,6 +5,8 @@
  * pestaña oculta.
  */
 
+const SCENE_SEQUENCE = ["cover", "clear", "offerings", "care", "final"];
+
 export function initAtmosphere(): void {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -14,6 +16,35 @@ export function initAtmosphere(): void {
   dust.setAttribute("aria-hidden", "true");
   dust.innerHTML = "<i></i>".repeat(7);
   document.body.appendChild(dust);
+
+  // --- progreso discreto: cinco puntitos, uno por lámina ---
+  const progress = document.createElement("div");
+  progress.id = "scene-progress";
+  progress.setAttribute("aria-hidden", "true");
+  progress.innerHTML = "<i></i>".repeat(SCENE_SEQUENCE.length);
+  document.body.appendChild(progress);
+
+  const dots = Array.from(progress.querySelectorAll("i"));
+  const syncProgress = (): void => {
+    const scene = document.querySelector<HTMLElement>(".scene");
+    if (!scene) return;
+    const idx = SCENE_SEQUENCE.findIndex((k) =>
+      scene.classList.contains(`scene--${k}`)
+    );
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("is-active", i === idx);
+      dot.classList.toggle("is-done", idx >= 0 && i < idx);
+    });
+  };
+  const app = document.querySelector("#app");
+  if (app) {
+    new MutationObserver(syncProgress).observe(app, {
+      childList: true,
+      subtree: true,
+      attributeFilter: ["class"],
+    });
+  }
+  syncProgress();
 
   // --- inclinación de página: lerp suave hacia el cursor ---
   let targetX = 0;

@@ -51,17 +51,25 @@ function buildDani(expr: Expression, blink: boolean): PixelGrid {
   g.ellipse(17, 33, 7, 5, PIX.yelL);
 
   // rayas de atigrada en el lomo
-  g.line(28, 32, 31, 34, PIX.stripe);
-  g.line(27, 36, 30, 38, PIX.stripe);
+  g.line(28, 31, 31, 33, PIX.stripe);
 
-  // patas con almohadillas
+  // vientre
+  g.ellipse(20, 39, 7, 6, PIX.cream);
+
+  // overol salvia de jardinera, con bolsillito y un brote asomado
+  g.ellipse(20, 40, 10, 6, PIX.leafGD);
+  g.ellipse(20, 39, 10, 6, PIX.sage);
+  g.rect(15, 34, 10, 5, PIX.sage);
+  g.rect(15, 34, 10, 1, PIX.leafGD);
+  g.rect(17, 36, 6, 3, PIX.leafGD);
+  g.set(20, 35, PIX.stem);
+  g.set(21, 34, PIX.leafG);
+
+  // patas con almohadillas, asomando bajo el ruedo
   g.ellipse(13, 44, 4, 3, PIX.yel);
   g.ellipse(26, 44, 4, 3, PIX.yel);
   g.ellipse(13, 44, 3, 2, PIX.cream);
   g.ellipse(26, 44, 3, 2, PIX.cream);
-
-  // vientre
-  g.ellipse(20, 39, 7, 6, PIX.cream);
 
   // --- cabeza: cuatro tonos ---
   g.ellipse(20, 19, 13, 11, PIX.yelDD);
@@ -172,15 +180,15 @@ function buildDani(expr: Expression, blink: boolean): PixelGrid {
   g.line(33, 24, 39, 24, PIX.inkSoft);
   g.line(33, 26, 38, 27, PIX.inkSoft);
 
-  // --- lazo coral al cuello, con luz y nudo ---
-  g.triangle(20, 31, 14, 28, 14, 34, PIX.clayD);
-  g.triangle(20, 31, 26, 28, 26, 34, PIX.clayD);
-  g.triangle(20, 31, 15, 29, 15, 33, PIX.clay);
-  g.triangle(20, 31, 25, 29, 25, 33, PIX.clay);
-  g.set(16, 30, PIX.clayLight);
-  g.set(24, 30, PIX.clayLight);
-  g.disc(20, 31, 1, PIX.clayD);
-  g.set(19, 30, PIX.clayLight);
+  // --- pañoleta coral al cuello, anudada de lado ---
+  g.triangle(13, 28, 27, 28, 20, 35, PIX.clay);
+  g.line(13, 28, 27, 28, PIX.clayD);
+  g.line(14, 29, 26, 29, PIX.clayD);
+  g.line(20, 35, 16, 30, PIX.clayD);
+  g.set(18, 30, PIX.clayLight);
+  g.disc(26, 30, 1, PIX.clay);
+  g.set(27, 32, PIX.clayD);
+  g.set(25, 32, PIX.clayD);
 
   return g;
 }
@@ -359,6 +367,15 @@ function buildDiego(expr: DiegoExpr, blink: boolean): PixelGrid {
   g.set(24, 30, PIX.clayLight);
   g.rect(19, 29, 2, 4, PIX.clayD);
   g.set(19, 30, PIX.clayLight);
+
+  // cuaderno de campo bajo el brazo (anota todo, incluso lo innecesario)
+  g.rect(2, 31, 7, 10, PIX.leafDark);
+  g.rect(3, 32, 5, 8, PIX.cream);
+  g.line(4, 34, 6, 34, PIX.inkSoft);
+  g.line(4, 36, 6, 36, PIX.inkSoft);
+  g.line(4, 38, 6, 38, PIX.inkSoft);
+  // marcapáginas turquesa: la línea que conecta
+  g.rect(7, 30, 1, 4, PIX.mint);
 
   return g;
 }

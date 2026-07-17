@@ -29,12 +29,18 @@ export class FinalScene implements Scene {
 
     // la etiqueta usa lo que de verdad pasó en esta partida
     const mem = ctx.state.memory;
+    const found = new Date(ctx.state.startedAt);
+    const foundDate = `${String(found.getDate()).padStart(2, "0")}.${String(
+      found.getMonth() + 1
+    ).padStart(2, "0")}.${found.getFullYear()}`;
     const labelLines = [
+      `${c.label.foundPrefix}${foundDate}`,
       mem.flooded ? c.label.waterIncidents : c.label.waterOk,
       mem.burned ? c.label.lightIncidents : c.label.lightOk,
       ...(mem.gusted ? [c.label.windIncidents] : []),
       ...(mem.wrongSeeds > 0 ? [c.label.seedIncidents] : []),
       c.label.status,
+      c.label.signature,
     ];
     const memoryLine = mem.burned
       ? c.closingMemoryLines.burned
@@ -91,14 +97,15 @@ export class FinalScene implements Scene {
             <p class="thought thought--akita">${c.akitaThought}</p>
           </button>
           ${renderSeed({ label: c.cubeLabel, className: "final-cube" })}
-          ${pixelPlaceholder("cloud", "idle", {
-            decorative: true,
-            className: "final-cloud",
-          })}
+          <div class="final-lamp" aria-hidden="true">
+            ${pixelPlaceholder("lamp", "idle", { decorative: true })}
+          </div>
           <div class="final-label" aria-label="Etiqueta botánica del ejemplar">
             <p class="final-label__species">${c.label.species}</p>
             <p class="final-label__line final-label__keeper">${c.label.keeper}</p>
             ${labelLines.map((line) => `<p class="final-label__line">${line}</p>`).join("")}
+            <p class="final-label__ainda" lang="pt">${c.label.ainda}</p>
+            ${pixelPlaceholder("paw", "idle", { decorative: true, className: "final-paw" })}
           </div>
         </div>
         <div class="final-text">
@@ -216,8 +223,8 @@ export class FinalScene implements Scene {
       }, togetherDelay)
     );
 
-    // y una mantita los cubre del frío
-    const mantitaDelay = this.ctx.reducedMotion() ? 120 : 3200;
+    // y una mantita pequeña les llega al regazo, sin tapar a nadie
+    const mantitaDelay = this.ctx.reducedMotion() ? 120 : 6200;
     this.timers.push(
       window.setTimeout(() => {
         if (!this.el) return;

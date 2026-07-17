@@ -311,39 +311,62 @@ export function cloudSprite(state = "idle"): SpriteDef {
 // ============================ GIRASOL ============================
 
 export function sunflowerSprite(small = false): SpriteDef {
-  const w = small ? 20 : 30;
-  const h = small ? 30 : 46;
+  const w = small ? 22 : 34;
+  const h = small ? 32 : 50;
   const g = new PixelGrid(w, h);
-  const cx = Math.round(w / 2);
-  const headY = small ? 8 : 12;
+  // la cabeza se inclina apenas hacia el centro de la escena:
+  // crece hacia la luz que existe entre ambos, no hacia uno solo
+  const stemX = Math.round(w / 2);
+  const cx = stemX - (small ? 0 : 1);
+  const headY = small ? 9 : 13;
   const headR = small ? 6 : 9;
-  // tallo
-  g.rect(cx - 1, headY, 2, h - headY - 2, PIX.stem);
-  // hojas del tallo
-  if (!small) {
-    for (let i = 0; i <= 6; i++) {
-      g.set(cx - 2 - i * 0.6, 30 - i, PIX.leafG);
-      g.set(cx + 2 + i * 0.6, 26 - i, PIX.leafG);
-    }
+
+  // tallo con leve curva y dos hojas vivas
+  for (let y = h - 3; y >= headY; y--) {
+    const t = (y - headY) / (h - 3 - headY);
+    const x = Math.round(stemX + (1 - t) * (cx - stemX));
+    g.rect(x - 1, y, 2, 1, PIX.stem);
+    g.set(x + 1, y, PIX.leafGD);
   }
-  // pétalos
-  const petals = small ? 8 : 12;
+  if (!small) {
+    leaf(g, stemX - 1, h - 16, -1, PIX.leafG, PIX.leafGD, 7);
+    leaf(g, stemX + 1, h - 12, 1, PIX.leafG, PIX.leafGD, 6);
+  }
+
+  // corona exterior: pétalos dorados alargados
+  const petals = small ? 10 : 14;
   for (let i = 0; i < petals; i++) {
     const a = (i / petals) * Math.PI * 2;
-    const px = cx + Math.cos(a) * (headR + 2);
-    const py = headY + Math.sin(a) * (headR + 2);
-    g.disc(px, py, small ? 1.4 : 2.2, PIX.bloom);
+    const px = cx + Math.cos(a) * (headR + 3);
+    const py = headY + Math.sin(a) * (headR + 3) * 0.96;
+    g.ellipse(px, py, small ? 2 : 2.6, small ? 1.4 : 2, PIX.sunD);
+    g.ellipse(px, py, small ? 1.4 : 2, small ? 1 : 1.4, PIX.bloom);
   }
-  // centro
-  g.disc(cx, headY, headR, PIX.leafDry);
+  // corona interior: pétalos claros entre los dorados
+  for (let i = 0; i < petals; i++) {
+    const a = ((i + 0.5) / petals) * Math.PI * 2;
+    const px = cx + Math.cos(a) * (headR + 1);
+    const py = headY + Math.sin(a) * (headR + 1) * 0.96;
+    g.disc(px, py, small ? 1.2 : 1.6, PIX.sunL);
+  }
+
+  // centro: semillas en espiral tramada
+  g.disc(cx, headY, headR - 1, PIX.leafDry);
   g.disc(cx, headY, headR - 2, PIX.leafDark);
+  g.ditherOver(PIX.leafDark, PIX.soilSpeck, 0);
+  g.ring(cx, headY, headR - 1, PIX.leafDry);
   g.outline(PIX.ink);
-  // carita
+
+  // carita: ojitos cerrados de gusto, sonrisa y rubor
   if (!small) {
-    g.disc(cx - 3, headY, 1, PIX.ink);
-    g.disc(cx + 3, headY, 1, PIX.ink);
+    g.line(cx - 4, headY - 1, cx - 2, headY - 1, PIX.ink);
+    g.line(cx + 2, headY - 1, cx + 4, headY - 1, PIX.ink);
+    g.set(cx - 4, headY, PIX.ink);
+    g.set(cx + 4, headY, PIX.ink);
     g.line(cx - 2, headY + 3, cx, headY + 4, PIX.ink);
     g.line(cx, headY + 4, cx + 2, headY + 3, PIX.ink);
+    g.set(cx - 6, headY + 2, PIX.bloomC);
+    g.set(cx + 6, headY + 2, PIX.bloomC);
   }
   return { width: w, height: h, frames: [g.grid()] };
 }

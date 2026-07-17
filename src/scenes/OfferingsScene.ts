@@ -34,6 +34,7 @@ export class OfferingsScene implements Scene {
   private seedDrag: DraggableOffering | null = null;
   private cloudCleanup: (() => void) | null = null;
   private living: LivingPlant | null = null;
+  private drizzleTimer: number | null = null;
 
   mount(ctx: SceneContext): HTMLElement {
     this.ctx = ctx;
@@ -103,6 +104,7 @@ export class OfferingsScene implements Scene {
             <span class="cloud-meter" aria-hidden="true"><i></i><i></i><i></i></span>
           </button>
           <div class="offer-rain" aria-hidden="true"></div>
+          <div class="offer-drizzle" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           ${renderSeed({
             state: "disabled",
             label: c.seedLabel,
@@ -270,6 +272,7 @@ export class OfferingsScene implements Scene {
       void cloud.offsetWidth;
       cloud.classList.add("is-squeezing");
       this.spawnRain();
+      this.pulseDrizzle();
       this.ctx.onFirstInteraction();
       this.ctx.audio.drop();
       // la planta agradece cada chorrito
@@ -292,6 +295,28 @@ export class OfferingsScene implements Scene {
       cloud.removeEventListener("keydown", onKey);
     };
     if (focus) cloud.focus({ preventScroll: true });
+  }
+
+  /** Llovizna breve por todo el escenario mientras la nube trabaja. */
+  private pulseDrizzle(): void {
+    const stage = this.el?.querySelector<HTMLElement>(".offer-stage");
+    if (!stage || this.ctx.reducedMotion()) return;
+    stage.classList.add("is-raining");
+    if (this.drizzleTimer !== null) window.clearTimeout(this.drizzleTimer);
+    this.drizzleTimer = window.setTimeout(() => {
+      stage.classList.remove("is-raining");
+      this.drizzleTimer = null;
+    }, 950);
+  }
+
+  /** La gota que permanece en el borde de la maceta tras la lluvia. */
+  private leaveLingeringDrop(): void {
+    const plantEl = this.el?.querySelector<HTMLElement>(".offer-plant");
+    if (!plantEl || plantEl.querySelector(".lingering-drop")) return;
+    const drop = document.createElement("i");
+    drop.className = "lingering-drop";
+    drop.setAttribute("aria-hidden", "true");
+    plantEl.appendChild(drop);
   }
 
   private spawnRain(): void {
@@ -319,6 +344,7 @@ export class OfferingsScene implements Scene {
     this.ctx.audio.drop();
     this.ctx.announce(content.offerings.waterAnnouncement);
     this.showThought(".thought--dani");
+    this.leaveLingeringDrop();
 
     if (!this.ctx.state.waterPlaced) {
       this.ctx.state.waterPlaced = true;
@@ -386,6 +412,10 @@ export class OfferingsScene implements Scene {
     if (!this.el || this.phase === "complete") return;
     this.phase = "complete";
     this.hideInstruction();
+    // la gota persistente se absorbe justo cuando nace el brote
+    this.el
+      .querySelector<HTMLElement>(".lingering-drop")
+      ?.classList.add("is-absorbed");
     this.el.classList.add("seed-done", "sprout-born");
     this.setVisualState("happy", "proud", "sprout", "", false, true);
 
@@ -486,6 +516,8 @@ export class OfferingsScene implements Scene {
   }
 
   destroy(): void {
+    if (this.drizzleTimer !== null) window.clearTimeout(this.drizzleTimer);
+    this.drizzleTimer = null;
     this.cloudCleanup?.();
     this.cloudCleanup = null;
     this.living?.destroy();
