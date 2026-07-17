@@ -32,6 +32,21 @@ export class PixelGrid {
     return this.cells[y * this.w + x];
   }
 
+  /**
+   * Tramado a cuadros sobre un tono ya pintado: donde la celda es `target`
+   * y (x+y) tiene la paridad pedida, pinta `paint`. Da textura (pelaje,
+   * barro, esponjado) sin romper la silueta.
+   */
+  ditherOver(target: Cell, paint: Cell, parity: 0 | 1 = 0): void {
+    for (let y = 0; y < this.h; y++) {
+      for (let x = 0; x < this.w; x++) {
+        if (this.cells[y * this.w + x] === target && ((x + y) & 1) === parity) {
+          this.cells[y * this.w + x] = paint;
+        }
+      }
+    }
+  }
+
   /** Pinta solo si la celda está vacía (para no tapar detalles ya puestos). */
   setBelow(x: number, y: number, color: Cell): void {
     x = Math.round(x);

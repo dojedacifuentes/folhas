@@ -1,0 +1,212 @@
+/**
+ * Atmósfera v7: la app como objeto editorial sobre una mesa.
+ * Grano de impresión, un rayo de luz lento, páginas-diorama con sombra en
+ * capas e inclinación mínima hacia el cursor, sombras de anclaje bajo los
+ * personajes y ramas que se mecen. Todo sutil: papel, tinta y luz.
+ */
+
+:root {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+}
+
+/* ---------- grano de impresión sobre todo el objeto ---------- */
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* ---------- un rayo de luz cálida cruza la mesa, muy despacio ---------- */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -12% -30%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    112deg,
+    transparent 40%,
+    rgba(255, 224, 150, 0.1) 48%,
+    rgba(255, 245, 218, 0.16) 52%,
+    rgba(255, 224, 150, 0.07) 57%,
+    transparent 66%
+  );
+  mix-blend-mode: soft-light;
+  animation: lightSweep 38s ease-in-out infinite alternate;
+}
+
+@keyframes lightSweep {
+  from { transform: translateX(-4%); }
+  to { transform: translateX(5%); }
+}
+
+/* ---------- polvo flotando en la luz, sobre los márgenes ---------- */
+
+#ambient-dust {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#ambient-dust i {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--sun);
+  opacity: 0;
+  animation: ambientDust 19s linear infinite;
+}
+
+#ambient-dust i:nth-child(1) { left: 6%; top: 78%; animation-delay: 0s; }
+#ambient-dust i:nth-child(2) { left: 14%; top: 30%; animation-delay: 3s; background: var(--sage); }
+#ambient-dust i:nth-child(3) { left: 46%; top: 88%; animation-delay: 6s; }
+#ambient-dust i:nth-child(4) { left: 68%; top: 40%; animation-delay: 9s; background: var(--sage); }
+#ambient-dust i:nth-child(5) { left: 84%; top: 70%; animation-delay: 12s; }
+#ambient-dust i:nth-child(6) { left: 92%; top: 22%; animation-delay: 15s; }
+#ambient-dust i:nth-child(7) { left: 30%; top: 55%; animation-delay: 17s; background: var(--diego-light); }
+
+@keyframes ambientDust {
+  0% { opacity: 0; transform: translate(0, 0); }
+  12% { opacity: 0.34; }
+  55% { opacity: 0.18; }
+  100% { opacity: 0; transform: translate(26px, -64px); }
+}
+
+/* ---------- páginas-diorama: volumen, sombra en capas, giro mínimo ---------- */
+
+.clear-stage,
+.offer-stage,
+.care-stage,
+.final-stage {
+  /* esquinas levemente desiguales: papel cortado a mano */
+  border-radius: 8px 12px 9px 13px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -2px 0 rgba(43, 38, 32, 0.05),
+    0 1px 2px rgba(43, 38, 32, 0.1),
+    0 9px 24px -8px rgba(43, 38, 32, 0.24),
+    0 26px 52px -20px rgba(43, 38, 32, 0.32);
+  transform: perspective(1100px) rotateY(var(--tilt-x)) rotateX(var(--tilt-y))
+    rotate(var(--page-rot, 0deg));
+  will-change: transform;
+}
+
+/* cada escena descansa con su propio ángulo, como láminas apiladas */
+.scene--clear .clear-stage { --page-rot: -0.4deg; }
+.scene--offerings .offer-stage { --page-rot: 0.3deg; }
+.scene--care .care-stage { --page-rot: -0.25deg; }
+.scene--final .final-stage { --page-rot: 0.25deg; }
+
+/* la lámina nocturna del final proyecta una sombra más honda y fría */
+.scene--final .final-stage {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1px 2px rgba(10, 22, 30, 0.3),
+    0 12px 28px -8px rgba(10, 22, 30, 0.45),
+    0 30px 60px -22px rgba(6, 16, 24, 0.55);
+}
+
+/* ---------- sombras de anclaje: los personajes pisan el papel ---------- */
+
+.clear-dani,
+.clear-diego,
+.offer-dani,
+.offer-diego,
+.care-character,
+.final-dani,
+.final-diego {
+  position: relative;
+}
+
+.clear-dani::after,
+.clear-diego::after,
+.offer-dani::after,
+.offer-diego::after,
+.care-character::after,
+.final-dani::after,
+.final-diego::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 68%;
+  height: 9px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(43, 38, 32, 0.26),
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* de noche, la sombra se enfría */
+.scene--final .final-dani::after,
+.scene--final .final-diego::after {
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(8, 18, 26, 0.5),
+    transparent 72%
+  );
+}
+
+/* ---------- las ramas del fondo respiran ---------- */
+
+.shadow-drift--a {
+  animation: branchSway 26s ease-in-out infinite alternate;
+  transform-origin: 20% 0%;
+}
+
+.shadow-drift--b {
+  animation: branchSway 34s ease-in-out infinite alternate-reverse;
+  transform-origin: 80% 0%;
+}
+
+@keyframes branchSway {
+  from { transform: rotate(-0.7deg) translateX(-3px); }
+  to { transform: rotate(0.8deg) translateX(4px); }
+}
+
+/* ---------- reposo absoluto si el sistema lo pide ---------- */
+
+html.reduced-motion body::before,
+html.reduced-motion #ambient-dust,
+html.reduced-motion .shadow-drift--a,
+html.reduced-motion .shadow-drift--b {
+  animation: none;
+}
+
+html.reduced-motion #ambient-dust {
+  display: none;
+}
+
+html.reduced-motion .clear-stage,
+html.reduced-motion .offer-stage,
+html.reduced-motion .care-stage,
+html.reduced-motion .final-stage {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  #ambient-dust i,
+  .shadow-drift--a,
+  .shadow-drift--b {
+    animation: none;
+  }
+
+  #ambient-dust {
+    display: none;
+  }
+}

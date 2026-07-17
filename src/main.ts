@@ -8,12 +8,15 @@ import "./styles/weather.css";
 import "./styles/pixel.css";
 import "./styles/gestures.css";
 import "./styles/responsive.css";
+import "./styles/atmosphere.css";
 
 import { AppController } from "./app/AppController";
+import { initAtmosphere } from "./app/atmosphere";
 
 const root = document.querySelector<HTMLElement>("#app");
 if (root) {
   new AppController(root).start();
+  initAtmosphere();
 }
 
 const syncVisibility = () => {

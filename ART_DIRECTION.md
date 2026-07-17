@@ -1,5 +1,29 @@
 # Dirección de arte
 
+## v7 — Teatro botánico sobre la mesa
+
+Dos capas que se abrazan: **pixel art cálido y curado** (personajes y
+objetos) dentro de un **objeto editorial físico** (papel, tinta, luz).
+
+Paleta profesional (`src/art/pixel/palette.ts`): cada material tiene una
+rampa de 3–4 tonos con desplazamiento de matiz — luces hacia el cálido,
+sombras hacia el ciruela — y el contorno no es negro sino ciruela-café
+(`#3b2a33`). Dani es atigrada dorada (rayas `stripe`, tufos de pelaje,
+rubor, doble brillo en los ojos, almohadillas); Diego es akita turquesa
+(urajiro crema en las cejas, cola con punta crema, tramado de pelaje).
+La maceta tiene cuatro tonos de barro, motitas en la tierra y un
+corazoncito estampado casi escondido; la nube es casi blanca con sombra
+azul-lluvia, pestañitas y lágrimas de lluvia con brillo; el sol lleva doce
+rayos alternos y mofletes.
+
+Atmósfera (`src/styles/atmosphere.css` + `src/app/atmosphere.ts`): grano
+de impresión sobre todo el objeto, un rayo de luz que cruza la mesa en 38 s,
+polvo flotando en los márgenes, páginas-diorama con esquinas levemente
+desiguales y sombra en capas, inclinación máxima de ±0.55° siguiendo el
+cursor (lerp, se apaga con `prefers-reduced-motion`), sombras de anclaje
+bajo cada personaje (frías de noche) y ramas de fondo que se mecen en
+ciclos de 26/34 s.
+
 ## Estilo visual: pixel art local (v3)
 
 Todo el arte de personajes, planta, sol y objetos es **pixel art dibujado en

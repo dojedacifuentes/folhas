@@ -29,12 +29,17 @@ function leaf(
     const cyp = baseY + ay * i;
     const w = Math.round(2.4 * Math.sin((Math.PI * i) / len));
     for (let s = -w; s <= w; s++) {
-      g.set(cxp + px * s, cyp + py * s, color);
+      // dos tonos: el borde inferior de la hoja queda en sombra
+      const shade = s * dir > w * 0.34 ? dark : color;
+      g.set(cxp + px * s, cyp + py * s, shade);
     }
     tip.push([cxp, cyp]);
   }
   // nervio central
   for (const [x, y] of tip) g.set(x, y, dark);
+  // brillo en la punta: la hoja mira a la luz
+  const [tx, ty] = tip[tip.length - 1];
+  g.set(tx, ty, color);
   // contorno local de la hoja
   for (let i = 0; i <= len; i++) {
     const cxp = baseX + ax * i;
@@ -48,24 +53,34 @@ function leaf(
 }
 
 function pot(g: PixelGrid): void {
-  // cuerpo trapezoidal
+  // cuerpo trapezoidal: cuatro tonos de barro (luz izquierda, sombra derecha)
   for (let y = 33; y <= 46; y++) {
     const t = (y - 33) / 13;
     const half = 12 - t * 4;
-    g.rect(Math.round(20 - half), y, Math.round(half * 2), 1, PIX.pot);
+    const x0 = Math.round(20 - half);
+    const w = Math.round(half * 2);
+    g.rect(x0, y, w, 1, PIX.pot);
+    // columna de luz
+    g.rect(x0 + 1, y, 2, 1, PIX.potL);
+    // sombra derecha en dos pasos
+    g.rect(x0 + w - 3, y, 3, 1, PIX.potD);
+    g.rect(x0 + w - 1, y, 1, 1, PIX.potDD);
   }
-  // sombra derecha
-  for (let y = 34; y <= 45; y++) {
-    const t = (y - 33) / 13;
-    const half = 12 - t * 4;
-    g.rect(Math.round(20 + half - 3), y, 3, 1, PIX.potD);
-  }
-  // borde
+  // base más oscura (asienta en el suelo)
+  g.rect(12, 46, 16, 1, PIX.potDD);
+  // borde con canto iluminado
   g.rect(7, 31, 26, 3, PIX.pot);
-  g.rect(7, 31, 26, 1, PIX.clay);
+  g.rect(7, 31, 26, 1, PIX.clayLight);
   g.rect(7, 33, 26, 1, PIX.potD);
-  // tierra
+  g.set(32, 32, PIX.potDD);
+  // textura de barro: tramado suave donde la luz toca
+  g.ditherOver(PIX.potL, PIX.pot, 1);
+  // tierra con motitas (vivida, no plana)
   g.ellipse(20, 32, 12, 2, PIX.soil);
+  g.set(14, 31, PIX.soilSpeck);
+  g.set(22, 32, PIX.soilSpeck);
+  g.set(27, 31, PIX.soilSpeck);
+  g.set(18, 32, PIX.soilWet);
   g.outline(PIX.ink);
   // cara de la maceta: neutra y tierna (ojos punto, boca mínima)
   g.set(16, 39, PIX.ink);
@@ -73,6 +88,13 @@ function pot(g: PixelGrid): void {
   g.set(19, 42, PIX.ink);
   g.set(20, 42, PIX.ink);
   g.set(21, 42, PIX.ink);
+  // corazoncito estampado en el barro, casi escondido
+  g.set(19, 44, PIX.potDD);
+  g.set(21, 44, PIX.potDD);
+  g.set(19, 45, PIX.potDD);
+  g.set(20, 45, PIX.potDD);
+  g.set(21, 45, PIX.potDD);
+  g.set(20, 46, PIX.potDD);
 }
 
 function buildPlant(state: string): PixelGrid {
@@ -188,26 +210,32 @@ function buildSun(rayPhase: number): PixelGrid {
   const g = new PixelGrid(34, 34);
   const cx = 17;
   const cy = 17;
-  // rayos
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2 + rayPhase;
-    const x1 = cx + Math.cos(a) * 11;
-    const y1 = cy + Math.sin(a) * 11;
-    const x2 = cx + Math.cos(a) * 15;
-    const y2 = cy + Math.sin(a) * 15;
-    g.line(x1, y1, x2, y2, PIX.sunRay);
+  // rayos alternos (largos con puntito, cortos suaves) que giran despacio
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2 + rayPhase;
+    const long = i % 2 === 0;
+    const r1 = 11;
+    const r2 = long ? 15 : 13;
+    const x2 = cx + Math.cos(a) * r2;
+    const y2 = cy + Math.sin(a) * r2;
+    g.line(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1, x2, y2, PIX.sunRay);
+    if (long) g.set(x2, y2, PIX.sunL);
   }
+  // disco en cuatro tonos con textura cálida
   g.disc(cx, cy, 10, PIX.sunD);
   g.disc(cx, cy, 9, PIX.sun);
   g.disc(cx - 2, cy - 3, 5, PIX.sunL);
+  g.ditherOver(PIX.sunL, PIX.sun, 1);
   g.outline(PIX.ink);
-  // carita del sol
+  // carita del sol: ojos con brillo, sonrisa, mofletes calientes
   g.disc(14, 16, 1, PIX.ink);
   g.disc(20, 16, 1, PIX.ink);
+  g.set(13, 15, PIX.sunL);
+  g.set(19, 15, PIX.sunL);
   g.line(15, 20, 17, 21, PIX.ink);
   g.line(17, 21, 19, 20, PIX.ink);
-  g.disc(12, 19, 1, PIX.bloomC);
-  g.disc(22, 19, 1, PIX.bloomC);
+  g.ellipse(12, 19, 2, 1, PIX.bloomC);
+  g.ellipse(22, 19, 2, 1, PIX.bloomC);
   return g;
 }
 
@@ -225,36 +253,47 @@ export function sunSprite(): SpriteDef {
 function buildCloud(squeeze: number): PixelGrid {
   const g = new PixelGrid(38, 26);
   const cy = 12 + squeeze * 2;
-  // masa esponjosa: varios bultos
-  g.disc(12, cy, 6, PIX.sky);
-  g.disc(20, cy - 3, 7, PIX.sky);
-  g.disc(28, cy, 6, PIX.sky);
-  g.rect(9, cy, 22, 6 - squeeze, PIX.sky);
-  // sombra inferior
-  g.disc(12, cy + 2, 5, PIX.skyDeep);
-  g.disc(28, cy + 2, 5, PIX.skyDeep);
-  g.rect(9, cy + 3, 22, 3, PIX.skyDeep);
-  // luz arriba
-  g.disc(20, cy - 5, 4, PIX.snow);
-  g.disc(14, cy - 2, 2, PIX.snow);
+  // masa esponjosa casi blanca: cuatro bultos desiguales
+  g.disc(10, cy, 5, PIX.sky);
+  g.disc(17, cy - 4, 7, PIX.sky);
+  g.disc(25, cy - 2, 6, PIX.sky);
+  g.disc(31, cy + 1, 4, PIX.sky);
+  g.rect(7, cy, 26, 6 - squeeze, PIX.sky);
+  // sombra inferior en dos pasos (azul lluvia)
+  g.disc(10, cy + 2, 4, PIX.skyDeep);
+  g.disc(25, cy + 2, 5, PIX.skyDeep);
+  g.rect(7, cy + 3, 26, 3, PIX.skyDeep);
+  g.rect(9, cy + 5 - squeeze, 22, 1, PIX.skyShadow);
+  // luz arriba (nieve al sol)
+  g.disc(17, cy - 6, 4, PIX.snow);
+  g.disc(12, cy - 3, 2, PIX.snow);
+  g.disc(24, cy - 5, 2, PIX.snow);
+  // esponjado: tramado entre sombra y cuerpo
+  g.ditherOver(PIX.skyDeep, PIX.sky, 0);
   g.outline(PIX.ink);
-  // carita
-  g.disc(16, cy, 1, PIX.ink);
-  g.disc(24, cy, 1, PIX.ink);
+  // carita: ojos con pestañita, mofletes, boca según ánimo
+  g.disc(15, cy, 1, PIX.ink);
+  g.disc(23, cy, 1, PIX.ink);
+  g.set(14, cy - 1, PIX.snow);
+  g.set(22, cy - 1, PIX.snow);
+  g.set(16, cy - 1, PIX.ink);
+  g.set(24, cy - 1, PIX.ink);
   if (squeeze > 0) {
-    g.set(20, cy + 2, PIX.ink);
-    g.set(19, cy + 1, PIX.ink);
-    g.set(21, cy + 1, PIX.ink);
+    // esfuerzo tierno al exprimirse
+    g.set(19, cy + 2, PIX.ink);
+    g.set(18, cy + 1, PIX.ink);
+    g.set(20, cy + 1, PIX.ink);
   } else {
-    g.line(18, cy + 2, 22, cy + 2, PIX.ink);
+    g.line(17, cy + 2, 21, cy + 2, PIX.ink);
+    g.set(21, cy + 1, PIX.ink);
   }
-  g.disc(13, cy + 1, 1, PIX.coral);
-  g.disc(27, cy + 1, 1, PIX.coral);
-  // gotas al exprimir
+  g.ellipse(12, cy + 1, 2, 1, PIX.blushL);
+  g.ellipse(26, cy + 1, 2, 1, PIX.blushL);
+  // gotas al exprimir: lágrimas de lluvia con brillo
   if (squeeze > 0) {
-    g.set(14, 22, PIX.water); g.set(14, 24, PIX.waterL);
-    g.set(20, 23, PIX.water); g.set(20, 25, PIX.waterL);
-    g.set(26, 22, PIX.water); g.set(26, 24, PIX.waterL);
+    g.set(13, 21, PIX.waterL); g.set(13, 22, PIX.water); g.set(13, 23, PIX.waterD);
+    g.set(19, 22, PIX.waterL); g.set(19, 23, PIX.water); g.set(19, 24, PIX.waterD);
+    g.set(26, 21, PIX.waterL); g.set(26, 22, PIX.water); g.set(26, 23, PIX.waterD);
   }
   return g;
 }
