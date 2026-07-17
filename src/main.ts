@@ -5,6 +5,7 @@ import "./styles/scenes.css";
 import "./styles/interactions.css";
 import "./styles/characters.css";
 import "./styles/weather.css";
+import "./styles/pixel.css";
 import "./styles/gestures.css";
 import "./styles/responsive.css";
 

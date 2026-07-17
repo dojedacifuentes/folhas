@@ -1,9 +1,5 @@
-import {
-  leafSVG,
-  seedCubeSVG,
-  thimbleSVG,
-  umbrellaSVG,
-} from "../svgLibrary";
+import { leafSVG } from "../svgLibrary";
+import { pixelPlaceholder } from "../pixel/engine";
 import "../../styles/objects.css";
 
 export const INTERACTIVE_OBJECT_STATES = [
@@ -157,28 +153,13 @@ function visualFor(
   kind: InteractiveObjectKind,
   options: InteractiveObjectOptions
 ): string {
-  switch (kind) {
-    case "seed":
-      return seedCubeSVG("interactive-object__source interactive-object__source--seed");
-    case "thimble":
-      return thimbleSVG(
-        "interactive-object__source interactive-object__source--thimble"
-      );
-    case "watering-cup":
-      return wateringCupArt();
-    case "drop":
-      return dropArt();
-    case "sun":
-      return sunArt();
-    case "umbrella":
-      return umbrellaSVG(
-        "interactive-object__source interactive-object__source--umbrella"
-      );
-    case "dry-leaves":
-      return dryLeavesArt(options.leafCount ?? 6);
-    case "wind":
-      return windArt(options.variant ?? 3);
-  }
+  // el sol es su propia familia de sprite; el resto usa la familia = kind
+  const family = kind === "sun" ? "sun" : kind;
+  const state = options.state ?? "idle";
+  return pixelPlaceholder(family, state, {
+    className: `interactive-object__source interactive-object__source--${kind}`,
+    decorative: true,
+  });
 }
 
 export function renderInteractiveObject(

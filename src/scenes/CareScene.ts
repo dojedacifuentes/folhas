@@ -32,6 +32,7 @@ import {
 import { leafButtonSVG, leafSVG } from "../art/svgLibrary";
 import { LightAligner } from "../interactions/LightAligner";
 import { PointerTracker } from "../interactions/PointerTracker";
+import { hydratePixelSprites } from "../art/pixel/registry";
 
 type CarePhase = "water" | "wind" | "sun";
 
@@ -135,6 +136,7 @@ export class CareScene implements Scene {
     if (phase === "water") this.mountWater(stage);
     if (phase === "wind") this.mountWind(stage);
     if (phase === "sun") this.mountSun(stage);
+    hydratePixelSprites(stage);
 
     window.requestAnimationFrame(() => {
       if (!this.el) return;
@@ -591,6 +593,7 @@ export class CareScene implements Scene {
         className: "stored-umbrella umbrella--stored",
       })}
     `;
+    hydratePixelSprites(stage);
     this.applyVisualState({
       daniState: "proud",
       diegoState: "proud",

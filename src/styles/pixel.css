@@ -1,0 +1,38 @@
+/* Render nítido de los sprites de pixel art (canvas escalado por CSS). */
+
+.pixel-sprite {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+/* personajes y planta llenan su contenedor conservando proporción */
+.character.pixel-sprite,
+.plant-character.pixel-sprite {
+  width: 100%;
+  height: auto;
+  /* sombra de suelo suave, coherente con el pixel */
+  filter: drop-shadow(0 3px 0 rgba(35, 45, 42, 0.16));
+}
+
+/* mirar a la izquierda: se voltea el sprite */
+.character.facing--left {
+  transform: scaleX(-1);
+}
+
+/* objetos interactivos: el sprite llena la ventana visual del control */
+.interactive-object__visual > .pixel-sprite,
+.interactive-object__source.pixel-sprite {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* objetos decorativos sueltos (dedal/semilla de tableau, cubo final…) */
+.pixel-sprite.clear-thimble,
+.pixel-sprite.clear-cube,
+.pixel-sprite.final-thimble,
+.pixel-sprite.cover-cube {
+  width: 100%;
+  height: auto;
+}

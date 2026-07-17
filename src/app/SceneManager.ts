@@ -1,5 +1,6 @@
 import type { ExperienceState, SceneId } from "./state";
 import type { Soundscape } from "../audio/Soundscape";
+import { hydratePixelSprites } from "../art/pixel/registry";
 
 export type SceneContext = {
   state: ExperienceState;
@@ -74,6 +75,7 @@ export class SceneManager {
       el.removeAttribute("aria-hidden");
       el.classList.add("scene-enter");
       this.stage.appendChild(el);
+      hydratePixelSprites(el);
       this.current = { scene, el };
       this.updateAccessibleContext(el, id);
 

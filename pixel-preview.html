@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel art — previsualización (solo dev)</title>
+  <link rel="stylesheet" href="/src/styles/tokens.css" />
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 2rem; background: var(--paper);
+      color: var(--ink); font-family: var(--font-interface);
+    }
+    h1 { font-family: var(--font-display); font-weight: 500; }
+    .grid { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-top: 1.5rem; align-items: flex-end; }
+    figure {
+      margin: 0; padding: 1rem; background: var(--paper-light);
+      border-radius: 8px; display: grid; place-items: center; gap: .6rem;
+    }
+    figure.dark { background: var(--night); color: var(--paper); }
+    figcaption { font-size: .72rem; letter-spacing: .06em; opacity: .7; }
+    canvas.pixel-sprite {
+      image-rendering: pixelated;
+      width: 168px; height: 168px;
+      object-fit: contain;
+    }
+    canvas.small { width: 96px; height: 96px; }
+    h2 { font-family: var(--font-display); font-weight: 500; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <h1>Pixel art — previsualización</h1>
+  <p style="opacity:.65;font-size:.85rem">Solo desarrollo. Ajuste visual de sprites.</p>
+
+  <h2>Dani</h2>
+  <div class="grid" id="dani"></div>
+  <h2>Diego</h2>
+  <div class="grid" id="diego"></div>
+  <h2>Mundo</h2>
+  <div class="grid" id="world"></div>
+  <h2>Objetos</h2>
+  <div class="grid" id="objects"></div>
+
+  <script type="module">
+    import { createPixelSprite } from "/src/art/pixel/engine.ts";
+    import { daniSprite, diegoSprite } from "/src/art/pixel/characters.ts";
+
+    function card(parent, def, label, cls = "") {
+      const fig = document.createElement("figure");
+      const cv = createPixelSprite(def, { decorative: true, className: cls });
+      fig.appendChild(cv);
+      const cap = document.createElement("figcaption");
+      cap.textContent = label;
+      fig.appendChild(cap);
+      document.querySelector(parent).appendChild(fig);
+    }
+
+    ["neutral","happy","proud","surprised","worried","sleeping"].forEach((s) =>
+      card("#dani", daniSprite(s), "dani · " + s));
+    ["neutral","proud","protecting","concerned","recoveringGlasses","worried"].forEach((s) =>
+      card("#diego", diegoSprite(s), "diego · " + s));
+
+    // world/objects se llenarán al añadir esos sprites
+    const worldPath = "/src/art/pixel/world.ts";
+    const objectsPath = "/src/art/pixel/objects.ts";
+    try {
+      const w = await import(/* @vite-ignore */ worldPath);
+      ["seed","sprout","small","hydrated","growing","healthy","flowering","drowned","windBent","overheated","burnt"].forEach((s) =>
+        card("#world", w.plantSprite(s), "planta · " + s));
+      card("#world", w.sunSprite(), "sol");
+    } catch (e) { console.warn("world.ts aún no existe", e); }
+
+    try {
+      const o = await import(/* @vite-ignore */ objectsPath);
+      [["seed","idle"],["thimble","idle"],["dryLeaves","idle"],["wind","idle"],["umbrella","idle"],["drop","idle"]].forEach(([k,st]) =>
+        card("#objects", o.objectSprite(k, st), k, "small"));
+    } catch (e) { console.warn("objects.ts aún no existe", e); }
+  </script>
+</body>
+</html>

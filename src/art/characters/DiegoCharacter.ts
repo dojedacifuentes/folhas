@@ -1,4 +1,4 @@
-import { renderDiegoArt } from "./DiegoArt";
+import { pixelCharacterMarkup } from "../pixel/registry";
 import {
   bindCharacterInteraction,
   createCharacterElement,
@@ -47,26 +47,11 @@ export function resolveDiegoState(state: DiegoStateInput = "idle"): DiegoState {
 }
 
 export function renderDiego(props: DiegoCharacterProps = {}): string {
-  const requestedState = props.state ?? "idle";
-  const state = resolveDiegoState(requestedState);
-  const legacyClass = requestedState !== state ? `diego--${requestedState}` : undefined;
-  const angle = requestedState === "profile" && props.angle === undefined ? "profile" : (props.angle ?? "front");
-  const interactive = props.interactive ?? Boolean(props.onInteraction);
-
-  return renderDiegoArt({
-    className: joinCharacterClasses(
-      `diego--${state}`,
-      `character--state-${state}`,
-      legacyClass,
-      state === "recoveringGlasses" ? "diego--recovering-glasses" : undefined,
-      props.className,
-    ),
-    state,
-    angle,
-    facing: props.facing ?? "front",
-    size: props.size,
-    reducedMotion: props.reducedMotion,
-    interactive,
+  const state = resolveDiegoState(props.state ?? "idle");
+  const facing = props.facing ?? "front";
+  return pixelCharacterMarkup("diego", state, {
+    className: joinCharacterClasses(`facing--${facing}`, props.className),
+    decorative: true,
   });
 }
 

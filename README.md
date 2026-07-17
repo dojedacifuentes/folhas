@@ -1,15 +1,18 @@
 # Herbario de lo que cuidamos
 
-Experiencia web breve y narrativa sobre cuidar algo en común. Funciona sin backend, usa TypeScript y SVG local, y organiza un recorrido de dos o tres minutos en cinco escenas.
+Experiencia web breve y narrativa sobre cuidar algo en común. Funciona sin
+backend, usa TypeScript y **pixel art dibujado en Canvas** (sin imágenes
+externas), y organiza un recorrido de dos o tres minutos en cinco escenas.
+Dani (gata amarilla) piensa en portugués; Diego (akita turquesa), en español.
 
 ## Recorrido
 
 | Escena | Propósito | Acción principal |
 | --- | --- | --- |
-| `cover` | Entrar en la historia | Tocar la hoja |
-| `clear-space` | Hacer lugar | Tocar el montón de hojas |
-| `offerings` | Aportar algo distinto | Dejar una gota y después acomodar la semilla |
-| `care` | Encontrar la medida | Dos toques de agua, un soplo y mantener el sol |
+| `cover` | Entrar en la historia | Arrastrar la hoja |
+| `clear-space` | Hacer lugar | Raspar la capa de hojas |
+| `offerings` | Aportar algo distinto | Arrastrar el dedal y la semilla a la maceta |
+| `care` | Encontrar la medida | Dos gotas, un soplo deslizado y llevar el sol a la planta |
 | `final` | Contemplar lo construido | Interacciones opcionales |
 
 `care` contiene tres momentos consecutivos. Un exceso de agua, viento o sol produce una reacción breve y reinicia solamente ese momento; los hitos anteriores permanecen guardados.

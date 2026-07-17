@@ -1,5 +1,31 @@
 # Dirección de arte
 
+## Estilo visual: pixel art local (v3)
+
+Todo el arte de personajes, planta, sol y objetos es **pixel art dibujado en
+Canvas**, sin imágenes externas. Se construye por primitivas (elipses de
+cuerpo/cabeza con sombreado de tres tonos, orejas triangulares, cola curva,
+lentes como anillos, bigotes) sobre una rejilla, con contorno automático, y se
+amplía por CSS con `image-rendering: pixelated` para bordes nítidos a cualquier
+escala. La animación es por fotogramas (respiración, parpadeo, rayos del sol) y
+se autolimpia cuando el sprite sale del DOM o la pestaña se oculta.
+
+Motor y sprites en `src/art/pixel/`:
+
+- `engine.ts` — rejilla de colores, dibujo y bucle de animación con guardián de
+  generación.
+- `draw.ts` — constructor con primitivas (rect, línea, elipse, triángulo,
+  curva cuadrática, contorno).
+- `palette.ts` — paleta apoyada en los tokens del proyecto.
+- `characters.ts` / `world.ts` / `objects.ts` — Dani, Diego, planta (11
+  estados), sol, y objetos interactivos.
+- `registry.ts` — resuelve familia+estado, hidrata los `canvas[data-pixel]` tras
+  montar cada escena y repinta al cambiar de estado.
+
+Los `render*()` de las escenas conservan su firma pero emiten un canvas
+pixelado; `setSceneVisualState` repinta Dani/Diego/planta al cambiar el estado
+narrativo. Página de ajuste visual (solo dev): `/pixel-preview.html`.
+
 ## Metáfora
 
 Cuidar es hacer lugar, acercar lo que cada uno tiene, encontrar la medida y quedarse. La experiencia se plantea como un pequeño libro de artista digital: íntimo, táctil, botánico y con humor seco.

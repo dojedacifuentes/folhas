@@ -1,5 +1,25 @@
 # Progreso
 
+## Pixel art (v3, 2026-07-16)
+
+Rediseño completo del arte a **pixel art dibujado en Canvas** (sin imágenes
+externas), reemplazando el sistema SVG. Verificado en navegador en las cinco
+escenas, sin errores de consola, con la progresión y los gestos intactos.
+
+- Motor `src/art/pixel/` (engine + draw + palette + registry) con dibujo por
+  primitivas, sombreado de tres tonos, contorno automático y animación por
+  fotogramas autolimpiante.
+- Sprites: Dani (gata) y Diego (akita) con lentes y expresiones por estado;
+  planta con 11 estados (semilla → floración + ahogo/viento/sol/quemadura);
+  sol con carita y rayos; objetos (dedal, cubo, gota, paraguas, hojas, viento,
+  regadera, hoja de cubierta).
+- Cableado: los `render*()` emiten `canvas[data-pixel]`; SceneManager y CareScene
+  hidratan tras montar; `setSceneVisualState` repinta al cambiar de estado.
+- Verificado: cubierta (hoja pixel arrastrable), raspado revela a Dani/Diego,
+  arrastre de ofrendas → brote, agua/viento/sol → planta que crece, floración
+  final. Care se detiene en su puerta (no salta etapa). `dist/` solo `index.html`.
+- Página de ajuste dev: `/pixel-preview.html` (fuera del build).
+
 ## Implementación completada
 
 - [x] Reducir el recorrido a cinco escenas: `cover`, `clear-space`, `offerings`, `care` y `final`.

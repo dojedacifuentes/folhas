@@ -216,7 +216,7 @@ export class OfferingsScene implements Scene {
     this.hideInstruction();
     this.el.classList.add("seed-done", "seed-feedback");
     this.el
-      .querySelector<SVGSVGElement>('.offer-plant svg[data-character="plant"]')
+      .querySelector<HTMLCanvasElement>(".offer-plant canvas[data-character=\"plant\"]")
       ?.classList.remove("plant-context--empty");
     this.setVisualState("curious", "proud", "seed", "", false, false);
     this.ctx.audio.woodTap();
@@ -255,7 +255,7 @@ export class OfferingsScene implements Scene {
     this.setObjectState(".offer-drag--water", "completed");
     this.setObjectState(".offer-drag--seed", "completed");
     this.el
-      .querySelector<SVGSVGElement>('.offer-plant svg[data-character="plant"]')
+      .querySelector<HTMLCanvasElement>(".offer-plant canvas[data-character=\"plant\"]")
       ?.classList.remove("plant-context--empty");
     this.setVisualState("happy", "proud", "sprout", "", false, true);
     this.hideInstruction();

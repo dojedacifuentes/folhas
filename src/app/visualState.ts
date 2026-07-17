@@ -1,15 +1,7 @@
-import {
-  DANI_STATES,
-  type DaniState,
-} from "../art/characters/DaniCharacter";
-import {
-  DIEGO_STATES,
-  type DiegoState,
-} from "../art/characters/DiegoCharacter";
-import {
-  setPlantCharacterState,
-  type PlantState,
-} from "../art/PlantCharacter";
+import type { DaniState } from "../art/characters/DaniCharacter";
+import type { DiegoState } from "../art/characters/DiegoCharacter";
+import type { PlantState } from "../art/PlantCharacter";
+import { setPixelSpriteState } from "../art/pixel/registry";
 
 /**
  * Contrato visual compartido por las escenas.
@@ -28,29 +20,10 @@ export type SceneVisualState = {
 };
 
 export interface SceneVisualTargets {
-  dani?: SVGSVGElement | null;
-  diego?: SVGSVGElement | null;
-  plant?: SVGSVGElement | null;
+  dani?: HTMLCanvasElement | null;
+  diego?: HTMLCanvasElement | null;
+  plant?: HTMLCanvasElement | null;
   instruction?: HTMLElement | null;
-}
-function replaceCharacterState(
-  character: SVGSVGElement,
-  prefix: "dani" | "diego",
-  states: readonly string[],
-  state: string,
-): void {
-  for (const knownState of states) {
-    character.classList.remove(
-      `${prefix}--${knownState}`,
-      `character--state-${knownState}`,
-    );
-  }
-
-  character.classList.add(
-    `${prefix}--${state}`,
-    `character--state-${state}`,
-  );
-  character.dataset.state = state;
 }
 
 function findTargets(
@@ -60,13 +33,13 @@ function findTargets(
   return {
     dani:
       supplied.dani ??
-      root.querySelector<SVGSVGElement>('svg[data-character="dani"]'),
+      root.querySelector<HTMLCanvasElement>('canvas[data-character="dani"]'),
     diego:
       supplied.diego ??
-      root.querySelector<SVGSVGElement>('svg[data-character="diego"]'),
+      root.querySelector<HTMLCanvasElement>('canvas[data-character="diego"]'),
     plant:
       supplied.plant ??
-      root.querySelector<SVGSVGElement>('svg[data-character="plant"]'),
+      root.querySelector<HTMLCanvasElement>('canvas[data-character="plant"]'),
     instruction:
       supplied.instruction ??
       root.querySelector<HTMLElement>(".scene-instruction"),
@@ -74,8 +47,8 @@ function findTargets(
 }
 
 /**
- * Cambia las clases de estado sobre los mismos nodos SVG. Así las partes
- * anatómicas pueden interpolar en CSS sin sustituir el dibujo completo.
+ * La narrativa decide el estado; aquí se repintan los sprites de pixel art de
+ * Dani, Diego y la planta, y se actualiza la instrucción y el bloqueo.
  */
 export function setSceneVisualState(
   root: HTMLElement,
@@ -90,15 +63,9 @@ export function setSceneVisualState(
   root.dataset.interactionEnabled = String(state.interactionEnabled);
   root.dataset.completed = String(state.completed);
 
-  if (targets.dani) {
-    replaceCharacterState(targets.dani, "dani", DANI_STATES, state.daniState);
-  }
-  if (targets.diego) {
-    replaceCharacterState(targets.diego, "diego", DIEGO_STATES, state.diegoState);
-  }
-  if (targets.plant) {
-    setPlantCharacterState(targets.plant, state.plantState);
-  }
+  if (targets.dani) setPixelSpriteState(targets.dani, state.daniState);
+  if (targets.diego) setPixelSpriteState(targets.diego, state.diegoState);
+  if (targets.plant) setPixelSpriteState(targets.plant, state.plantState);
   if (targets.instruction) {
     targets.instruction.textContent = state.instruction;
     targets.instruction.closest<HTMLElement>(".scene-foot")?.classList.toggle(

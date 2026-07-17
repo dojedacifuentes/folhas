@@ -1,4 +1,4 @@
-import { renderDaniArt } from "./DaniArt";
+import { pixelCharacterMarkup } from "../pixel/registry";
 import {
   bindCharacterInteraction,
   createCharacterElement,
@@ -46,25 +46,11 @@ export function resolveDaniState(state: DaniStateInput = "idle"): DaniState {
 }
 
 export function renderDani(props: DaniCharacterProps = {}): string {
-  const requestedState = props.state ?? "idle";
-  const state = resolveDaniState(requestedState);
-  const legacyClass = requestedState !== state ? `dani--${requestedState}` : undefined;
-  const angle = requestedState === "profile" && props.angle === undefined ? "profile" : (props.angle ?? "front");
-  const interactive = props.interactive ?? Boolean(props.onInteraction);
-
-  return renderDaniArt({
-    className: joinCharacterClasses(
-      `dani--${state}`,
-      `character--state-${state}`,
-      legacyClass,
-      props.className,
-    ),
-    state,
-    angle,
-    facing: props.facing ?? "front",
-    size: props.size,
-    reducedMotion: props.reducedMotion,
-    interactive,
+  const state = resolveDaniState(props.state ?? "idle");
+  const facing = props.facing ?? "front";
+  return pixelCharacterMarkup("dani", state, {
+    className: joinCharacterClasses(`facing--${facing}`, props.className),
+    decorative: true,
   });
 }
 

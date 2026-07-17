@@ -2,7 +2,7 @@ import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
 import { createBotanicalShadows } from "../art/BotanicalShadows";
 import { renderSeed } from "../art/objects/InteractiveObjects";
-import { leafSVG } from "../art/svgLibrary";
+import { pixelPlaceholder } from "../art/pixel/engine";
 
 export class CoverScene implements Scene {
   readonly id = "cover" as const;
@@ -40,7 +40,7 @@ export class CoverScene implements Scene {
       <div class="cover-leaf-area">
         <p class="cover-whisper" aria-hidden="true" lang="pt">${c.whisper}</p>
         <button class="cover-leaf" type="button" aria-label="${c.leafLabel}">
-          ${leafSVG(1, "cover-leaf-svg")}
+          ${pixelPlaceholder("leaf", "idle", { className: "cover-leaf-svg", decorative: true })}
         </button>
       </div>
       <p class="scene-instruction">${c.instruction}</p>
