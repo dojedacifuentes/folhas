@@ -1,11 +1,19 @@
-import { leafSVG } from "./svgLibrary";
-
-const MAX_PARTICLES = 12;
+const MAX_PARTICLES = 14;
 let alive = 0;
 
+/** Colores otoñales de las hojas pixel de la capa rascable. */
+const PIXEL_COLORS = [
+  "#dcb658",
+  "#c49a3a",
+  "#a85a2c",
+  "#8f9c5c",
+  "#a67a4a",
+  "#7e3f1e",
+];
+
 /**
- * Suelta una pequeña hoja que se desprende cerca del punto (x, y)
- * dentro del contenedor. Nunca hay más de 12 vivas a la vez.
+ * Suelta una motita pixel (cuadrada) que se desprende cerca del punto (x, y)
+ * dentro del contenedor. Nunca hay más de 14 vivas a la vez.
  */
 export function spawnLeafParticle(
   container: HTMLElement,
@@ -17,13 +25,17 @@ export function spawnLeafParticle(
   alive++;
 
   const el = document.createElement("div");
-  el.className = "leaf-particle";
-  el.innerHTML = leafSVG(1 + Math.floor(Math.random() * 6));
-  const drift = (Math.random() - 0.5) * 120;
-  const fall = 80 + Math.random() * 120;
-  const spin = (Math.random() - 0.5) * 240;
+  el.className = "leaf-particle leaf-particle--pixel";
+  const size = 4 + Math.floor(Math.random() * 4) * 2; // 4..10, pares
+  const drift = (Math.random() - 0.5) * 110;
+  const fall = 70 + Math.random() * 110;
+  const spin = (Math.random() - 0.5) * 160;
   el.style.left = `${x}px`;
   el.style.top = `${y}px`;
+  el.style.width = `${size}px`;
+  el.style.height = `${size}px`;
+  el.style.background =
+    PIXEL_COLORS[Math.floor(Math.random() * PIXEL_COLORS.length)];
   el.style.setProperty("--pdx", `${drift}px`);
   el.style.setProperty("--pdy", `${fall}px`);
   el.style.setProperty("--pspin", `${spin}deg`);

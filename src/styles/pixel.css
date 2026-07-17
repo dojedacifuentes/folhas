@@ -323,6 +323,248 @@ html.reduced-motion .cover-peek {
   animation: none;
 }
 
+/* ============ portada como lámina de herbario ============ */
+
+.cover-plate {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid color-mix(in srgb, var(--ink) 24%, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cover-plate::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid color-mix(in srgb, var(--ink) 11%, transparent);
+}
+
+/* esquinas marcadas, como ficha montada */
+.cover-plate::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) top left / 10px 2px,
+    linear-gradient(var(--ink), var(--ink)) top left / 2px 10px,
+    linear-gradient(var(--ink), var(--ink)) bottom right / 10px 2px,
+    linear-gradient(var(--ink), var(--ink)) bottom right / 2px 10px;
+  background-repeat: no-repeat;
+  opacity: 0.45;
+}
+
+.cover-annotation {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.74rem;
+  letter-spacing: 0.05em;
+  opacity: 0.52;
+  margin: 0.8em 0 0;
+}
+
+.cover-motes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.cover-motes i {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--sun);
+  opacity: 0.32;
+  animation: moteDrift 9s ease-in-out infinite alternate;
+}
+
+.cover-motes i:nth-child(1) { left: 16%; top: 22%; }
+.cover-motes i:nth-child(2) { left: 68%; top: 14%; background: var(--sage); animation-duration: 11s; }
+.cover-motes i:nth-child(3) { left: 82%; top: 46%; animation-duration: 8s; }
+.cover-motes i:nth-child(4) { left: 24%; top: 58%; background: var(--diego-light); animation-duration: 12s; }
+.cover-motes i:nth-child(5) { left: 55%; top: 72%; background: var(--sage); animation-duration: 10s; }
+.cover-motes i:nth-child(6) { left: 8%; top: 82%; animation-duration: 13s; }
+
+@keyframes moteDrift {
+  from { transform: translate(0, 0); opacity: 0.18; }
+  50% { opacity: 0.4; }
+  to { transform: translate(9px, -14px); opacity: 0.2; }
+}
+
+.cover-leaflet.pixel-sprite {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cover-leaflet--a {
+  top: 13%;
+  left: 6.5%;
+  width: clamp(24px, 7vw, 36px);
+  opacity: 0.9;
+}
+
+.cover-leaflet--b {
+  bottom: 27%;
+  right: 7%;
+  width: clamp(20px, 6vw, 30px);
+  opacity: 0.8;
+}
+
+/* hoja-emblema protagonista, más grande */
+.cover-leaf-svg.pixel-sprite {
+  width: clamp(104px, 28vw, 158px);
+}
+
+html.reduced-motion .cover-motes i {
+  animation: none;
+}
+
+/* ============ humor de entreacto ============ */
+
+.quip-bubble {
+  position: absolute;
+  left: 50%;
+  top: 16%;
+  z-index: 16;
+  max-width: 78%;
+  padding: 5px 10px;
+  transform: translate(-50%, 8px) scale(0.8);
+  opacity: 0;
+  pointer-events: none;
+  background: var(--paper-light);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 rgba(43, 38, 32, 0.18);
+  font-family: var(--font-interface);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-align: center;
+  transition: opacity 200ms ease, transform 240ms var(--ease-page);
+}
+
+.quip-bubble.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+/* ============ escape del macetero ============ */
+
+.care-stage--escape .care-plant {
+  position: absolute;
+  left: var(--flee-x, 50%);
+  top: var(--flee-y, 55%);
+  width: clamp(88px, 24vw, 122px);
+  transform: translate(-50%, -50%);
+  transition:
+    left var(--flee-ms, 300ms) cubic-bezier(0.25, 0.9, 0.3, 1.18),
+    top var(--flee-ms, 300ms) cubic-bezier(0.25, 0.9, 0.3, 1.18);
+  z-index: 8;
+}
+
+.care-stage--escape .care-plant.is-darting .plant-character {
+  animation: potDartShake 260ms var(--ease-page);
+}
+
+@keyframes potDartShake {
+  0%, 100% { transform: rotate(0deg); }
+  35% { transform: rotate(-7deg) translateY(-3px); }
+  70% { transform: rotate(6deg); }
+}
+
+.care-stage--escape .care-plant.is-caught-flash .plant-character {
+  filter: brightness(1.35);
+}
+
+.care-stage--escape .care-plant.is-settled {
+  transition:
+    left 420ms var(--ease-page),
+    top 420ms var(--ease-page);
+}
+
+.escape-catch {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: clamp(96px, 27vw, 132px);
+  height: clamp(96px, 27vw, 132px);
+  transform: translate(-50%, -50%);
+  transition:
+    left var(--flee-ms, 300ms) cubic-bezier(0.25, 0.9, 0.3, 1.18),
+    top var(--flee-ms, 300ms) cubic-bezier(0.25, 0.9, 0.3, 1.18);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 9;
+  touch-action: manipulation;
+}
+
+.escape-catch:focus-visible {
+  outline: 2px dashed var(--ink);
+  outline-offset: -6px;
+  border-radius: 10px;
+}
+
+/* ============ humo de advertencia antes de la quema ============ */
+
+.scene--care .care-stage .sun-smoke i {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.scene--care .care-stage.smoke-1 .sun-smoke i:nth-child(1) {
+  opacity: 0.55;
+  animation: smokePuff 1.2s ease-in-out infinite;
+}
+
+.scene--care .care-stage.smoke-2 .sun-smoke i:nth-child(1),
+.scene--care .care-stage.smoke-2 .sun-smoke i:nth-child(2),
+.scene--care .care-stage.smoke-2 .sun-smoke i:nth-child(3) {
+  opacity: 0.85;
+  animation: smokePuff 0.7s ease-in-out infinite;
+}
+
+@keyframes smokePuff {
+  0% { transform: translateY(0) scale(0.9); }
+  50% { transform: translateY(-9px) scale(1.08); }
+  100% { transform: translateY(-16px) scale(0.92); opacity: 0.1; }
+}
+
+/* ============ cierre: etiqueta botánica y nube que descansa ============ */
+
+.final-tag.pixel-sprite {
+  position: absolute;
+  bottom: 6%;
+  right: 5%;
+  width: clamp(62px, 16vw, 88px);
+  z-index: 7;
+  filter: drop-shadow(0 2px 0 rgba(20, 30, 36, 0.4));
+}
+
+.final-cloud.pixel-sprite {
+  position: absolute;
+  top: 9%;
+  left: 6%;
+  width: clamp(54px, 14vw, 76px);
+  z-index: 3;
+  opacity: 0.95;
+  animation: coverSunBob 7s ease-in-out infinite alternate;
+}
+
+/* ============ motitas pixel del raspado ============ */
+
+.leaf-particle--pixel {
+  box-shadow: 0 0 0 1px rgba(43, 38, 32, 0.3);
+  border-radius: 0;
+}
+
+html.reduced-motion .final-cloud.pixel-sprite {
+  animation: none;
+}
+
 /* mirar a la izquierda: se voltea el sprite */
 .character.facing--left {
   transform: scaleX(-1);

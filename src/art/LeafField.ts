@@ -1,16 +1,30 @@
 /**
- * Pinta la capa procedural de hojas secas sobre un Canvas.
+ * Capa raspable de hojas secas, en pixel art.
+ * Cinco siluetas con mini-personalidad (amarilla quebradiza, rojiza moteada,
+ * salvia con agujeritos, redondita, alargada curvada), dibujadas píxel a
+ * píxel en sellos diminutos y estampadas con vecino-más-cercano, sin
+ * rotaciones (solo espejos) para conservar la rejilla.
  * Determinista: la misma semilla produce la misma composición.
  */
 
-const PALETTE = {
-  base: "#8a6247",
-  baseDark: "#6d4c39",
-  leafDry: "#986a4c",
-  leafDark: "#63483a",
-  sage: "#7d8b72",
-  sageDark: "#66735d",
+const INK = "#2b2620";
+const SHADOW = "rgba(30, 22, 16, 0.3)";
+
+const MULCH = {
+  base: "#7c5a3d",
+  dark: "#6a4b32",
+  light: "#8d6947",
   branch: "#4d3a30",
+};
+
+type LeafPalette = { l: string; m: string; d: string; v: string };
+
+const PALETTES: Record<string, LeafPalette> = {
+  yellow: { l: "#dcb658", m: "#c49a3a", d: "#9a7526", v: "#7e5c1a" },
+  red: { l: "#c47a42", m: "#a85a2c", d: "#7e3f1e", v: "#5e2f16" },
+  sage: { l: "#a8b273", m: "#8f9c5c", d: "#6f7c44", v: "#55603a" },
+  round: { l: "#c9924e", m: "#ab7233", d: "#835222", v: "#66401c" },
+  long: { l: "#a67a4a", m: "#8a5f36", d: "#6b4526", v: "#503418" },
 };
 
 /** PRNG mulberry32: pequeño y determinista. */
@@ -25,77 +39,146 @@ export function mulberry32(seed: number): () => number {
   };
 }
 
-type LeafDrawFn = (ctx: CanvasRenderingContext2D) => void;
+/** Mini-rejilla local para dibujar un sello y contornearlo. */
+class StampGrid {
+  readonly w: number;
+  readonly h: number;
+  readonly cells: (string | null)[];
 
-/** Seis siluetas de hoja, dibujadas alrededor del origen, tamaño ~1. */
-const LEAF_SHAPES: LeafDrawFn[] = [
-  (c) => {
-    c.beginPath();
-    c.moveTo(0, -0.5);
-    c.bezierCurveTo(0.34, -0.28, 0.4, 0.18, 0.16, 0.48);
-    c.bezierCurveTo(0.08, 0.56, -0.08, 0.56, -0.16, 0.48);
-    c.bezierCurveTo(-0.4, 0.18, -0.34, -0.28, 0, -0.5);
-    c.closePath();
-  },
-  (c) => {
-    c.beginPath();
-    c.moveTo(0, -0.46);
-    c.bezierCurveTo(-0.42, -0.34, -0.5, 0.1, -0.3, 0.36);
-    c.bezierCurveTo(-0.16, 0.52, 0.16, 0.52, 0.3, 0.36);
-    c.bezierCurveTo(0.5, 0.1, 0.42, -0.34, 0, -0.46);
-    c.closePath();
-  },
-  (c) => {
-    c.beginPath();
-    c.moveTo(-0.32, 0.5);
-    c.bezierCurveTo(-0.28, 0.1, -0.06, -0.3, 0.34, -0.52);
-    c.bezierCurveTo(0.3, -0.1, 0.1, 0.3, -0.2, 0.54);
-    c.closePath();
-  },
-  (c) => {
-    c.beginPath();
-    c.moveTo(0, -0.48);
-    c.bezierCurveTo(0.4, -0.4, 0.5, 0.05, 0.36, 0.3);
-    c.bezierCurveTo(0.26, 0.46, 0.1, 0.52, 0, 0.5);
-    c.lineTo(0.07, 0.36);
-    c.lineTo(-0.07, 0.4);
-    c.closePath();
-  },
-  (c) => {
-    c.beginPath();
-    c.moveTo(0, 0.5);
-    c.bezierCurveTo(-0.06, 0.24, -0.24, 0.16, -0.42, 0.14);
-    c.bezierCurveTo(-0.3, -0.04, -0.14, -0.06, 0, -0.02);
-    c.bezierCurveTo(-0.06, -0.24, -0.18, -0.32, -0.3, -0.36);
-    c.bezierCurveTo(-0.1, -0.5, 0.12, -0.44, 0.2, -0.26);
-    c.bezierCurveTo(0.34, -0.34, 0.46, -0.28, 0.5, -0.14);
-    c.bezierCurveTo(0.34, -0.06, 0.2, -0.06, 0.1, 0.06);
-    c.bezierCurveTo(0.24, 0.14, 0.3, 0.3, 0.26, 0.46);
-    c.closePath();
-  },
-  (c) => {
-    c.beginPath();
-    c.moveTo(-0.4, 0.4);
-    c.bezierCurveTo(-0.46, 0.05, -0.24, -0.3, 0.12, -0.46);
-    c.bezierCurveTo(0.4, -0.56, 0.52, -0.44, 0.48, -0.36);
-    c.bezierCurveTo(0.26, -0.34, 0.05, -0.2, -0.05, 0.02);
-    c.bezierCurveTo(-0.15, 0.22, -0.2, 0.32, -0.24, 0.46);
-    c.closePath();
-  },
-];
+  constructor(w: number, h: number) {
+    this.w = w;
+    this.h = h;
+    this.cells = new Array(w * h).fill(null);
+  }
 
-const LEAF_COLORS = [
-  PALETTE.leafDry,
-  PALETTE.leafDark,
-  PALETTE.sage,
-  PALETTE.leafDry,
-  PALETTE.sageDark,
-  PALETTE.leafDark,
-];
+  set(x: number, y: number, color: string | null): void {
+    const xi = Math.round(x);
+    const yi = Math.round(y);
+    if (xi < 0 || yi < 0 || xi >= this.w || yi >= this.h) return;
+    this.cells[yi * this.w + xi] = color;
+  }
+
+  get(x: number, y: number): string | null {
+    if (x < 0 || y < 0 || x >= this.w || y >= this.h) return null;
+    return this.cells[y * this.w + x];
+  }
+
+  outline(color: string): void {
+    const marks: number[] = [];
+    for (let y = 0; y < this.h; y++) {
+      for (let x = 0; x < this.w; x++) {
+        if (this.get(x, y) !== null) continue;
+        if (
+          this.get(x - 1, y) !== null ||
+          this.get(x + 1, y) !== null ||
+          this.get(x, y - 1) !== null ||
+          this.get(x, y + 1) !== null
+        ) {
+          marks.push(y * this.w + x);
+        }
+      }
+    }
+    for (const i of marks) this.cells[i] = color;
+  }
+
+  /** Vuelca la rejilla a un canvas 1:1 (o su silueta en un solo color). */
+  toCanvas(silhouette?: string): HTMLCanvasElement {
+    const c = document.createElement("canvas");
+    c.width = this.w;
+    c.height = this.h;
+    const ctx = c.getContext("2d")!;
+    for (let y = 0; y < this.h; y++) {
+      for (let x = 0; x < this.w; x++) {
+        const color = this.get(x, y);
+        if (!color) continue;
+        ctx.fillStyle = silhouette ?? color;
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+    return c;
+  }
+}
+
+type StampKind = "yellow" | "red" | "sage" | "round" | "long";
+
+function buildStamp(kind: StampKind): StampGrid {
+  const pal = PALETTES[kind];
+  const long = kind === "long";
+  const round = kind === "round";
+  const w = long ? 9 : round ? 11 : 13;
+  const h = long ? 20 : round ? 12 : 17;
+  const g = new StampGrid(w, h);
+  const cx = Math.floor(w / 2);
+  const tip = 1;
+  const base = h - 3;
+  const len = base - tip;
+  const maxW = round ? 4.6 : long ? 2.6 : 4.4;
+  const profile = round ? 0.55 : 0.85;
+
+  for (let i = 0; i <= len; i++) {
+    const y = tip + i;
+    const t = i / len;
+    let wid = maxW * Math.sin(Math.PI * Math.pow(t, profile));
+    // quebradiza: borde dentado determinista
+    if (kind === "yellow") wid += (i % 3 === 0 ? 1 : 0) - (i % 4 === 0 ? 1 : 0);
+    const curve = long ? Math.round(Math.sin(t * Math.PI) * 2.2) : 0;
+    const wl = Math.max(0, Math.round(wid));
+    const wr = Math.max(0, Math.round(wid * (long ? 1 : 0.9)));
+    for (let x = cx + curve - wl; x <= cx + curve + wr; x++) {
+      const rel = (x - (cx + curve - wl)) / Math.max(1, wl + wr);
+      g.set(x, y, rel < 0.32 ? pal.l : rel > 0.7 ? pal.d : pal.m);
+    }
+    // nervadura central
+    if (i > 0 && i < len) g.set(cx + curve, y, pal.v);
+  }
+
+  // nervaduras secundarias cortas
+  for (let i = 4; i <= len - 3; i += 4) {
+    const y = tip + i;
+    g.set(cx - 2, y - 1, pal.v);
+    g.set(cx + 2, y - 1, pal.v);
+  }
+
+  // personalidad por especie
+  if (kind === "red") {
+    g.set(cx - 2, tip + 4, pal.d);
+    g.set(cx + 2, tip + 7, pal.d);
+    g.set(cx - 1, tip + 10, pal.d);
+  }
+  if (kind === "sage") {
+    // agujeritos: se perfora y el contorno los rodeará
+    g.set(cx - 2, tip + 5, null);
+    g.set(cx + 2, tip + 9, null);
+  }
+
+  // tallo corto
+  g.set(cx, base + 1, pal.d);
+  g.set(cx, base + 2, pal.v);
+
+  g.outline(INK);
+  return g;
+}
+
+type Stamp = { art: HTMLCanvasElement; shadow: HTMLCanvasElement };
+
+let stampCache: Record<StampKind, Stamp> | null = null;
+
+function stamps(): Record<StampKind, Stamp> {
+  if (!stampCache) {
+    const kinds: StampKind[] = ["yellow", "red", "sage", "round", "long"];
+    stampCache = Object.fromEntries(
+      kinds.map((kind) => {
+        const grid = buildStamp(kind);
+        return [kind, { art: grid.toCanvas(), shadow: grid.toCanvas(SHADOW) }];
+      })
+    ) as Record<StampKind, Stamp>;
+  }
+  return stampCache;
+}
 
 /**
  * Rellena por completo el canvas (en coordenadas lógicas w×h)
- * con tierra y hojas secas. Sin transparencia inicial.
+ * con mantillo y hojas pixel. Sin transparencia inicial.
  */
 export function paintLeafField(
   ctx: CanvasRenderingContext2D,
@@ -104,75 +187,69 @@ export function paintLeafField(
   seed = 20260713
 ): void {
   const rnd = mulberry32(seed);
+  ctx.imageSmoothingEnabled = false;
 
-  // fondo totalmente opaco: mantillo
-  const grad = ctx.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0, PALETTE.base);
-  grad.addColorStop(1, PALETTE.baseDark);
-  ctx.fillStyle = grad;
+  // mantillo plano con tramado de celdas
+  const CELL = 6;
+  ctx.fillStyle = MULCH.base;
   ctx.fillRect(0, 0, w, h);
-
-  // ramas finas por debajo
-  ctx.strokeStyle = PALETTE.branch;
-  ctx.lineCap = "round";
-  const branches = Math.round((w * h) / 60000) + 3;
-  for (let i = 0; i < branches; i++) {
-    const x = rnd() * w;
-    const y = rnd() * h;
-    const len = 60 + rnd() * 160;
-    const ang = rnd() * Math.PI * 2;
-    ctx.lineWidth = 1.2 + rnd() * 1.6;
-    ctx.globalAlpha = 0.5 + rnd() * 0.3;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.quadraticCurveTo(
-      x + Math.cos(ang + 0.5) * len * 0.5,
-      y + Math.sin(ang + 0.5) * len * 0.5,
-      x + Math.cos(ang) * len,
-      y + Math.sin(ang) * len
-    );
-    ctx.stroke();
+  for (let cy = 0; cy < h; cy += CELL) {
+    for (let cx = 0; cx < w; cx += CELL) {
+      const r = rnd();
+      if (r < 0.13) {
+        ctx.fillStyle = MULCH.dark;
+        ctx.fillRect(cx, cy, CELL, CELL);
+      } else if (r < 0.19) {
+        ctx.fillStyle = MULCH.light;
+        ctx.fillRect(cx, cy, CELL, CELL);
+      }
+    }
   }
-  ctx.globalAlpha = 1;
 
-  // hojas: densidad irregular (más densas hacia los bordes)
-  const count = Math.max(90, Math.round((w * h) / 2600));
+  // ramitas: corridas de celdas oscuras con algún quiebre
+  const branches = Math.round((w * h) / 70000) + 3;
+  ctx.fillStyle = MULCH.branch;
+  for (let i = 0; i < branches; i++) {
+    let bx = Math.floor((rnd() * w) / CELL) * CELL;
+    let by = Math.floor((rnd() * h) / CELL) * CELL;
+    const horizontal = rnd() < 0.5;
+    const steps = 6 + Math.floor(rnd() * 10);
+    for (let s = 0; s < steps; s++) {
+      ctx.fillRect(bx, by, CELL, CELL);
+      if (horizontal) bx += CELL;
+      else by += CELL;
+      if (rnd() < 0.25) {
+        if (horizontal) by += rnd() < 0.5 ? CELL : -CELL;
+        else bx += rnd() < 0.5 ? CELL : -CELL;
+      }
+    }
+  }
+
+  // hojas pixel: siluetas distintas, espejos sin rotación, sombra dura
+  const all = stamps();
+  const kinds: StampKind[] = ["yellow", "red", "sage", "round", "long"];
+  const count = Math.max(60, Math.round((w * h) / 3800));
   for (let i = 0; i < count; i++) {
     let x = rnd() * w;
     let y = rnd() * h;
-    // sesgo suave hacia los bordes para densidad irregular
-    if (rnd() < 0.35) {
-      x = rnd() < 0.5 ? x * 0.35 : w - x * 0.35;
-    }
-    const size = 26 + rnd() * 54;
-    const shape = Math.floor(rnd() * LEAF_SHAPES.length);
-    const rot = rnd() * Math.PI * 2;
-    const color = LEAF_COLORS[Math.floor(rnd() * LEAF_COLORS.length)];
+    if (rnd() < 0.35) x = rnd() < 0.5 ? x * 0.35 : w - x * 0.35;
+    const kind = kinds[Math.floor(rnd() * kinds.length)];
+    const stamp = all[kind];
+    const scale = 3 + Math.floor(rnd() * 3); // 3..5, siempre entero
+    const dw = stamp.art.width * scale;
+    const dh = stamp.art.height * scale;
+    const flipH = rnd() < 0.5;
+    const flipV = rnd() < 0.16;
+    const px = Math.round((x - dw / 2) / 2) * 2;
+    const py = Math.round((y - dh / 2) / 2) * 2;
 
     ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(rot);
-    ctx.scale(size, size * (0.85 + rnd() * 0.3));
-
-    // sombra separada de la figura
-    ctx.save();
-    ctx.translate(0.06, 0.08);
-    LEAF_SHAPES[shape](ctx);
-    ctx.fillStyle = "rgba(30, 22, 16, 0.28)";
-    ctx.fill();
-    ctx.restore();
-
-    LEAF_SHAPES[shape](ctx);
-    ctx.fillStyle = color;
-    ctx.fill();
-
-    // nervio central
-    ctx.beginPath();
-    ctx.moveTo(0, -0.34);
-    ctx.quadraticCurveTo(0.03, 0, 0, 0.38);
-    ctx.lineWidth = 0.03;
-    ctx.strokeStyle = "rgba(36, 35, 31, 0.35)";
-    ctx.stroke();
+    ctx.translate(px + dw / 2, py + dh / 2);
+    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+    ctx.globalAlpha = 0.55;
+    ctx.drawImage(stamp.shadow, -dw / 2 + scale, -dh / 2 + scale, dw, dh);
+    ctx.globalAlpha = 1;
+    ctx.drawImage(stamp.art, -dw / 2, -dh / 2, dw, dh);
     ctx.restore();
   }
 }

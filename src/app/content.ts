@@ -9,10 +9,11 @@ export const content = {
   cover: {
     title: "Herbario de lo que cuidamos",
     subtitle: "Una historia pequeña sobre cuidar en compañía",
+    annotation: "ficha n.º 1 — recolectada con cuidado",
     instruction: "aparta la hoja",
     whisper: "tinha algo respirando aqui",
     leafLabel:
-      "Hoja seca que cubre el herbario. Arrástrala hacia un lado, o pulsa Enter, para abrir.",
+      "Hoja del herbario. Arrástrala hacia un lado, o pulsa Enter, para abrir.",
   },
 
   clearSpace: {
@@ -34,9 +35,9 @@ export const content = {
   offerings: {
     number: "II",
     heading: "Traer lo que tenemos",
-    lede: "Dani observa. Diego ya hizo un plan diminuto.",
-    waterInstruction: "exprime la nube sobre la maceta",
+    lede: "Diego trae un plan diminuto. Dani trae el clima.",
     seedInstruction: "acerca la semilla a la maceta",
+    waterInstruction: "exprime la nube sobre la semilla",
     waterLabel:
       "Nube de Dani. Pulsa para exprimirla sobre la maceta (tres veces), o pulsa Enter.",
     seedLabel:
@@ -49,10 +50,10 @@ export const content = {
       "Diego confirma que la semilla sigue razonablemente cuadrada.",
     ],
     next: "cuidarlo",
-    waterAnnouncement:
-      "La nube llovió sobre la tierra. Dani movió la cola, satisfecha.",
     seedAnnouncement:
       "La semilla hizo un giro pequeño y encajó en la tierra.",
+    waterAnnouncement:
+      "La nube llovió sobre la semilla. Dani movió la cola, satisfecha.",
     sproutAnnouncement:
       "El brote despertó. Diego asintió con una seriedad innecesaria.",
   },
@@ -61,10 +62,24 @@ export const content = {
     number: "III",
     heading: "Encontrar la medida",
     lede: "Cuidar también es saber cuándo basta.",
+    escape: {
+      instruction: "¡la maceta huyó! atrápala",
+      controlLabel:
+        "La maceta, huyendo con la semilla. Tócala tres veces para atraparla, o pulsa Enter.",
+      lines: [
+        "no estaba listo para esta responsabilidad.",
+        "yo vine a contener raíces, no crisis.",
+        "esto parecía más fácil en teoría.",
+        "¡solicito tierra emocionalmente estable!",
+      ],
+      caughtLines: ["está bien.", "ya. procedamos.", "…gracias por insistir."],
+      announcement:
+        "La maceta intentó huir tres veces. Al final aceptó quedarse.",
+    },
     water: {
       instruction: "deja dos gotas",
       controlLabel:
-        "Dedal con agua. Tócalo dos veces para dejar exactamente dos gotas.",
+        "Nube con llovizna. Tócala dos veces para dejar exactamente dos gotas.",
       firstDrop: "una gota",
       hint: "falta una",
       failure: "ups: ya era una laguna",
@@ -87,6 +102,7 @@ export const content = {
       controlLabel:
         "Sol tibio. Arrástralo cerca de la planta y déjalo un instante; demasiado cerca, la calienta. También puedes mantenerlo pulsado.",
       hint: "un poquito más",
+      smokeWarn: "huele a verano excesivo…",
       failure: "salió humo. el concepto de «instante» era importante",
       retry: "la maceta respiró. probemos con una luz más corta",
       announcement:
@@ -96,6 +112,33 @@ export const content = {
     akitaAside: "sí.",
     complete: "La planta creció sin que nadie tuviera que salvarla del entusiasmo.",
     next: "ver lo que creció",
+  },
+
+  // Humor de entreacto: absurdo vegetal, ternura seca. Se rota al azar,
+  // una frase principal por momento (nunca en bloque).
+  quips: {
+    pot: [
+      "no estaba listo para esta responsabilidad.",
+      "solicito tierra emocionalmente estable.",
+      "yo vine a contener raíces, no crisis.",
+      "esto parecía más fácil en teoría.",
+    ],
+    seed: [
+      "aún estoy considerando brotar.",
+      "necesito contexto antes de existir.",
+      "no me presionen: soy potencial.",
+    ],
+    plant: [
+      "hago fotosíntesis y lo mejor que puedo.",
+      "crecí, pero a un costo.",
+      "no fue magia: fue humedad y carácter.",
+      "agradezco el agua. cuestiono el método.",
+    ],
+    world: [
+      "este jardín opera sin garantías.",
+      "todo brote implica riesgos administrativos.",
+      "la naturaleza revisará su solicitud.",
+    ],
   },
 
   final: {

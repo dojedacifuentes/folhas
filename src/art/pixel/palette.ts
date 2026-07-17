@@ -40,6 +40,8 @@ export const PIX = {
   sage: "var(--sage)",
   leafDry: "var(--leaf-dry)",
   leafDark: "var(--leaf-dark)",
+  moss: "var(--green-moss)",
+  olive: "#6f7c34",
 
   // planta / mundo
   pot: "var(--terracotta)",

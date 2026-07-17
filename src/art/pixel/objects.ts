@@ -100,30 +100,86 @@ function wind(): PixelGrid {
 }
 
 function leafObject(): PixelGrid {
-  const g = new PixelGrid(30, 34);
-  // hoja seca grande en forma de lágrima con nervadura
-  const baseX = 15;
-  const baseY = 31;
-  const ax = 0;
-  const ay = -1;
-  const px = 1;
-  const py = 0;
-  const len = 26;
+  // hoja-emblema: lámina botánica en verdes, asimétrica, con borde
+  // ligeramente irregular, nervaduras, una muesca y una gota de rocío
+  const g = new PixelGrid(36, 46);
+  const cx = 17;
+  const tipY = 3;
+  const baseY = 38;
+  const len = baseY - tipY;
   for (let i = 0; i <= len; i++) {
-    const cx = baseX + ax * i;
-    const cy = baseY + ay * i;
-    const w = Math.round(6 * Math.sin((Math.PI * i) / len));
-    for (let s = -w; s <= w; s++) {
-      const shade = s < -w * 0.3 ? PIX.leafDry : s > w * 0.4 ? PIX.leafDark : PIX.clay;
-      g.set(cx + px * s, cy + py * s, shade);
+    const y = tipY + i;
+    const t = i / len;
+    const wBase = 10.5 * Math.sin(Math.PI * Math.pow(t, 0.82));
+    // borde irregular determinista (sin aleatoriedad)
+    const jitter = (i % 5 === 0 ? 1 : 0) - (i % 7 === 0 ? 1 : 0);
+    const wl = Math.max(0, Math.round(wBase + jitter));
+    const wr = Math.max(0, Math.round(wBase * 0.86 - jitter));
+    for (let x = cx - wl; x <= cx + wr; x++) {
+      // muesca distintiva en el borde derecho
+      if (y >= tipY + 13 && y <= tipY + 15 && x >= cx + wr - 2) continue;
+      const rel = (x - (cx - wl)) / Math.max(1, wl + wr);
+      const shade = rel < 0.3 ? PIX.sage : rel > 0.72 ? PIX.leafGD : PIX.moss;
+      g.set(x, y, shade);
     }
   }
-  // nervio central + laterales
-  for (let i = 2; i <= len - 2; i++) g.set(baseX, baseY - i, PIX.leafDark);
-  for (let i = 6; i <= len - 4; i += 4) {
-    g.line(baseX, baseY - i, baseX - 4, baseY - i - 3, PIX.leafDark);
-    g.line(baseX, baseY - i, baseX + 4, baseY - i - 3, PIX.leafDark);
+  // nervadura central con leve curva + secundarias
+  for (let i = 2; i <= len - 2; i++) {
+    const y = tipY + i;
+    const curve = Math.round(Math.sin((i / len) * Math.PI) * 1.4);
+    g.set(cx - 1 + curve, y, PIX.olive);
   }
+  for (let i = 8; i <= len - 6; i += 6) {
+    const y = tipY + i;
+    g.line(cx, y, cx - 5, y - 4, PIX.olive);
+    g.line(cx, y, cx + 4, y - 3, PIX.olive);
+  }
+  // gota de rocío turquesa cerca de la base
+  g.disc(cx + 5, baseY - 8, 1, PIX.tur);
+  g.set(cx + 4, baseY - 9, PIX.lens);
+  // tallo corto
+  g.rect(cx - 1, baseY, 2, 5, PIX.leafDry);
+  g.outline(PIX.ink);
+  return g;
+}
+
+function leafSmall(): PixelGrid {
+  // hojita secundaria de la lámina (adorno de borde)
+  const g = new PixelGrid(18, 22);
+  const cx = 9;
+  const tipY = 2;
+  const baseY = 17;
+  const len = baseY - tipY;
+  for (let i = 0; i <= len; i++) {
+    const y = tipY + i;
+    const t = i / len;
+    const w = Math.max(0, Math.round(4.6 * Math.sin(Math.PI * Math.pow(t, 0.85))));
+    for (let x = cx - w; x <= cx + w; x++) {
+      const rel = (x - (cx - w)) / Math.max(1, w * 2);
+      g.set(x, y, rel > 0.65 ? PIX.leafGD : rel < 0.3 ? PIX.sage : PIX.moss);
+    }
+  }
+  for (let i = 2; i <= len - 2; i++) g.set(cx, tipY + i, PIX.olive);
+  g.rect(cx, baseY, 1, 3, PIX.leafDry);
+  g.outline(PIX.ink);
+  return g;
+}
+
+function botanicalTag(): PixelGrid {
+  // etiqueta de herbario: papel con ojal, cordel y líneas de escritura
+  const g = new PixelGrid(30, 20);
+  g.rect(6, 3, 22, 14, PIX.white);
+  g.rect(6, 3, 22, 2, PIX.cream);
+  g.rect(6, 15, 22, 2, PIX.cream);
+  // ojal
+  g.disc(9, 10, 2, PIX.cream);
+  g.disc(9, 10, 1, PIX.inkSoft);
+  // cordel hacia la izquierda
+  g.quad(8, 10, 4, 12, 1, 9, PIX.leafDry, 1);
+  // líneas de escritura + un punto girasol
+  g.line(13, 8, 24, 8, PIX.inkSoft);
+  g.line(13, 11, 22, 11, PIX.inkSoft);
+  g.disc(24, 13, 1, PIX.sun);
   g.outline(PIX.ink);
   return g;
 }
@@ -154,6 +210,8 @@ const BUILDERS: Record<string, () => PixelGrid> = {
   "watering-cup": wateringCup,
   wateringCup,
   leaf: leafObject,
+  "leaf-small": leafSmall,
+  tag: botanicalTag,
 };
 
 const SIZES: Record<string, [number, number]> = {
@@ -166,7 +224,9 @@ const SIZES: Record<string, [number, number]> = {
   wind: [30, 20],
   "watering-cup": [28, 22],
   wateringCup: [28, 22],
-  leaf: [30, 34],
+  leaf: [36, 46],
+  "leaf-small": [18, 22],
+  tag: [30, 20],
 };
 
 export function objectSprite(kind: string, _state = "idle"): SpriteDef {

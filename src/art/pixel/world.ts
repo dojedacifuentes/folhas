@@ -67,16 +67,12 @@ function pot(g: PixelGrid): void {
   // tierra
   g.ellipse(20, 32, 12, 2, PIX.soil);
   g.outline(PIX.ink);
-  // cara de la maceta
-  g.disc(15, 39, 1, PIX.ink);
-  g.disc(25, 39, 1, PIX.ink);
-  g.set(21, 41, PIX.ink);
-  g.set(19, 41, PIX.ink);
-  g.set(18, 42, PIX.ink);
-  g.set(22, 42, PIX.ink);
+  // cara de la maceta: neutra y tierna (ojos punto, boca mínima)
+  g.set(16, 39, PIX.ink);
+  g.set(24, 39, PIX.ink);
+  g.set(19, 42, PIX.ink);
   g.set(20, 42, PIX.ink);
-  g.disc(13, 41, 1, PIX.cheek);
-  g.disc(27, 41, 1, PIX.cheek);
+  g.set(21, 42, PIX.ink);
 }
 
 function buildPlant(state: string): PixelGrid {

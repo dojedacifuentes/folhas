@@ -5,8 +5,6 @@ import { renderDani } from "../art/characters/DaniCharacter";
 import { renderDiego } from "../art/characters/DiegoCharacter";
 import {
   renderSeed,
-  renderThimble,
-  renderUmbrella,
   setInteractiveObjectState,
 } from "../art/objects/InteractiveObjects";
 import { renderPlantCharacter } from "../art/PlantCharacter";
@@ -75,15 +73,13 @@ export class FinalScene implements Scene {
             <p class="thought thought--akita">${c.akitaThought}</p>
           </button>
           ${renderSeed({ label: c.cubeLabel, className: "final-cube" })}
-          ${renderThimble({
-            interactive: false,
+          ${pixelPlaceholder("cloud", "idle", {
             decorative: true,
-            className: "final-thimble",
+            className: "final-cloud",
           })}
-          ${renderUmbrella({
-            interactive: false,
+          ${pixelPlaceholder("tag", "idle", {
             decorative: true,
-            className: "final-umbrella umbrella--stored",
+            className: "final-tag",
           })}
         </div>
         <div class="final-text">

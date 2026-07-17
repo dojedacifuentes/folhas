@@ -11,6 +11,7 @@ export type ExperienceState = {
   leavesCleared: boolean;
   waterPlaced: boolean;
   seedPlaced: boolean;
+  potCaught: boolean;
   waterBalanced: boolean;
   windBalanced: boolean;
   sunBalanced: boolean;
@@ -35,6 +36,7 @@ export function defaultState(): ExperienceState {
     leavesCleared: false,
     waterPlaced: false,
     seedPlaced: false,
+    potCaught: false,
     waterBalanced: false,
     windBalanced: false,
     sunBalanced: false,
@@ -143,6 +145,8 @@ export function sanitizeState(value: unknown): ExperienceState {
     isTrue(value, "seedPlaced");
 
   const offeringsComplete = state.waterPlaced && state.seedPlaced;
+  state.potCaught =
+    requestedIndex >= 3 && offeringsComplete && isTrue(value, "potCaught");
   state.waterBalanced =
     requestedIndex >= 3 &&
     offeringsComplete &&
@@ -174,6 +178,7 @@ export function sanitizeState(value: unknown): ExperienceState {
   const currentIndex = SCENE_ORDER.indexOf(state.currentScene);
   if (currentIndex < 4) state.finalReached = false;
   if (currentIndex < 3) {
+    state.potCaught = false;
     state.waterBalanced = false;
     state.windBalanced = false;
     state.sunBalanced = false;

@@ -1,5 +1,41 @@
 # Progreso
 
+## Dirección estética coherente (v5, 2026-07-17)
+
+Decisión asumida: **herbario poético interactivo con humor vegetal y
+minijuegos pixel art**. Todo debe pertenecer al mismo pequeño mundo.
+
+- **Portada como lámina de herbario**: marco doble con esquinas montadas,
+  motas de polvo flotantes, dos hojitas de borde, anotación manuscrita
+  ("ficha n.º 1 — recolectada con cuidado"); fuera el cubo suelto. La
+  **hoja-emblema** se rediseñó: verdes musgo/salvia/oliva, silueta asimétrica
+  con borde irregular, nervadura central curva + secundarias, muesca
+  distintiva y gota de rocío turquesa.
+- **Hojas rascables en pixel art** (`LeafField` reescrito): cinco siluetas con
+  mini-personalidad (amarilla quebradiza, rojiza moteada, salvia con
+  agujeritos, redondita, alargada curvada), mantillo tramado y ramitas de
+  celdas; espejos sin rotación para conservar la rejilla. El borrado ahora es
+  por **mordidas pixel** (celdas cuadradas con borde irregular determinista) y
+  las partículas son motitas cuadradas otoñales.
+- **Causalidad corregida**: primero la semilla (consecuencia visible en la
+  tierra), después la nube de Dani que llueve, y de ahí el brote.
+- **Escape del macetero** (nuevo beat cómico al llegar a Cuidar): la maceta
+  huye con la semilla; hay que atraparla 3 veces. Dardos repentinos a lados
+  alternos, ventana de reacción corta y aceleración tras cada atrapada;
+  frases de pánico burocrático ("no estaba listo para esta responsabilidad").
+  Con animación reducida basta un toque. Hito `potCaught` persistido.
+- **Quemado legible y rápido**: humo leve (heat>0.26) → humo claro + aviso
+  "huele a verano excesivo…" (>0.58) → combustión en ~1 s. Verificado por
+  muestreo: t250 sin humo / t500 smoke-1 / t750 smoke-2+aviso.
+- **Cara del macetero** neutra y tierna (ojos punto, boca mínima, sin
+  mejillas por defecto).
+- **Humor de entreacto** rotativo (`content.quips`): macetero/semilla/planta/
+  mundo, una frase por momento, sin repetición inmediata.
+- **Final sin objetos arbitrarios**: la sombrilla y el dedal se reemplazaron
+  por la **nube que descansa** y una **etiqueta botánica** de herbario; la
+  nube es ahora el control de agua también en Cuidar, y aparece en el tableau
+  oculto de Hacer lugar.
+
 ## Más juego y vida (v4, 2026-07-17)
 
 Ronda centrada en hacerlo más divertido, gracioso e inesperado, con más

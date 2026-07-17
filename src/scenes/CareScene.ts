@@ -14,12 +14,11 @@ import {
 } from "../art/characters/DiegoCharacter";
 import {
   renderSun,
-  renderThimble,
-  renderUmbrella,
   renderWind,
   setInteractiveObjectState,
   type InteractiveObjectState,
 } from "../art/objects/InteractiveObjects";
+import { pixelPlaceholder } from "../art/pixel/engine";
 import {
   renderPlantCharacter,
   type PlantState,
@@ -133,7 +132,11 @@ export class CareScene implements Scene {
     after.hidden = true;
     after.classList.remove("is-visible");
 
-    if (phase === "water") this.mountWater(stage);
+    if (phase === "water") {
+      // antes de la primera gota, la maceta intenta huir (una sola vez)
+      if (!this.ctx.state.potCaught) this.mountEscape(stage, instruction);
+      else this.mountWater(stage);
+    }
     if (phase === "wind") this.mountWind(stage);
     if (phase === "sun") this.mountSun(stage);
     hydratePixelSprites(stage);
@@ -175,7 +178,127 @@ export class CareScene implements Scene {
         reducedMotion: this.ctx.reducedMotion(),
       })}</div>
       <p class="weather-reaction" aria-hidden="true"></p>
+      <div class="quip-bubble" aria-hidden="true"></div>
     `;
+  }
+
+  /**
+   * Beat cómico: la maceta huye con la semilla y hay que atraparla tres
+   * veces. Rápido y travieso — dardos cortos, dirección imprevisible y un
+   * poco más veloz tras cada atrapada. Con animación reducida basta un toque.
+   */
+  private mountEscape(stage: HTMLElement, instruction: HTMLElement): void {
+    const c = content.care.escape;
+    instruction.textContent = c.instruction;
+    stage.classList.add("care-stage--escape");
+    stage.innerHTML = `
+      ${this.tableau("surprised", "concerned", "small", 0.2)}
+      <button class="escape-catch" type="button" aria-label="${c.controlLabel}"></button>
+    `;
+    this.applyVisualState({
+      daniState: "surprised",
+      diegoState: "concerned",
+      plantState: "small",
+      instruction: c.instruction,
+      interactionEnabled: true,
+      completed: false,
+    });
+
+    const pot = stage.querySelector<HTMLElement>(".care-plant")!;
+    const catcher = stage.querySelector<HTMLButtonElement>(".escape-catch")!;
+    pot.classList.add("is-fleeing");
+    const reduced = this.ctx.reducedMotion();
+    const needed = reduced ? 1 : 3;
+    let caught = 0;
+    let lastX = 0.5;
+    let dartTimer: number | null = null;
+
+    const place = (x: number, y: number, ms: number): void => {
+      pot.style.setProperty("--flee-x", `${(x * 100).toFixed(1)}%`);
+      pot.style.setProperty("--flee-y", `${(y * 100).toFixed(1)}%`);
+      pot.style.setProperty("--flee-ms", `${ms}ms`);
+      catcher.style.left = `${(x * 100).toFixed(1)}%`;
+      catcher.style.top = `${(y * 100).toFixed(1)}%`;
+      catcher.style.transitionDuration = `${ms}ms`;
+    };
+
+    const dart = (): void => {
+      if (this.settled || caught >= needed) return;
+      // salta al lado contrario del anterior, con altura variable
+      const dir = lastX > 0.5 ? -1 : 1;
+      const x = 0.5 + dir * (0.18 + Math.random() * 0.24);
+      const y = 0.34 + Math.random() * 0.3;
+      lastX = x;
+      const speed = Math.max(200, 320 - caught * 45);
+      place(x, y, speed);
+      pot.classList.remove("is-darting");
+      void pot.offsetWidth;
+      pot.classList.add("is-darting");
+      this.ctx.audio.woodTap();
+      if (Math.random() < 0.45) this.showQuip(c.lines, "escape");
+      // pausa corta e irregular entre dardos: ventana de reacción pequeña
+      dartTimer = this.schedule(dart, speed + 240 + Math.random() * 320);
+    };
+
+    const onCatch = (): void => {
+      if (this.settled || caught >= needed) return;
+      caught += 1;
+      this.ctx.onFirstInteraction();
+      this.ctx.audio.drop();
+      pot.classList.add("is-caught-flash");
+      this.schedule(() => pot.classList.remove("is-caught-flash"), 260);
+      stage.dataset.caught = String(caught);
+
+      if (caught >= needed) {
+        if (dartTimer !== null) this.clearTimer(dartTimer);
+        pot.classList.remove("is-fleeing", "is-darting");
+        pot.classList.add("is-settled");
+        place(0.5, 0.5, 420);
+        catcher.disabled = true;
+        this.showQuip(c.caughtLines, "escape");
+        this.applyVisualState({
+          daniState: "happy",
+          diegoState: "proud",
+          plantState: "small",
+        });
+        this.ctx.state.potCaught = true;
+        this.ctx.save();
+        this.ctx.announce(c.announcement);
+        this.schedule(() => this.renderPhase("water"), reduced ? 320 : 1500);
+        return;
+      }
+      // tras cada atrapada, huye de inmediato y más rápido
+      if (dartTimer !== null) this.clearTimer(dartTimer);
+      dartTimer = this.schedule(dart, 120);
+    };
+
+    catcher.addEventListener("click", onCatch);
+    this.cleanups.push(() => catcher.removeEventListener("click", onCatch));
+
+    if (reduced) {
+      place(0.5, 0.5, 0);
+    } else {
+      place(0.5, 0.52, 0);
+      dartTimer = this.schedule(dart, 650);
+    }
+  }
+
+  private lastQuip = "";
+
+  /** Una frase de humor vegetal en una burbuja sobre el escenario. */
+  private showQuip(pool: readonly string[], _context: string): void {
+    const bubble = this.el?.querySelector<HTMLElement>(".quip-bubble");
+    if (!bubble || pool.length === 0) return;
+    let line = pool[Math.floor(Math.random() * pool.length)];
+    if (pool.length > 1 && line === this.lastQuip) {
+      line = pool[(pool.indexOf(line) + 1) % pool.length];
+    }
+    this.lastQuip = line;
+    bubble.textContent = line;
+    bubble.classList.remove("is-visible");
+    void bubble.offsetWidth;
+    bubble.classList.add("is-visible");
+    this.schedule(() => bubble.classList.remove("is-visible"), 2300);
   }
 
   private mountWater(stage: HTMLElement): void {
@@ -183,15 +306,9 @@ export class CareScene implements Scene {
     stage.innerHTML = `
       <div class="water-ripples" aria-hidden="true"><i></i><i></i><i></i></div>
       ${this.tableau("watering", "watching", "small", 0.24)}
-      ${renderUmbrella({
-        interactive: false,
-        decorative: true,
-        className: "care-umbrella",
-      })}
       <div class="care-drops" aria-hidden="true"><i></i><i></i><i></i></div>
       <button class="care-action care-action--water" type="button" aria-label="${c.controlLabel}">
-        <span class="care-action-art" aria-hidden="true">${renderThimble({
-          interactive: false,
+        <span class="care-action-art" aria-hidden="true">${pixelPlaceholder("cloud", "idle", {
           decorative: true,
           className: "care-object-art",
         })}</span>
@@ -396,6 +513,7 @@ export class CareScene implements Scene {
     let lastFrame = 0;
     let danger = false;
     let hintShown = false;
+    let smokeWarned = false;
     let curX = 0.28;
     let curY = 0.72;
 
@@ -415,9 +533,17 @@ export class CareScene implements Scene {
       // solo recalienta mientras se sostiene la luz sobre la planta;
       // al soltar (o alejarla) se enfría, aunque «danger» siga marcado
       const heating = danger && aligner.isHeld;
-      heat = Math.max(0, Math.min(1, heat + (heating ? dt / 1250 : -dt / 850)));
+      heat = Math.max(0, Math.min(1, heat + (heating ? dt / 1050 : -dt / 850)));
       stage.style.setProperty("--heat", heat.toFixed(3));
       stage.classList.toggle("is-sun-holding", heat > 0.05);
+      // advertencia legible antes de la combustión: humo leve → humo claro
+      stage.classList.toggle("smoke-1", heat > 0.26);
+      stage.classList.toggle("smoke-2", heat > 0.58);
+      if (!smokeWarned && heat > 0.58) {
+        smokeWarned = true;
+        this.showReaction(c.smokeWarn, true);
+      }
+      if (heat < 0.2) smokeWarned = false;
       if (heat >= 1) {
         this.cancelFrame();
         this.failPhase(c.failure, c.retry, {
@@ -521,6 +647,12 @@ export class CareScene implements Scene {
     this.ctx.save();
     this.ctx.announce(announcement);
 
+    // entreacto: a veces la planta (o el mundo) comenta, una sola frase
+    if (Math.random() < 0.5) {
+      const pool = Math.random() < 0.6 ? content.quips.plant : content.quips.world;
+      this.schedule(() => this.showQuip(pool, "phase"), 360);
+    }
+
     this.schedule(
       () => {
         const next = this.nextIncomplete();
@@ -587,11 +719,6 @@ export class CareScene implements Scene {
     stage.innerHTML = `
       <div class="care-complete-glow" aria-hidden="true"></div>
       ${this.tableau("proud", "proud", "healthy", 1)}
-      ${renderUmbrella({
-        interactive: false,
-        decorative: true,
-        className: "stored-umbrella umbrella--stored",
-      })}
     `;
     hydratePixelSprites(stage);
     this.applyVisualState({

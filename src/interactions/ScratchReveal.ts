@@ -5,6 +5,8 @@ export type ScratchRevealOptions = {
   container: HTMLElement;
   threshold?: number; // fracción despejada para revelar (0..1)
   brushSize?: number; // radio lógico del pincel en px
+  /** si se define, borra en celdas cuadradas de este tamaño (mordidas pixel) */
+  pixelCell?: number;
   onProgress?: (progress: number) => void;
   onReveal?: () => void;
   /** callback por trazo (coordenadas lógicas), para partículas y sonido */
@@ -99,14 +101,39 @@ export class ScratchReveal {
   private stamp(x: number, y: number, r: number, record = true): void {
     const { ctx } = this;
     ctx.globalCompositeOperation = "destination-out";
-    const grad = ctx.createRadialGradient(x, y, r * 0.25, x, y, r);
-    grad.addColorStop(0, "rgba(0,0,0,1)");
-    grad.addColorStop(0.75, "rgba(0,0,0,0.75)");
-    grad.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
+    const cell = this.opts.pixelCell;
+    if (cell && cell > 0) {
+      // mordidas pixel: celdas cuadradas dentro del radio, con borde
+      // irregular determinista (mismo resultado al reproducir trazos)
+      ctx.fillStyle = "rgba(0,0,0,1)";
+      const c0x = Math.floor((x - r) / cell);
+      const c1x = Math.floor((x + r) / cell);
+      const c0y = Math.floor((y - r) / cell);
+      const c1y = Math.floor((y + r) / cell);
+      for (let cy = c0y; cy <= c1y; cy++) {
+        for (let cx = c0x; cx <= c1x; cx++) {
+          const centerX = cx * cell + cell / 2;
+          const centerY = cy * cell + cell / 2;
+          const dist = Math.hypot(centerX - x, centerY - y);
+          if (dist > r) continue;
+          if (dist > r * 0.72) {
+            // borde mordido: algunas celdas del perímetro quedan
+            const hash = ((cx * 73856093) ^ (cy * 19349663)) >>> 0;
+            if (hash % 10 < 3) continue;
+          }
+          ctx.fillRect(cx * cell, cy * cell, cell, cell);
+        }
+      }
+    } else {
+      const grad = ctx.createRadialGradient(x, y, r * 0.25, x, y, r);
+      grad.addColorStop(0, "rgba(0,0,0,1)");
+      grad.addColorStop(0.75, "rgba(0,0,0,0.75)");
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.globalCompositeOperation = "source-over";
     if (record) {
       this.strokes.push({

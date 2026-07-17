@@ -74,7 +74,7 @@ export class OfferingsScene implements Scene {
             })}
             <p class="thought thought--diego">${c.akitaThought}</p>
           </div>
-          <button class="offer-cloud" type="button" aria-label="${c.waterLabel}">
+          <button class="offer-cloud" type="button" aria-label="${c.waterLabel}" hidden>
             ${pixelPlaceholder("cloud", "idle", { decorative: true, className: "offer-cloud-art" })}
             <span class="cloud-meter" aria-hidden="true"><i></i><i></i><i></i></span>
           </button>
@@ -104,12 +104,16 @@ export class OfferingsScene implements Scene {
 
     if (ctx.state.waterPlaced && ctx.state.seedPlaced) {
       this.restoreComplete();
-    } else if (ctx.state.waterPlaced) {
-      el.classList.add("water-done");
-      this.hideCloud();
-      this.activateSeed(false);
+    } else if (ctx.state.seedPlaced) {
+      // la semilla ya está: retomamos en la lluvia
+      el.classList.add("seed-done");
+      this.setObjectState(".offer-drag--seed", "completed");
+      el.querySelector<HTMLCanvasElement>(
+        '.offer-plant canvas[data-character="plant"]'
+      )?.classList.remove("plant-context--empty");
+      this.activateWater(false);
     } else {
-      this.activateWater();
+      this.activateSeed(false);
     }
     return el;
   }
@@ -132,18 +136,19 @@ export class OfferingsScene implements Scene {
     if (cloud) cloud.hidden = true;
   }
 
-  private activateWater(): void {
+  private activateWater(focus: boolean): void {
     if (!this.el) return;
     this.phase = "water";
     this.setVisualState(
       "watering",
-      "watching",
+      "proud",
       "seed",
       content.offerings.waterInstruction,
       true,
       false
     );
     const cloud = this.el.querySelector<HTMLButtonElement>(".offer-cloud")!;
+    cloud.hidden = false;
     let squeezes = 0;
     const rainOnce = (): void => {
       if (this.phase !== "water") return;
@@ -174,7 +179,7 @@ export class OfferingsScene implements Scene {
       cloud.removeEventListener("pointerdown", onDown);
       cloud.removeEventListener("keydown", onKey);
     };
-    cloud.focus({ preventScroll: true });
+    if (focus) cloud.focus({ preventScroll: true });
   }
 
   private spawnRain(): void {
@@ -198,7 +203,7 @@ export class OfferingsScene implements Scene {
     this.cloudCleanup = null;
     this.hideCloud();
     this.el.classList.add("water-done", "water-feedback");
-    this.setVisualState("happy", "watching", "seed", "", false, false);
+    this.setVisualState("happy", "proud", "seed", "", false, false);
     this.ctx.audio.drop();
     this.ctx.announce(content.offerings.waterAnnouncement);
     this.showThought(".thought--dani");
@@ -208,16 +213,9 @@ export class OfferingsScene implements Scene {
       this.ctx.save();
     }
 
-    const delay = this.ctx.reducedMotion() ? 60 : 320;
-    this.timers.push(
-      window.setTimeout(() => {
-        if (this.ctx.state.seedPlaced) {
-          this.growPlant(true);
-        } else {
-          this.activateSeed(true);
-        }
-      }, delay)
-    );
+    // la lluvia sobre la semilla despierta el brote
+    const delay = this.ctx.reducedMotion() ? 60 : 460;
+    this.timers.push(window.setTimeout(() => this.growPlant(true), delay));
   }
 
   private activateSeed(focus: boolean): void {
@@ -267,8 +265,9 @@ export class OfferingsScene implements Scene {
       this.ctx.save();
     }
 
-    const delay = this.ctx.reducedMotion() ? 60 : 460;
-    this.timers.push(window.setTimeout(() => this.growPlant(true), delay));
+    // consecuencia visible primero; después llega la nube de Dani
+    const delay = this.ctx.reducedMotion() ? 60 : 620;
+    this.timers.push(window.setTimeout(() => this.activateWater(true), delay));
   }
 
   private growPlant(announce: boolean): void {

@@ -3,10 +3,8 @@ import type { Scene, SceneContext } from "../app/SceneManager";
 import { setSceneVisualState } from "../app/visualState";
 import { renderDani } from "../art/characters/DaniCharacter";
 import { renderDiego } from "../art/characters/DiegoCharacter";
-import {
-  renderSeed,
-  renderThimble,
-} from "../art/objects/InteractiveObjects";
+import { renderSeed } from "../art/objects/InteractiveObjects";
+import { pixelPlaceholder } from "../art/pixel/engine";
 import { renderPlantCharacter } from "../art/PlantCharacter";
 import { leafButtonSVG } from "../art/svgLibrary";
 import { ScratchReveal } from "../interactions/ScratchReveal";
@@ -53,7 +51,7 @@ export class ClearSpaceScene implements Scene {
               facing: "front",
               reducedMotion: ctx.reducedMotion(),
             })}</div>
-            ${renderThimble({ interactive: false, decorative: true, className: "clear-thimble" })}
+            ${pixelPlaceholder("cloud", "idle", { decorative: true, className: "clear-thimble" })}
             ${renderSeed({ interactive: false, decorative: true, className: "clear-cube" })}
           </div>
           <canvas class="scratch-canvas" tabindex="0" aria-label="${c.revealLabel}"></canvas>
@@ -90,6 +88,7 @@ export class ClearSpaceScene implements Scene {
       container: stage,
       threshold: 0.4,
       brushSize: 52,
+      pixelCell: 8,
       onStroke: (x, y) => {
         spawnLeafParticle(particles, x, y, ctx.reducedMotion());
         ctx.audio.rustle(0.55 + Math.random() * 0.4);

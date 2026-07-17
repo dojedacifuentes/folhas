@@ -1,7 +1,6 @@
 import { content } from "../app/content";
 import type { Scene, SceneContext } from "../app/SceneManager";
 import { createBotanicalShadows } from "../art/BotanicalShadows";
-import { renderSeed } from "../art/objects/InteractiveObjects";
 import { renderDani } from "../art/characters/DaniCharacter";
 import { renderDiego } from "../art/characters/DiegoCharacter";
 import { pixelPlaceholder } from "../art/pixel/engine";
@@ -30,12 +29,11 @@ export class CoverScene implements Scene {
     el.className = "scene scene--cover";
     el.setAttribute("aria-label", c.title);
     el.innerHTML = `
+      <div class="cover-plate" aria-hidden="true"></div>
+      <div class="cover-motes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       ${pixelPlaceholder("sun", "idle", { decorative: true, className: "cover-sun" })}
-      ${renderSeed({
-        interactive: false,
-        decorative: true,
-        className: "cover-cube",
-      })}
+      ${pixelPlaceholder("leaf-small", "idle", { decorative: true, className: "cover-leaflet cover-leaflet--a" })}
+      ${pixelPlaceholder("leaf-small", "idle", { decorative: true, className: "cover-leaflet cover-leaflet--b" })}
       <div class="cover-peek cover-peek--dani" aria-hidden="true">
         ${renderDani({ state: "surprised", facing: "right", reducedMotion: ctx.reducedMotion() })}
       </div>
@@ -45,6 +43,7 @@ export class CoverScene implements Scene {
       <header class="cover-titles">
         <h1 class="cover-title">${c.title}</h1>
         <p class="cover-subtitle">${c.subtitle}</p>
+        <p class="cover-annotation" aria-hidden="true">${c.annotation}</p>
       </header>
       <div class="cover-leaf-area">
         <p class="cover-whisper" aria-hidden="true" lang="pt">${c.whisper}</p>
