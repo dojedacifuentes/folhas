@@ -233,13 +233,55 @@ html.reduced-motion .final-stage {
 }
 
 /* ================================================================
-   ENCUADRE ARMÓNICO: una sola columna-lámina, centrada también en PC
+   MARCO DE JUEGO: la app es una lámina vertical, siempre la misma,
+   centrada sobre la mesa en pantallas grandes
    ================================================================ */
 
+/* seguridad: si una escena crece más que el marco, se desplaza dentro */
+.scene {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+
+.scene::-webkit-scrollbar {
+  display: none;
+}
+
 @media (min-width: 700px) {
+  body {
+    display: grid;
+    place-items: center;
+  }
+
   #app {
-    max-width: 660px;
-    margin-inline: auto;
+    position: relative;
+    width: min(452px, 94vw);
+    height: min(92svh, 880px);
+    min-height: 0;
+    max-height: none;
+    /* papel cortado a mano, como las páginas interiores */
+    border-radius: 16px 19px 15px 20px;
+    overflow: hidden;
+    outline: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    outline-offset: -1px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      0 2px 3px rgba(43, 38, 32, 0.12),
+      0 14px 34px -10px rgba(43, 38, 32, 0.3),
+      0 40px 80px -28px rgba(43, 38, 32, 0.38);
+  }
+
+  /* los controles del libro viven dentro del marco */
+  .chrome {
+    position: absolute;
+  }
+
+  /* los puntitos de progreso se posan en la esquina del marco */
+  html body #scene-progress {
+    top: calc((100svh - min(92svh, 880px)) / 2 + 14px);
+    right: calc((100vw - min(452px, 94vw)) / 2 + 14px);
   }
 }
 
