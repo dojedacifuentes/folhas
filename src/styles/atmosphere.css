@@ -145,17 +145,9 @@ body::before {
     0 30px 60px -22px rgba(6, 16, 24, 0.55);
 }
 
-/* ---------- sombras de anclaje: los personajes pisan el papel ---------- */
-
-.clear-dani,
-.clear-diego,
-.offer-dani,
-.offer-diego,
-.care-character,
-.final-dani,
-.final-diego {
-  position: relative;
-}
+/* ---------- sombras de anclaje: los personajes pisan el papel ----------
+   (los contenedores ya son position:absolute; el ::after se ancla a ellos
+   sin tocar su posicionamiento) */
 
 .clear-dani::after,
 .clear-diego::after,
@@ -241,30 +233,14 @@ html.reduced-motion .final-stage {
 }
 
 /* ================================================================
-   PROTAGONISMO: los personajes crecen y se acercan a la acción
+   ENCUADRE ARMÓNICO: una sola columna-lámina, centrada también en PC
    ================================================================ */
 
-.clear-dani,
-.clear-diego {
-  width: clamp(96px, 27vw, 138px) !important;
-}
-
-.offer-dani,
-.offer-diego {
-  width: clamp(100px, 28vw, 142px) !important;
-}
-
-.offer-dani { left: 2% !important; }
-.offer-diego { right: 2% !important; }
-
-.care-character {
-  width: clamp(96px, 27vw, 138px) !important;
-}
-
-.final-cat,
-.final-akita {
-  width: clamp(92px, 26vw, 130px) !important;
-  z-index: 7 !important;
+@media (min-width: 700px) {
+  #app {
+    max-width: 660px;
+    margin-inline: auto;
+  }
 }
 
 /* ================================================================

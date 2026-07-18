@@ -10,7 +10,6 @@ import {
 } from "../art/objects/InteractiveObjects";
 import { renderPlantCharacter } from "../art/PlantCharacter";
 import { renderShadowSystem } from "../art/ShadowSystem";
-import { leafSVG } from "../art/svgLibrary";
 import { pixelPlaceholder, createPixelSprite } from "../art/pixel/engine";
 import { sunflowerSprite } from "../art/pixel/world";
 import { createEmote, type EmoteKind } from "../art/pixel/emote";
@@ -70,7 +69,6 @@ export class FinalScene implements Scene {
           })}
           <div class="final-glow" aria-hidden="true"></div>
           <div class="final-garden" aria-hidden="true"></div>
-          <div class="final-drifting-leaf" aria-hidden="true">${leafSVG(3)}</div>
           <button class="final-cat final-tap" type="button" aria-label="${c.daniLabel}">
             ${renderDani({
               state: "sleeping",
